@@ -1,0 +1,83 @@
+#header, .header-title {
+    height: 50px;
+    line-height: 50px;
+}
+
+#header {
+    border-bottom: 1px solid #f1f1f1;
+}
+
+#bs-example-navbar-collapse-1, .header-container {
+    height: 100%;
+}
+
+#bs-example-navbar-collapse-1 {
+    width: 84%;
+    height: 100% !important;
+    margin: 0 auto;
+}
+
+#bs-example-navbar-collapse-1 .active a {
+    color: #333;
+}
+
+.header-list {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+}
+
+.header-list li {
+    height: 100%;
+    display: flex;
+    align-items: center;
+}
+
+.header-list li a {
+    transition: all 0.5s;
+    color: #999;
+}
+
+.header-list li a:hover {
+    background-color: #fff;
+    color: #333;
+}
+
+.header-search {
+    height: 100%;
+    display: flex;
+    align-items: center;
+    position: relative;
+    padding-right: 0;
+}
+
+.header-search .form-group, .header-search .form-control {
+    height: 100%;
+    margin: 0;
+    border: 0;
+    outline: none;
+    border-radius: 0;
+    box-shadow: 0 0 0 0;
+}
+
+.header-search .form-group {
+    border-left: 1px solid #f1f1f1;
+    position: relative;
+}
+
+.header-search .form-control:focus {
+    outline: none;
+    border-color: #fff;
+}
+
+.header-search .glyphicon {
+    cursor: pointer;
+    position: absolute;
+    right: 0;
+    font-size: 14px;
+    font-weight: 700;
+}
+
+.header-search .glyphicon:hover {
+    color: #ea833e;
+}
