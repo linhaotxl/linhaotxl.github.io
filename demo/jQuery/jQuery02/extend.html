@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>LinHao</title>
+    <link href="https://cdn.bootcss.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.bootcss.com/animate.css/3.5.0/animate.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="/css/index.css">
+    <link rel="stylesheet" href="/css/zTreeStyle.css">
+</head>
+<body>
+    
+
+    <div id="blog" class="PingFang_SC_Normal">
+        <div id="header">
+    <div class="header-container container">
+        <div class="collapse navbar-collapse row" id="bs-example-navbar-collapse-1">
+            <ul class="header-list nav navbar-nav col-md-6 col-sm-6 col-xs-6">
+                
+                    <li class="header-list-item"><a href="/">HOME</a></li>
+                
+                    <li class="header-list-item"><a href="/article">ARTICLE</a></li>
+                
+                    <li class="header-list-item"><a href="/about">ABOUT</a></li>
+                
+            </ul>
+            
+        </div>
+        
+        
+    </div>
+</div>
+        <div id="header_scroll" >
+    <div class="header_scroll_block"></div>
+</div>
+        
+        <div id="main" class="clear">
+            <div class="main-container container">
+                
+
+                
+
+    
+
+    <div id="title" class="title-post">
+        <h3 class="title-container">
+            <span class="title-text AGaramondPro_Italic_Bold">Straight Matter</span>
+        </h3>
+    </div>
+
+
+
+<li class="article-item">
+    <div class="article-container">
+        <img class="article-img img-responsive" src="" alt="">
+        <h3 class="article-title"></h3>
+        <div class="article-header">
+            <div class="article-info">
+                <i class="iconfont icon-xinxi"></i>
+                <span class="article-info-categories article-info-item">
+                    <span class="AGaramondPro_Bold article-info-title">Categories</span>
+                    
+                </span>
+                <span class="article-info-tags article-info-item">
+                    <span class="AGaramondPro_Bold tags-info-title">Tags</span>
+                    
+                </span>
+                <span class="article-info-item article-info-date AGaramondPro_Regular"><span>2018-04-24</span></span>
+                <span class="article-info-item article-info-portrait clear">
+                    <img src="https://awcdn1.ahmad.works/writing/wp-content/uploads/2015/05/Author.jpg" alt="">
+                    <span class="article-info-item article-info-username AGaramondPro_Bold">LinHao</span>
+                </span>
+                
+            </div>
+        </div>
+        
+            <div class="article-content article-text">
+                <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+<body>
+    <script src="../jquery-2.0.3.js"></script>
+    
+    <!-- 
+        示例一：封装插件
+     -->
+    <script>
+        console.log( '---------- 示例一开始  ----------' );
+    
+        (function ( window, $ ) {
+
+            function toolsA () {
+                console.log( '我是工具方法A' );
+            }
+
+            function toolsB () {
+                console.log( '我是工具方法B' );
+            }
+
+            $.extend({
+                toolsA: toolsA,
+                toolsB: toolsB
+            });
+
+            $.toolsA(); // 打印 我是工具方法A
+            $.toolsB(); // 打印 我是工具方法B
+
+        })( window, jQuery );
+    
+        console.log( '---------- 示例一结束  ----------' );
+    </script>
+
+    <!-- 
+        示例二：不提供布尔值的浅拷贝
+     -->
+     <script>
+            console.log( '---------- 示例二开始  ----------' );
+        
+            (function ( window, $ ) {
+    
+                let data = {
+                    names: [ 'IconMan', 'Nicholas' ],
+                    age: [ 24, 30 ]
+                };
+
+                /**
+                 *  由于没有提供深浅拷贝的布尔值，所以默认是浅拷贝，前面的三个 if 都不会进入，直接进入最后的 for 循环
+                 *      此时，target 就是第一个空对象的引用，因为这个空对象中不存在 name 和 age 属性，所以每次的 src 都是 undefined，而 copy 就是 IconMan 和 24
+                 *      最后，直接会进入 136 的 else if 中，在 target 中添加 name 和 age 属性，并将 copy 的值赋给这两个属性
+                 *  最终，返回 target，也就是第一个对象的引用
+                 */
+                let res = $.extend( {}, data );
+
+                console.log( res ); // { name: [ 'IconMan', 'Nicholas' ], age: [ 24, 30 ] }
+                /**
+                 *  因为浅拷贝，所以只是地址的拷贝，所以 res 中的 names 和 data 中的 names 指向的是同一块内存
+                 */
+                console.log( res.names === data.names );    // true
+
+            })( window, jQuery );
+        
+            console.log( '---------- 示例二结束  ----------' );
+        </script>
+
+    <!-- 
+        示例三：提供布尔值的浅拷贝
+     -->
+     <script>
+            console.log( '---------- 示例三开始  ----------' );
+        
+            (function ( window, $ ) {
+    
+                let data = {
+                    names: [ 'IconMan', 'Nicholas', 'Linh' ],
+                    age: [ 24, 30 ]
+                };
+
+                let source = {
+                    names: [ 'IconMan', 'Nicholas' ]
+                };
+
+                /**
+                 *  由于提供的第一个参数是布尔值，所以会进入 21 行的 if 中，将 deep 保存为这个布尔值，并且将 target 保存为第二个参数的引用（ 也就是 source 变量 ），最后将 i 设置为 2
+                 *  在 for 循环中，从第三个参数开始循环遍历，之后的操作就和前面一样
+                 */
+                let res = $.extend( false, source, data );
+
+                console.log( res ); // { name: [ 'IconMan', 'Nicholas', 'LinH' ], age: [ 24, 30 ] }
+                console.log( res.names === data.names );    // true
+
+            })( window, jQuery );
+        
+            console.log( '---------- 示例三结束  ----------' );
+        </script>
+
+    <!-- 
+        示例四：提供布尔值的深拷贝
+     -->
+     <script>
+            console.log( '---------- 示例四开始  ----------' );
+        
+            (function ( window, $ ) {
+    
+                let data = {
+                    names: [ 'IconMan', 'Nicholas', 'Linh' ],
+                    age: [ 24, 30 ]
+                };
+
+                let source = {
+                    names: [ 'IconMan', 'Nicholas' ]
+                };
+
+                /**
+                 *  由于第一个参数是布尔值，所以会进入 21 行的 if，将布尔值保存在 deep 中（ 为 true ），将 target 保存为第二个参数的引用（ 即 source 变量 ），再将 i 设置为 2
+                 *  然后直接进入 for 循环中，再使用 for..in 遍历 data 变量
+                 *      在循环遍历每个属性中，src 保存的是在目标对象中该属性的值的引用（ 此例中，遍历 names 时是 [ 'IconMan', 'Nicholas' ]， 遍历 age 时是 undefined ），copy 保存的是 data 中以该属性为值的引用（ 此例中，遍历 names 时是 [ 'IconMan', 'Nicholas', 'Linh' ]，遍历 age 时是 [ 24, 30 ] ）
+                 *      因为 deep 是 true，所以会判断 copy 是数组还是对象，此例中是对象，所以会进入 118 行的 else 中
+                 *          在 else 中，如果 src 存在并且是对象，就将 clone 保存为 src 的引用，然后递归调用 extend 方法（ 以遍历 names 为例 ）
+                 *              此时，递归调用 extend，并将 deep（ true ），clone（ [ 'IconMan', 'Nicholas' ] } ）和 copy（ [ 'IconMan', 'Nicholas', 'Linh' ] ）作为参数传递，然后将 extend 的返回值设置为目标对象中的 names 属性值
+                 *              在递归调用中，由于第一个参数是布尔值，所以会进入 21 行的 if，将布尔值（ true ）保存在内部 deep 中，再将内部 target 保存为外部 clone 的引用，再将内部循环变量 i 设置为 2
+                 *              在 for 循环中，从第三个参数开始遍历，在 for..in 中，遍历外层 copy，此时外层 copy 是一个数组，所以内部 copy 分别是 IconMan、Nicholas 和 LinH，虽然内部 deep 是 true，但是 copy 不再是数组或对象，所以不会进入 if 中，直接进入 else，将 copy 中的元素分别保存在内部 target 中（ 也就是外部的 clone 中 ）
+                 *              递归调用的 extend 结束后，会返回 target，也就是外层 clone 的引用，将其保存在外层 target（ source 变量 ）中的 names 属性，所以 target 中的 names 属性保存的就是 IconMan、Nicholas 和 LinH
+                 */
+                let res = $.extend( true, source, data );
+
+                console.log( res );     // { names: [ 'IconMan', 'Nicholas', 'LinH' ], age: [ 24, 30 ] }
+                console.log( res.names === data.names );    // false
+
+            })( window, jQuery );
+        
+            console.log( '---------- 示例四结束  ----------' );
+    </script>
+
+</body>
+</html>
+            </div>
+        
+        
+        
+    </div>
+
+    
+        
+    
+
+</li>
+                
+                
+            </div>
+        </div>
+        
+        
+
+        <script src="/js/jquery-2.0.3.min.js"></script>
+        <script src="/js/jquery.ztree.core.min.js"></script>
+        <script src="/js/index.js"></script>
+        <script src="/js/prism.js"></script>
+
+    </div>
+</body>
+</html>

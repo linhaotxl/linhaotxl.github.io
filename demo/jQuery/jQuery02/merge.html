@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" href="https://cdn.bootcss.com/bootstrap/3.1.0/css/bootstrap.min.css">
+    <title>merge</title>
+</head>
+<body>
+    <script src="https://cdn.bootcss.com/jquery/2.0.3/jquery.js"></script>
+    <!-- 
+        示例一：目标对象 为数组，源对象 为数组
+     -->
+    <script>
+        (function ( window, $ ) {
+            /**
+             *  此时，因为源对象是数组，进入 if
+             *      for 循环遍历源对象的长度，也就是 3 次，遍历过程中，将源对象的每个值都赋给目标对象以当前长度为属性的值，然后再将目标对象的长度 + 1
+             *      最后，手动修改目标对象的 lenght，也就是目标对象本来的长度再加上源对象的长度，本例中是 6
+             */
+            let src = [ 4, 5, 6 ];    // 源对象
+            let tar = [ 1, 2, 3 ];    // 目标对象
+            let res = $.merge( tar, src );
+            console.log( res );     // [ 1, 2, 3, 4, 5, 6 ]
+        })( window, jQuery );
+    </script>
+
+    <!-- 
+        示例二：目标对象 为数组，源对象 为类数组
+     -->
+     <script>
+         (function ( window, $ ) {
+            /**
+             *  此时，因为源对象是类数组，进入 if
+             *      for 循环遍历源对象的长度，也就是 3 次，遍历过程中，将源对象的每个值都赋给目标对象以当前长度为属性的值，然后再将目标对象的长度 + 1
+             *      最后，手动修改目标对象的 lenght，也就是目标对象本来的长度再加上源对象的长度，本例中是 6
+             */
+             let src = { 0: 'a', 1: 'b', 2: 'c', length: 3 };
+             let tar = [ 0, 1, 2 ];
+             let res = $.merge( tar, src );
+             console.log( res );    // [ 0, 1, 2, 'a', 'b', 'c' ]
+         })( window, jQuery );
+     </script>
+
+    <!-- 
+        特殊情况：示例二中会出现一种情况，就是 源对象没有 length 属性，也就是说源对象不再是 数组/类数组
+     -->
+    <script>
+        (function ( width, $ ) {
+            /**
+             *  此时，因为源对象不是类数组（ 没有 length 属性 ），进入 else 
+             *      通过 while 判断源对象的每个属性值是否是 undefined
+             *          如果不是，将每个值赋给目标对象中以当前长度为属性的值，然后再将长度 + 1
+             *      最后将目标对象的 length 属性设置为当前目标对象中的元素个数，也就是目标对象本来的长度再加上源对象的长度
+             *  这种情况和示例二的结果虽然一样，但是执行过程却并不一样
+             */
+            let src = { 0: 'a', 1: 'b', 2: 'c' };
+            let tar = [ 0, 1, 2 ];
+            let res = $.merge( tar, src );
+            console.log( res );    // [ 0, 1, 2, 'a', 'b', 'c' ]
+        })( window, jQuery );
+    </script>
+
+    <!-- 
+        示例四：源对象是 json 对象
+     -->
+    <script>
+        (function ( window, $ ) {
+            let src = { name: 'IconMan', age: 23 }; // 源对象
+            let tar = [ 0, 1, 2 ];                  // 目标对象
+            let res = $.merge( tar, src );
+            console.log( res );                     // [ 0, 1, 2 ]
+        })( window, jQuery );
+    </script>
+
+</body>
+</html>

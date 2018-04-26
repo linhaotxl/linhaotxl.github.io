@@ -1,0 +1,1087 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>LinHao</title>
+    <link href="https://cdn.bootcss.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.bootcss.com/animate.css/3.5.0/animate.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="/css/index.css">
+    <link rel="stylesheet" href="/css/zTreeStyle.css">
+</head>
+<body>
+    
+        <div id="sidebar_nav_mask" class="animated"></div>
+
+<div id="sidebar_nav" class="animated">
+    <div class="sidebar_nav_container">
+        <div class="nav_header">
+            <span class="nav_header_text AGaramondPro_Italic_Bold">Navigation</span>
+        </div>
+        <div class="nav_body">
+            <!-- <ul class="nav_lists">
+                <li class="list_item_copy list_item"></li>
+            </ul> -->
+            <div class="tree_nav clear">
+                <ul id="tree_nav" class="ztree"></ul>
+            </div>
+        </div>
+    </div>
+</div>
+    
+
+    <div id="blog" class="PingFang_SC_Normal">
+        <div id="header">
+    <div class="header-container container">
+        <div class="collapse navbar-collapse row" id="bs-example-navbar-collapse-1">
+            <ul class="header-list nav navbar-nav col-md-6 col-sm-6 col-xs-6">
+                
+                    <li class="header-list-item"><a href="/">HOME</a></li>
+                
+                    <li class="header-list-item"><a href="/article">ARTICLE</a></li>
+                
+                    <li class="header-list-item"><a href="/about">ABOUT</a></li>
+                
+            </ul>
+            
+        </div>
+        
+        
+            <div class="sidebar_nav_btn">
+                <i class="iconfont icon-menu2"></i>
+            </div>
+        
+    </div>
+</div>
+        <div id="header_scroll" >
+    <div class="header_scroll_block"></div>
+</div>
+        
+        <div id="main" class="clear">
+            <div class="main-container container">
+                
+
+                
+
+    
+
+    <div id="title" class="title-post">
+        <h3 class="title-container">
+            <span class="title-text AGaramondPro_Italic_Bold">Straight Matter</span>
+        </h3>
+    </div>
+
+
+
+<li class="article-item">
+    <div class="article-container">
+        <img class="article-img img-responsive" src="" alt="">
+        <h3 class="article-title">jQuery源码分析（三）—— 回调对象</h3>
+        <div class="article-header">
+            <div class="article-info">
+                <i class="iconfont icon-xinxi"></i>
+                <span class="article-info-categories article-info-item">
+                    <span class="AGaramondPro_Bold article-info-title">Categories</span>
+                    <a class="category-link" href="/categories/jQuery/">jQuery源码分析</a>
+                </span>
+                <span class="article-info-tags article-info-item">
+                    <span class="AGaramondPro_Bold tags-info-title">Tags</span>
+                    
+                </span>
+                <span class="article-info-item article-info-date AGaramondPro_Regular"><span>2018-04-12</span></span>
+                <span class="article-info-item article-info-portrait clear">
+                    <img src="https://awcdn1.ahmad.works/writing/wp-content/uploads/2015/05/Author.jpg" alt="">
+                    <span class="article-info-item article-info-username AGaramondPro_Bold">LinHao</span>
+                </span>
+                
+            </div>
+        </div>
+        
+            <div class="article-content article-text">
+                <h2 id="jQuery-Callbacks"><a href="#jQuery-Callbacks" class="headerlink" title="jQuery.Callbacks"></a>jQuery.Callbacks</h2><p>回调对象是 <code>jQuery</code> 中较核心的一个部分，因为之后的延迟对象，<code>AJAX</code> 都是基于回调对象而建设的。<br>回调对象顾名思义，是管理回调方法的对象，可以随时添加、删除、触发回调方法，并且还提供许多有用的功能。其实思路很简单，回调对象中存在一个数组，每次添加回调都会向这个数组中添加，当触发回调时，就会遍历这个数组，执行每个回调。</p>
+<h3 id="Callbacks-的参数"><a href="#Callbacks-的参数" class="headerlink" title="Callbacks 的参数"></a>Callbacks 的参数</h3><p>通常，我们调用 <code>$.Callbacks</code> 方法来获得一个回调对象，即 <code>$.Callbakcs</code> 方法的返回值就是回调对象<br><code>$.Callbacks</code> 方法支持 4 个参数，且都是字符串的形式，若要提供多个参数，以空格分隔，这 4 个参数分别是：</p>
+<ol>
+<li><code>once</code>：若提供该参数，则当前回调对象中的所有回调只被执行一次，如果之后再次触发也没有用。</li>
+<li><code>memory</code>：若提供该参数，</li>
+<li><code>unique</code>：若提供该参数，则会确保回调对象中的回调都是唯一的，不会重复出现。</li>
+<li><code>stopOnFalse</code>：若提供该参数，则在触发回调对象中的每个回调方法时，如果其中一个回调的返回值是 <code>false</code>，则停止触发，之后的回调方法也不会执行。 </li>
+</ol>
+<p>在回调对象之前，定义了一个普通的对象 <code>optionsCache</code>。这个对象用于缓存在调用 <code>$.Callbacks</code> 时传递的参数。<br>例如，在调用 <code>$.Callbackss</code> 时传递的参数是 <code>once memory</code>，那么该对象的内容就像这样：</p>
+<pre>
+<code class="language-javascript">
+{
+    'once memory': {
+        once: true,
+        memory: true
+    }
+}
+</code>
+</pre>  
+
+<p>这样做是要将参数缓存，方便之后用到。<br>创建该对象的函数如下：   </p>
+<pre>
+<code class="language-javascript">
+/**
+ *  保存缓存参数的对象
+ */
+var optionsCache = {};
+
+/**
+ *  创建缓存对象
+ *  @param  { String }    options    调用 $.Callbacks 时传递的参数
+ *  @return { Object }               以 options 为属性的对象 
+ */
+function createOptions( options ) {
+    /**
+     *  1.  在缓存对象中创建一个以 options 为键的属性，并赋值一个新的对象给该属性的值，并保存这个对象的引用到 object
+     */
+    var object = optionsCache[ options ] = {};
+    /**
+     *  2.  通过 core_rnotwhite 正则将 options 中除空格以外的其他字符进行匹配，如果有提供非空参数，那么这个结果是一个数组，然后遍历这个数组
+     *      将遍历到的元素设置为 object 的属性值，并且将该属性值设置为 true
+     *      如果 options 是 'once memory onStopFalse'，那么匹配后的结果数组就是 [ 'once', 'memory', 'onStopFalse' ]
+     */
+    jQuery.each( options.match( core_rnotwhite ) || [], function( _, flag ) {
+        object[ flag ] = true;
+    });
+
+    /**
+     *  3.  返回 object 的引用
+     */
+    return object;
+}
+<code>
+</code></code></pre>  
+
+<h3 id="Callbacks-源码分析"><a href="#Callbacks-源码分析" class="headerlink" title="Callbacks 源码分析"></a>Callbacks 源码分析</h3><p><code>jQuery.Callbacks</code> 返回的是一个对象（ 这个对象在源码中是 <code>self</code> ），该对象中包含很多操作回调对象的方法，例如：</p>
+<ol>
+<li><code>add</code>：向回调对象中添加一个回调方法</li>
+<li><code>remove</code>：从回调对象中移除一个回调方法</li>
+<li><code>has</code>：判断一个回调方法是否存在于回调对象中</li>
+<li><code>empty</code>：清空回调对象，移除所有的回调方法</li>
+<li><code>disable</code>：禁用回调对象</li>
+<li><code>disbaled</code>：判断回调对象是否被禁用</li>
+<li><code>lock</code>：锁定回调对象</li>
+<li><code>locked</code>：判断回调对象是否被锁定</li>
+<li><code>fireWith</code>：设置回调方法的作用域并执行所有的回调方法</li>
+<li><code>fire</code>：执行回调对象中所有的回调方法</li>
+<li><p><code>fired</code>：判断回调对象是否执行了所有的回调方法<br>这些方法后面会依次解释，先来看看 <code>Callbacks</code> 内部定义的变量和方法</p>
+<pre class="line-numbers">
+<code class="language-javascript">
+jQuery.Callbacks = function( options ) {  
+
+/**
+ *  1.  先检查 options 是否是字符串
+ *      如果是的话，先从缓存中读取数据，如果缓存没有，则调用 createOptions 方法先在缓存中创建数据，然后保存创建好的对象的引用
+ *      如果不是的话，即没有传参数，或者不是字符串
+ */
+options = typeof options === "string" 
+    ? ( optionsCache[ options ] || createOptions( options ) ) 
+    : jQuery.extend( {}, options );
+
+/**
+ *  2.  定义一系列的变量和方法，供内部使用
+ */
+var // Last fire value (for non-forgettable lists)
+    memory,
+    // 是否执行过 list 队列中所有回调的标识；最开始为 undefined，只有执行了一次内部的 fire 方法后，该值为被置为 true；内部的 fire 方法定义在下面
+    fired,
+    // list 队列中的回调正在被执行时的标识，如果有回调正在被执行，那么该值为 true，否则为 false
+    firing,
+    // First callback to fire (used internally by add and fireWith)
+    firingStart,
+    // list 队列的长度，即所有回调的个数
+    firingLength,
+    // Index of currently firing callback (modified by remove if needed)
+    firingIndex,
+    // 保存回调的队列，这就是前面说过的回调对象中保存所有回调的数组，默认是一个空数组
+    list = [],
+    // 如果 $.Callbacks 中传递了 once 参数，那么该值就是 false；如果没有提供 once，那么该是就是空数组
+    stack = !options.once && [],
+
+    /**
+     *  内部的 fire 方法，用于执行回调队列中所有的回调，之后会详解
+     */
+    fire = function( data ) {
+    },
+
+    self = {
+        /**
+         *  这里定义上面说到的 11 个方法
+         */
+    };
+
+/**
+ *  3.  返回 self 对象，供外部使用
+ */
+return self;
+}
+</code>
+</pre>  
+
+</li>
+</ol>
+<p>上面的一些变量和方法暂时不理解没关系，接下来会依次接触到，并且明白每一个的作用是什么  </p>
+<h3 id="jQuery-Callbacks-fire"><a href="#jQuery-Callbacks-fire" class="headerlink" title="jQuery.Callbacks.fire"></a>jQuery.Callbacks.fire</h3><p>这个方法对外提供，用于遍历回调队列，设置所有回调中的作用域为 <code>self</code> 对象，还可以将所传递的参数依次传递到每个回调方法中，最终执行回调队列中所有的回调</p>
+<pre>
+<code class="language-javascript">
+/**
+ *  执行所有的回调，并将每个回调的作用域设置为 self 对象
+ *  @oaram  { Object }    参数列表，提供的所有参数都会被每个回调接受
+ *  @return { Object }    self 对象，以供链式调用
+ */
+fire: function() {
+    /**
+     *  1.  内部调用 jQuery.Callbacks.fireWith 方法，这个方法和 jQuery.Callbacks.fire 一样，只不过 fireWith 可以指定每个回调的作用域，而 fire 将作用域设置为默认的 this，也就是 self 对象
+     */
+    self.fireWith( this, arguments );
+
+    /**
+     *  2.  返回 self 对象，以供链式调用
+     */
+    return this;
+}
+</code>
+</pre>  
+
+<h3 id="jQuery-Callbacks-fireWith"><a href="#jQuery-Callbacks-fireWith" class="headerlink" title="jQuery.Callbacks.fireWith"></a>jQuery.Callbacks.fireWith</h3><p>这个方法对外提供，用于遍历回调队列，设置回调中的作用域为指定的对象，还可以将第二个参数传递到每个回调方法中，最终执行回调队列中所有的回调</p>
+<pre class="line-numbers">
+<code class="language-javascript">
+/**
+ *  执行每个回调，并设置回调的作用域
+ *  @param  { Object }    context    指定回调的作用域
+ *  @param  { Object }    args       参数对象，在每个回调中都会接受到    
+ */
+fireWith: function( context, args ) {
+    /**
+     *  1.  判断 list 是否存在
+     *      如果存在，再判断 fired 的值，如果是第一次执行 jQuery.Callbacks.fireWith 或 jQuery.Callbacks.fire 方法的话，那么 fired 就是 undefined，进入 if；注：fired 只有在内部的 fire 方法内才会被修改，且修改后不会再改变，也就是说，只有调用了内部的 fire 后，该值被永久设置为 true
+     *      如果是第二次或更多次执行 fire 方法的话，此时 fired 已经被置为 true 了，所以此时要判断 stack 的值了        
+     *          如果在 $.Callbacks 中传递了 once 参数，那么 stack 就是 false，此时不进入 if，也就无法执行每个回调了，保证所有的回调只执行一次
+     *          如果在 $.Callbacks 中没传递 once 参数，那么 stack 就是数组，此时进入 if，再一次执行每一个回调
+     */
+    if ( list && ( !fired || stack ) ) {
+        //  1.1  如果提供了 args 参数，就保存其引用；如果没有传递，就保存一个空数组的引用
+        args = args || [];
+        /**
+         *  1.2  将作用域和参数对象合为一个新的数组（ 第1个元素为作用域，第2个元素为参数对象 ）
+         */
+        args = [ context, args.slice ? args.slice() : args ];
+
+        /**
+         *  1.3  判断 firing 的值是否为 true
+         *       如果没有在某个回调方法中调用 $.Callbacks.fire 或者 $.Callbacks.fireWith 方法，那么该值就是 false
+         */
+        if ( firing ) {
+            /**
+             *  如果能进入这个 if 就说明，说明在某个回调内又调用了 jQuery.Callbacks.fireWith 或者 jQuery.Callbacks.fire 方法，因为在执行所有的回调时，firing 是 true
+             *  然后将合并后数组 push 到 stack 中，并不调用内部的 fire 方法执行每个回调
+             */
+            stack.push( args );
+        } else {
+            /**
+             *  如果能进入这个 else 就说明，在回调方法中没有调用 jQuery.Callbacks.fireWith 或者 jQuery.Callbacks.fire 方法，则直接调用内的 fire 方法，并将合并后的数组 args 当做参数传递
+             */
+            fire( args );
+        }
+    }
+
+    /**
+     *  2.  返回 self 对象，以供链式调用
+     */
+    return this;
+}
+</code>
+</pre>  
+
+<h3 id="jQuery-Callbacks-内部的-fire-方法"><a href="#jQuery-Callbacks-内部的-fire-方法" class="headerlink" title="jQuery.Callbacks 内部的 fire 方法"></a>jQuery.Callbacks 内部的 fire 方法</h3><pre class="line-numbers">
+<code class="language-javascript">
+/**
+ *  执行内部的所有回调
+ *  @param  { Array }    data    在 jQuery.Callbacks.fireWith 中合并后的数组，包含两个元素，第一个是回调的作用域对象，第二个是每个回调接受的参数对象
+ */
+fire = function( data ) {
+    /**
+     *  1.  判断调用 $.Callbacks 时是否提供了 memory 参数
+     *      如果提供了，那么将 memory 保存为合并后数组的引用
+     *      如果没提供，就是 false
+     */
+    memory = options.memory && data;
+
+    //  2.  将 fired 永久置为 true，代表已经执行过所有的回调方法了
+    fired = true;
+
+    /**
+     *  3.  设置遍历回调队列的循环变量
+     *      如果 firingStart 不为 0，就设置为 firingStart 的值
+     *      否则设置为 0
+     */
+    firingIndex = firingStart || 0;
+
+    //  4.  重置 firingStart 的值为 0
+    firingStart = 0;
+
+    //  5.  保存当前队列的长度
+    firingLength = list.length;
+
+    //  6.  将 firing 置为 true，代表正在执行每个回调
+    firing = true;
+
+    /**
+     *  7.  遍历回调队列并执行每一个回调方法
+     *          将每个回调方法的作用域设置为 data[0]，也就是指定的作用域（ 如果是调用 $.Callbacks.fire 的话，那么作用域就是 self 对象，如果是调用 $.Callbacks.fireWith 的话，作用域就是指定的对象，即第一个参数 ）
+     *          将 data[1]，也就是指定的参数传入每个回调（ 如果是调用 $.Callbacks.fire 的话，那么就是将所有参数传入到回调中；如果是调用 $.Callbacks.fireWith 的话，那么就是将第二个参数传入到回调中 ）
+     * 
+     *      再判断每个回调的返回值是否是 false
+     *          如果是 false 的话，再判断调用 $.Callbacks 时是否传递了 stopOnFalse 参数
+     *              如果传递了，那么直接退出循环，不再继续执行之后的回调，并将 memory 设置为 false
+     *              如果没传递，再进行下一个回调的执行
+     *          如果是非 false 的话，那么就进行下一个回调的执行
+     */
+    for ( ; list && firingIndex < firingLength; firingIndex++ ) {
+        if ( list[ firingIndex ].apply( data[ 0 ], data[ 1 ] ) === false && options.stopOnFalse ) {
+            memory = false; // To prevent further calls using add
+            break;
+        }
+    }
+
+    //  8.  将 firing 置为 false，代表已经结束了所有回调的执行
+    firing = false;
+
+    /**
+     *  9.  判断 list 是否存在
+     *      接下来的操作会分为三种情况（ 主要是针对 once 和 memory 这两个参数 ）
+     *          没有提供 once 参数，不论有没有 memory 参数
+     *          提供了 once 参数，并且也提供了 momery 参数
+     *          仅仅提供了 once 参数
+     */
+    if ( list ) {
+        /**
+         *  9.1 如果存在 stack（ 不提供 once 参数 ）
+         *      在调用 $.Callbacks 时，只要没提供 once 参数，就会进入这个 if
+         */
+        if ( stack ) {
+            // 1.9.1.1 判断 stack 中是否含有元素
+            if ( stack.length ) {
+                /**
+                 *  如果能进入到这个 if 就说明在某一个回调中调用 fire 方法
+                 *  此时，stack 中存储的是在回调中调用 fire 传递的参数以及调用者组成的数组
+                 *  此时，在通过内部方法 fire 来遍历当前的合并数组，以此用当前合并的数组来执行 list 队列中的每个方法
+                 */
+                fire( stack.shift() );
+            }
+        } 
+        /**
+         *  9.2 如果不存在 stack（ 提供了 once 参数 ）并且提供了 memory 参数，就意味着只有第一次的 $.Callbacks.fire 或者 $.Callbacks.fireWith 是有效的，并且之后的 $.Callbacks.add 也有效
+         *      那么在执行 $.Callbacks.fire 或者 $.Callbacks.fireWith 方法时，就会进入这个 if，此时将 list 队列清空，所以之后的 $.Callbacks.fire 或者 $.Callbacks.fireWith 方法就不会有效了，遍历的只是一个空数组
+         */
+        else if ( memory ) {
+            list = [];
+        } 
+        /**
+         *  9.3 如果不存在 stack（ 提供了 once 参数 ）并且不提供 memory，那么就意味着只有调用第一次调用 $.Callbacks.fire 或者 $.Callbacks.fireWith 方法是有效的，之后再调用是不会再执行每个回调的
+         *          此时就会进入这个 if，调用 disable 方法，禁止当前回调对象，禁止后这个回调对象就什么也做不了了，达到了 once 参数的目的
+         *          这个 else 只有在调用 $.Callbacks 时，只传递 once 参数才会进入
+         */
+        else {
+            self.disable();
+        }
+    }
+}
+</code>
+</pre>  
+
+<h4 id="示例一：不提供任何参数"><a href="#示例一：不提供任何参数" class="headerlink" title="示例一：不提供任何参数"></a>示例一：不提供任何参数</h4><pre class="line-numbers">
+<code class="language-javascript">
+/**
+ *  这句代码执行结束后，cb 就是 self 对象的引用，即回调对象
+ *  此时 cb 中的回调队列还是一个空数组
+ */
+let cb = $.Callbacks();
+
+/**
+ *  定义回调函数
+ */
+function func1 () {
+    console.log( 'func1 回调执行开始' );
+    console.log( this === cb );     // true
+    console.log( 'func1 回调执行结束' );
+}
+
+/**
+ *  先不用考虑 add 方法具体做了什么，总之这句代码执行结束后，cb 的回调队列中含有一个元素，即 func1
+ */
+cb.add( func1 );
+
+/**
+ *  这句代码执行时，cb 的回调队列中含有一个元素，即 func1
+ *  此时，fire 方法内部实际调用的是 fireWith，并将 this（ 也就是 self 对象 ）和没有参数的 arguments 对象传了过去
+ *      在 fireWith 方法中， args 保存的是没有参数的 arguments 对象，然后将 self 对象和这个 arguments 对象合并为一个新的数组
+ *      之后，又调用了内部的 fire 方法，将合并后的数组传了过去
+ *          因为没有提供 memory 参数，所以 memory 变量的值是 false；之后开始遍历回调队列，并将每个回调的作用域设置为 self，并将没有参数的 arguments 对象通过 apply 方法传过去
+ *          所以在 func1 的回调中，this 就是 cb，所以打印是 true，并且没有收到任何参数
+ *          在遍历完所有的回调之后，因为没有提供任何参数，所以 stack 是一个空数组，会进入第一个 if，但是由于 stack 数组的长度是 0，所以什么也不会做
+ */
+cb.fire();
+</code>
+</pre>  
+
+<p>将上面的代码做如下的修改  </p>
+<pre class="line-numbers">
+<code class="language-javascript">
+let cb = $.Callbacks();
+
+/**
+ *  定义回调函数
+ */
+function func1 ( a, b, c ) {
+    console.log( 'func1 回调执行开始' );
+    console.log( a, b, c );     // '1' '2' { name: "IconMan" }
+    console.log( 'func1 回调执行结束' );
+}
+
+cb.add( func1 );
+
+/**
+ *  如果执行下面的代码，则 fire 方法内部调用 fireWith 时，除了传第一个参数 self 对象外，还会将包含 '1', '2', { name: 'IconMan' } 三个属性值的 arguments 对象传过去
+ *      在 fireWith 中，将 self 对象和带有三个属性值的 arguments 对象合并为一个新的数组，并传入内部的 fire 方法
+ *      在内部的 fire 中，在遍历回调队列中，不仅会修改回调的作用域为 self 对象，还会将参数（ 包含三个属性值的 arguments 对象 ）通过 apply 的方法传给每个回调
+ *      所以在 func1 中，会接受三个参数，分别是 '1'、'2' 和 { name: 'IconMan' }
+ */
+cb.fire( '1', '2', { name: 'IconMan' } );
+</code>
+</pre>    
+
+<p>再将上面的代码做如下的修改  </p>
+<pre class="line-numbers">
+<code class="language-javascript">
+let cb = $.Callbacks();
+
+/**
+ *  定义回调函数
+ */
+function func1 ( a, b, c ) {
+    console.log( 'func1 回调执行开始' );
+    console.log( a, b, c );     // '1' '2' { name: "IconMan" }
+    console.log( 'func1 回调执行结束' );
+}
+
+cb.add( func1 );
+
+cb.fire( '1', '2', { name: 'IconMan' } );  // func1 回调被执行
+
+/**
+ *  此时再调用一次 $.Callbacks.fire 方法时，内部还是调用 $.Callbacks.fireWith 方法
+ *      此时回调队列 list 还是存在的，但是 fired 已经被设置为 false 了，所以要判断 satck 的值
+ *      由于调用 $.Callbacks 时没有传递 once 参数，所以 stack 是一个空数组，所以会进入 if
+ *      之后的操作和上面一样，还是会再次遍历回调队列，所以 func1 再次被执行
+ */
+cb.fire( '1', '2', { name: 'IconMan' } );  // func1 回调再次被执行
+</code>
+</pre>    
+
+<h4 id="示例二：提供-once-参数"><a href="#示例二：提供-once-参数" class="headerlink" title="示例二：提供 once 参数"></a>示例二：提供 once 参数</h4><pre class="line-numbers">
+<code class="language-javascript">
+/**
+ *  定义回调对象，并且提供 once 参数，此时 stack 就是 false 
+ */
+let cb = $.Callbacks( 'once' );
+
+/**
+ *  定义回调方法 
+ */
+function func1 () {
+    console.log( '回调方法开始' );
+    console.log( '回调方法结束' );
+}
+
+/**
+ *  添加回调方法 func1 
+ */
+cb.add( func1 );
+
+/**
+ *  调用 fire 时，内部会调用 fireWith 方法，和前面一样，还是调用内部的 fire 方法
+ *      在内部的 fire 方法中，遍历完所有的回调之后，因为提供了 once 参数（ 所以 stack 是 false ）并且没有提供 memory 参数（ 所以 memory 是 false ）
+ *      所以会进入最后的 else 中，将当前的回调对象禁用，禁用会将回调队列 list 设置为 undefined
+ */
+cb.fire();  // 回调 func1 被执行
+
+/**
+ *  由于之前已经将回调对象禁用（ 回调队列 list 设置为 undefined ），所以之后再调用 $.Callbacks.fire 或者 $.Callbacks.fireWith 方法时，无法进入 if，所以也就无法调用内部的 fire 方法进行遍历
+ *  once 参数就保证了只有第一次的 $.Callbacks.fire 或者 $.Callbacks.fireWith 方法是有效的
+ */
+cb.fire();  // 回调 func1 不被执行   
+cb.fire();  // 回调 func1 不被执行  
+</code>
+</pre>
+
+<h4 id="示例三：在回调中再次调用-Callbacks-fire-或者-Callacks-fireWith-方法"><a href="#示例三：在回调中再次调用-Callbacks-fire-或者-Callacks-fireWith-方法" class="headerlink" title="示例三：在回调中再次调用 $.Callbacks.fire 或者 $.Callacks.fireWith 方法"></a>示例三：在回调中再次调用 $.Callbacks.fire 或者 $.Callacks.fireWith 方法</h4><pre class="line-numbers">
+<code class="language-javascript">
+let cb = $.Callbacks();
+
+/** 
+ *  是否可以在回调中调用 $.Callbacks.fire 或者 $.Callbacks.fireWith 方法的标识
+ *  一旦在回调中调用了 $.Callbacks.fire 或者 $.Callbacks.fireWith 方法，就会将其置为 true，如果不这样做，就会造成死循环
+ */
+let isCalled = false;
+
+/**
+ *  回调方法
+ */
+function func1 ( args ) {
+    /**
+     *  第二步
+     *  在回调中调用 $.Callbacks.fire（ 调用 $.Callbacks.fireWith 方法也是一样的 ）
+     *      内部还是调用 $.Callbacks.fireWith 方法，此时，list 队列存在，并且 fired 已经被置为了 true，所以要判断 stack
+     *          由于在调用 $.Callbacks 时没有提供 once 参数，所以 stack 是一个数组，进入 if，将作用域对象和参数合并到数组中
+     *          此时，由于是执行回调方法，所以 firing 是 true，所以进入 if，将合并后的数组 push 到 stack 数组中，然后该函数执行结束。注意：此时并没有调用内部的 fire 方法来遍历
+     *          因为此时正在遍历执行每个回调，所以不会在此时再次遍历执行每个回调，而是将回调所需要的参数保存起来，之后再遍历
+     */
+    console.log( '---------- 回调 func1 开始 ----------' );
+    console.log( args )
+    if ( !isCalled ) {
+        cb.fire( 'func1 中调用 fire 方法' );
+        isCalled = !isCalled;
+    }
+    console.log( '----------回调 func1 结束 ----------' );
+}
+
+cb.add( func1 );
+
+/**
+ *  第一步 
+ *  这一步的调用和之前一样，直到调用内部的 fire 方法遍历回调队列时，此时开始执行 func1 回调
+ */
+/**
+ *  第三步
+ *  当遍历完所有的回调后，此时 list 仍然存在，并且此时 stack 已经是含有一个元素的数组了（ 这个元素就是在 func1 回调中调用 $.Callbacks.fire 方法时，有作用域对和参数对象组成的数组 ）
+ *      此时，将 stack 的数组从开始弹出，将弹出的元素传入到内部的 fire 中，在此调用内部的 fire 方法
+ *          和之前一样，又会重新遍历一次回调队列，执行其中的每个回调，并设置作用域和参数，所以，func1 回调又会被执行一次
+ *          遍历结束后，list 队列仍然存在，但此时 stack 已经没有元素了，所以什么也做，退出函数
+ *      调用完内部的 fire 方法后，退出内部的 fire 方法
+ */
+cb.fire( '外部调用 fire 方法' );
+
+// Result
+// ---------- 回调 func1 开始 ----------
+// 外部调用 fire 方法
+// ----------回调 func1 结束 ----------
+// ---------- 回调 func1 开始 ----------
+// func1 中调用 fire 方法
+// ----------回调 func1 结束 ----------
+</code>
+</pre>   
+
+<h4 id="示例四：提供-stopOnFalse-参数"><a href="#示例四：提供-stopOnFalse-参数" class="headerlink" title="示例四：提供 stopOnFalse 参数"></a>示例四：提供 stopOnFalse 参数</h4><pre class="line-numbers">
+<code class="language-javascript">
+// 获得回调对象
+let cb = $.Callbacks( 'stopOnFalse' );
+
+/**
+ *  回调1 
+ */
+function func1 ( value ) {
+    console.log( 'func1 回调执行开始' );
+    console.log( value );
+    console.log( 'func1 回调执行结束' );
+    return false;
+}
+
+/**
+ *  回调2
+ */
+function func2 () {
+    console.log( 'func2 回调执行开始' );
+    console.log( value );
+    console.log( 'func2 回调执行结束' );
+}
+
+// 添加回调
+cb.add( func1, func2 );
+
+/**
+ *  和之前一样，最终调用的是内部的 fire 方法，并且该方法接受的参数是合并后的数组，第一个元素是 self 对象，第二个元素是含有一个参数的 arguments 对象
+ *      此时，回调队列中有两个回调，在执行第一个回调 func1 的时候，打印出 1，执行完后判断其返回值是否等于 fasle，条件成立，再判断调用 $.Callbacks 时是否传递了 stopOnceFalse 参数，条件成立，所以直接 break 掉 for 循环，导致之后的所有回调都无法执行
+ */
+cb.fire( '1' );
+
+/**
+ *  再调用一次也一样，不同的是在 fireWith 方法中，fired 已经被设置为 true，所以要判断 stack 是否存在，因为没有提供 once 参数，所以 stack 是一个数组，再次进入 if
+ *  调用内部的 fire 遍历回调队列，当执行到第一个回调时，会打印 2，执行完后判断其返回值是否等于 fasle，条件成立，再判断调用 $.Callbacks 时
+ *      是否传递了 stopOnceFalse 参数，条件成立，所以直接 break 掉 for 循环，导致之后的所有回调都无法执行
+*/
+cb.fire( '2' );
+</code>
+</pre>
+
+<h3 id="jQuery-Callbacks-add"><a href="#jQuery-Callbacks-add" class="headerlink" title="jQuery.Callbacks.add"></a>jQuery.Callbacks.add</h3><p>这个方法用于向回调对象中的队列添加一个或多个回调方法，参数可以是函数列表，数组函数，类数组函数</p>
+<pre class="line-numbers">
+<code class="language-javascript">
+/**
+ *  向当前的回调对象中添加一个或多个回调方法
+ *  @param  { Function | Array | Object }   向回调队列中添加的回调，参数可以是回调函数列表，或者包含回调的数组/类数组
+ */
+add: function() {
+    // 1. 先判断队列是否存在，如果存在进入 if；如果不存在，直接返回 this，也就是 self 对象
+    if ( list ) {
+        //     1.1    获取当前队列的长度
+        var start = list.length;
+        /**
+         *  1.2 定义一个内部的 add 方法，用于将参数中的所有回调添加到回调队列中，定义好后立即执行这个函数，并将 arguments 当做实参传入    
+         *      之所以要定义一个内部的 add 方法，是因为参数除了回调函数列表之外，还有可能是包含回调函数的数组/类数组，这种情况的话会递归调用 add 方法，将数组/类数组中的所有回调都添加到回调队里中去
+         *          通过 $.each 方法，遍历每一个参数
+         *          如果当前参数是一个函数的话，首先判断在调用 $.Callbacks 时是否传递了 unique 参数
+         *              如果没有传递，则直接将当前的回调函数 push 到队列中
+         *              如果传递了，再通过 $.Callbacks.has 方法判断当前队列里是否已经存在该回调，如果存在，则不再进行 push；如果不存在，则进行 push
+         *              这就说明，如果提供了 unique 参数，那么回调队列中的所有回调都是唯一的，不会重复出现
+         *          如果当前参数不是一个函数，则再判断是否含有 length 属性并且不是一个字符串，此时就会是一个数组/类数组，而之所以还要判断不是字符串，是因为除了数组/类数组外，字符串也会有 length 属性，所以要将字符串的情况去除
+         *              此时再递归调用 add 方法，并将该数组作为参数传递
+         * 
+         *      综上，jQuery.Callbacks.add 的参数可能有以下几种
+         *      add( func1 )                                一个回调函数
+         *      add( func1, func2 )                         多个回调函数列表
+         *      add( [ func1, func2 ] )                     包含回调的数组
+         *      add( { 0: func1, 1: func2, length: 2 } )    包含回调的类数组
+         */
+        (function add( args ) {
+            jQuery.each( args, function( _, arg ) {
+                var type = jQuery.type( arg );
+                if ( type === "function" ) {
+                    if ( !options.unique || !self.has( arg ) ) {
+                        list.push( arg );
+                    }
+                } else if ( arg && arg.length && type !== "string" ) {
+                    add( arg );
+                }
+            });
+        })( arguments );
+
+        /**
+         *  1.3  判断 firing 是否为 true，如果为 true，就说明当前正在执行回调队列中的回调
+         *       之所以要这样判断，是因为可能在某个回调中，又使用了 jQuery.Callbacks.add 方法
+         */
+        if ( firing ) {
+            /**
+             *  此时，在某个回调内执行 jQuery.Callbacks.add 方法后，又向回调队列中添加了一个或多个回调。
+             *  修改 firingLength 的值为最新的长度（ 包含新添加回调后的长度 ）
+             *  之前说过，遍历回调队列执行所有的回调方法是通过内部的 fire 方法执行的，这个方法在执行的时候，会根据 firingLength 的值来遍历，现在，firingLength 的值比原来最少多了 1，所以内部的 fire 方法在循环遍历的时候，又会多遍历1次或多次，保证了在回调中使用 jQuery.Callbacks.add 方法添加的回调，也会被执行
+             */
+            firingLength = list.length;
+        } 
+        /**
+         *  1.4 如果在回调内没有执行 jQuery.Callbacks.add 方法，那就判断 memory 是否存在
+         */
+        else if ( memory ) {
+            /**
+             *  如果能进入这个 if，就代表在调用 $.Callbacks 时传递了 memory 参数，并且在调用了 $.Callbacks.fire 或者 $.Callbacks.fireWith 之后又调用了 $.Callbacks.add 方法，而此时 memory 存储的就是合并后的数组
+             *  此时，将添加新回调之前的队列长度保存在 firingStart 中，然后再调用内部的 fire 方法
+             *      在内部的 fire 方法中，因为 firingStart 的值存在，所以将其赋值给 firingIndex，而在 for 循环遍历回调队列时，就会从 firingIndex 的索引（ 也就是在添加新回调之前的索引 ）开始，所以直接调用的是添加的新回调方法，而之前已经存在的则不会再调用
+             */
+            firingStart = start;
+            fire( memory );
+        }
+    }
+
+    /**
+     *  2.  返回 this（ 即 self 对象 ），以供链式调用
+     */
+    return this;
+}
+</code>
+</pre>   
+
+<h4 id="示例一：提供-memory-参数"><a href="#示例一：提供-memory-参数" class="headerlink" title="示例一：提供 memory 参数"></a>示例一：提供 memory 参数</h4><pre class="line-numbers">
+<code class="language-javascript">
+// 获取回调对象
+const cb = $.Callbacks( 'memory' );
+
+/**
+ *  定义回调
+ */
+function func1 ( value ) {
+    console.log( 'func1 被调用开始' );
+    console.log( 'func1 的参数是: ' + value );
+    console.log( 'func1 被调用结束' );
+}
+
+function func2 ( value ) {
+    console.log( 'func2 被调用开始' );
+    console.log( 'func2 的参数是: ' + value );
+    console.log( 'func2 被调用结束' );
+}
+
+cb.add( func1 );
+
+/**
+ *  此时，在内部的 fire 方法中，func1 回调会被执行，并且此时没有提供 once 参数，所以会进入 66 行的 if 中，并且什么也不做
+ *      并且由于执行了内部的 fire 方法，又提供了 memory 参数，所以内部 fire 方法中的 memory 变量保存的就是合并后的数组，此时也就是 self 对象和含有一个属性（ 数值1 ）的 arguments 对象
+ */
+cb.fire( 1 ); // 打印 func1 的参数是 1
+
+/**
+ *  在 2s 后，再一次执行 add 方法，并将 func2 回调添加到了回调队列中
+ *      在回调添加成功后，先判断调用 $.Callbacks.add 方法是否处于某个回调中，此时 firing 是 false，所以不会进入 if，而 memory 变量又存在，所以会进入 else
+ *      此时，将添加回调之前的长度赋给 firingStart（ 此时是 1 ），然后再调用内部的 fire 方法，并将 memory 作为参数传递
+ *          在内部的 fire 方法中，firingIndex 的值也变为了 1，而此时通过 for 循环遍历回调队列时，是从 1 开始的，而此时回调队列的长度已经变为 2 了，所以会执行新添加的回调方法，而旧的回调则不会执行
+ */
+setTimeout( _ => {
+    cb.add( func2 );  // 打印 func2 的参数是 1
+}, 2000);
+</code>
+</pre>  
+
+<h4 id="示例二：同时提供-once-和-memory-参数"><a href="#示例二：同时提供-once-和-memory-参数" class="headerlink" title="示例二：同时提供 once 和 memory 参数"></a>示例二：同时提供 once 和 memory 参数</h4><pre class="line-numbers">
+<code class="language-javascript">
+// 获取回调对象，提供 once 和 memory 参数
+const cb = $.Callbacks( 'once memory' );
+
+/**
+ *  定义回调
+ */
+    function func1 ( value ) {
+    console.log( 'func1 被调用开始' );
+    console.log( 'func1 的参数是: ' + value );
+    console.log( 'func1 被调用结束' );
+}
+
+function func2 ( value ) {
+    console.log( 'func2 被调用开始' );
+    console.log( 'func2 的参数是: ' + value );
+    console.log( 'func2 被调用结束' );
+}
+
+// 添加回调
+cb.add( func1 );
+
+/**
+ *  执行所有回调
+ *      此时，在内部的 fire 方法遍历完回调队列后，以为提供了 once 参数，所有 stack 是 false，不会进入 if，而又提供了 memory 参数，所以 memory 变量存在，进入 81 行的 else if
+ *      此时，将回调队列置为一个空数组，之所以要这样做，是因为提供了 once 参数，所以在第一次执行 $.Callbacks.fire 或者  $.Callbacks.fireWith 方法时，就将其置空，这样，之后再使用 $.Callbacks.fire 或者  $.Callbacks.fireWith 方法时，遍历的仅仅是一个空数组了
+ *      但是为什么不使用 $.Callbacks.disable 方法将回调对象禁用呢？
+ *          这是因为同时还挺了 memory 参数，memory 参数的作用就是第一次调用 $.Callbacks.fire 或者  $.Callbacks.fireWith 方法后，之后再使用 $.Callbacks.add 方法时，会将新添加的回调执行，如果将回调对象禁用的话，那么回调队列 list 就会被置为 undefined 了，而在使用 $.Callbacks.add 方法时，都是基于 list 是数组的情况下的，所以将 list 设置为一个新的空数组
+ */
+cb.fire( '通过 fire 执行所有回调' );
+
+/**
+ *  此时，回调队列在上一步已经被置为一个空数组，所以在使用 $.Callbacks.add 方法时，又将 func2 添加到空数组中，添加完之后再次调用内部的 fire 方法遍历，遍历执行完成之后，又重复上一步的操作，将 list 置为一个新的空数组
+ *  所以，每次调用完内部的 fire 方法之后，都会将 list 置为一个新的空数组，这就保证了在提供 once 和 memory 参数的情况下，回调对象能正常工作
+ */
+cb.add( func2 );
+
+// Result:
+// func1 被调用开始
+// func1 的参数是: 通过 fire 执行所有回调
+// func1 被调用结束
+// func2 被调用开始
+// func2 的参数是: 通过 fire 执行所有回调
+// func2 被调用结束
+</code>
+</pre>
+
+<h4 id="示例三：在回调中使用-Callbacks-add-方法"><a href="#示例三：在回调中使用-Callbacks-add-方法" class="headerlink" title="示例三：在回调中使用 $.Callbacks.add 方法"></a>示例三：在回调中使用 $.Callbacks.add 方法</h4><pre class="line-numbers">
+<code class="language-javascript">
+// 获取回调对象
+const cb = $.Callbacks( 'memory' );
+
+/**
+ *  定义回调
+ */
+function func1 ( value ) {
+    console.log( 'func1 被调用开始' );
+    console.log( 'func1 的参数是: ' + value );
+    cb.add( func2 );
+    console.log( 'func1 被调用结束' );
+}
+
+function func2 ( value ) {
+    console.log( 'func2 被调用开始' );
+    console.log( 'func2 的参数是: ' + value );
+    console.log( 'func2 被调用结束' );
+}
+
+/**
+ *  在这个添加方法中，只是将 func1 添加到回调队里中，其他什么都不会做，不会进入 add 的 if 或 else
+ */
+cb.add( func1 );
+
+/**
+ *  使用 $.Callbacks.fire 方法遍历回调队列，最终会调用内部的 fire 方法来遍历
+ *      在执行 func1 回调时，又调用了 $.Callbacks.add 方法
+ *          此时，将 func2 回调添加到回调队列中，然后判断 firing 是否为 true，因为此时是在回调中执行的 add 方法，所以条件成立，进入 if
+ *          将最新的回调队列的长度赋值给 firingLength，然后就退出 $.Callbacks.add 方法
+ *      此时，在内部的 fire 方法中遍历 func1 之前时，firingLength 的值是 1，当执行完 func1 后，firingLength 的值就变为了 2，所以会再进行一次遍历操作，此时就会执行新添加的 func2 回调了
+ */
+cb.fire( 1 );
+</code>
+</pre>  
+
+<h3 id="jQuery-Callbacks-remove"><a href="#jQuery-Callbacks-remove" class="headerlink" title="jQuery.Callbacks.remove"></a>jQuery.Callbacks.remove</h3><p>这个方法用于移除移除一个或多个执行的回调  </p>
+<pre class="line-numbers">
+<code class="language-javascript">
+/**
+ *  移除指定的回调
+ */
+remove: function() {
+    //  1.  判断 list 队列是否存在
+    if ( list ) {
+        // 1.1  遍历 arguments
+        jQuery.each( arguments, function( _, arg ) {
+            /**
+             *  1.1.1
+             *  通过工具方法 $.inArray 查找当前遍历的元素是否存在回调队列 list 中，并将找到的结果保存在 index 中
+             *  如果找到，则比 -1 大；否则就是 -1
+             */
+            var index;
+            while( ( index = jQuery.inArray( arg, list, index ) ) > -1 ) {
+                // 从 list 中移除指定索引处的元素
+                list.splice( index, 1 );
+
+                // 处理在某个回调中调用了 $.Callbacks.remove 方法
+                if ( firing ) {
+                    /**
+                     *  判断当前移除的回调在 list 中的索引是否小于等于 firingLength
+                     *      如果成立，则将 firingLength 的值减 1
+                     */
+                    if ( index &lt;= firingLength ) {
+                        firingLength--;
+                    }
+
+                    /**
+                     *  判断 index 是否小于等于 firingIndex
+                     *      如果成立，说明在回调队列 list 中，当前移除的回调在当前执行的回调之前，或者移除的回调就是当前执行的回调，此时将循环变量 firingIndex 的值减 1
+                     *      例如，回调队列 list 中的回调是这样的 [ func1, func2, func3 ]
+                     *          如果移除的回调是 func1，那么只有当执行 func1、func2 或者 func3 时，才会进入这个 if
+                     *          如果移除的回调是 func2，那么只有当执行 func2 或者 func3 时，才会进入这个 if
+                     *          如果移除的回调是 func3，那么只有当执行 func3 时，才会进入这个 if
+                     *      之所以样将这个值减 1，是因为如果不减 1，会影响之后的操作
+                     *      例如上面的例子中，移除的回调是 func1 且是在 func1 中移除的；在执行 func1 回调时，firingIndex 的值是 0，firingLength 的值是 3；当使用 splice 移除 func1 后，
+                     *          firingLength 的值为 2，如果此时不对 firingIndex 减 1 的话，那么就会接着执行 func2，而不会执行 func3 了（ 因为 firingLength 为 2 ），所以要将 firingIndex 减 1，恢复移除之前的状态
+                     */
+                    if ( index &lt;= firingIndex ) {
+                        firingIndex--;
+                    }
+                }
+            }
+        });
+    }
+    return this;
+}
+</code>
+</pre>   
+
+<h4 id="示例一：在回调中使用-Callbacks-remove"><a href="#示例一：在回调中使用-Callbacks-remove" class="headerlink" title="示例一：在回调中使用 $.Callbacks.remove"></a>示例一：在回调中使用 $.Callbacks.remove</h4><pre class="line-numbers">
+<code class="language-javascript">
+// 获取回调对象，提供 once 和 memory 参数
+const cb = $.Callbacks();
+
+/**
+ *  定义回调
+ */
+    function func1 ( value ) {
+    console.log( 'func1 被调用开始' );
+    console.log( 'func1 的参数是: ' + value );
+    console.log( 'func1 被调用结束' );
+    /**
+     *  在 func1 回调中执行 remove 时，首先会将 func1 函数从回调队列 list 中移除，然后将 firingLength 减 1，变为 2，然后再将 firingIndex 减 1 变为 -1，之后在内部的 fire 方法中又对 firingIndex 加 1 变为 0
+     *  此时，再接着遍历执行 func2 和 func3 回调，并且此时回调队列 list 中只含有 func2 和 func3 两个回调
+     */
+    cb.remove( func1 );
+}
+
+function func2 ( value ) {
+    console.log( 'func2 被调用开始' );
+    console.log( 'func2 的参数是: ' + value );
+    console.log( 'func2 被调用结束' );
+}
+
+function func3 ( value ) {
+    console.log( 'func3 被调用开始' );
+    console.log( 'func3 的参数是: ' + value );
+    console.log( 'func3 被调用结束' );
+}
+
+cb.add( func1, func2, func3 );
+
+cb.fire( 1 );
+</code>
+</pre>  
+
+<h3 id="jQuery-Callbacks-has"><a href="#jQuery-Callbacks-has" class="headerlink" title="jQuery.Callbacks.has"></a>jQuery.Callbacks.has</h3><p>该方法用于检测指定的回调是否存在于回调队列 list 中，如果存在，返回 <code>true</code>；否则 返回 <code>false</code><br>如果没有提供用于检测的回调，那么就会返回回调队列 list   </p>
+<pre class="line-numbers">
+<code class="language-javascript">
+/**
+ *  检查一个指定的回调是否在队列中
+ *  @param  { Function }    fn    指定的回调
+ *  @return { Boolean }           是否存在的布尔值
+ */
+has: function( fn ) {
+    /**
+     *  1.  首先判断是否指定了参数 fn
+     *          如果指定了，再通过 $.inArray 方法检查 fn 是在 list 里的索引，并将索引值返回
+     *          如果没指定，则判断回调队列是否存在（ 包括队列存在以及队列里是否有元素 ），如果存在再返回回调队列 list
+     */
+    return fn ? jQuery.inArray( fn, list ) > -1 : !!( list && list.length );
+}
+</code>
+</pre>  
+
+<h3 id="jQuery-Callbacks-empty"><a href="#jQuery-Callbacks-empty" class="headerlink" title="jQuery.Callbacks.empty"></a>jQuery.Callbacks.empty</h3><p>该方法用于删除队列中的所有回调</p>
+<pre class="line-numbers">
+<code class="language-javascript">
+/**
+ *  删除队列中的所有回调
+ *  @return { Object }    返回 self 对象，以供链式调用
+ */
+empty: function() {
+    //  1.  将 list 队列清空并且将保存 list 长度的变量清零
+    list = [];
+    firingLength = 0;
+
+    return this;
+}
+</code>
+</pre>  
+
+<h3 id="jQuery-Callbacks-disable"><a href="#jQuery-Callbacks-disable" class="headerlink" title="jQuery.Callbacks.disable"></a>jQuery.Callbacks.disable</h3><p>该方法用于将回调对象禁用</p>
+<pre class="line-numbers">
+<code class="language-javascript">
+/**
+ *  禁止当前回调队列
+ *  @return { Object }    返回 self 对象，以供链式调用
+ */
+disable: function() {
+    /**
+     *  将 list 队列、stack、memory 都置为 undefined，此时这个回调队列已经无法使用了
+     */
+    list = stack = memory = undefined;
+
+    return this;
+}
+</code>
+</pre>  
+
+<h3 id="jQuery-Callbacks-disabled"><a href="#jQuery-Callbacks-disabled" class="headerlink" title="jQuery.Callbacks.disabled"></a>jQuery.Callbacks.disabled</h3><p>该方法用于将回调对象禁用</p>
+<pre class="line-numbers">
+<code class="language-javascript">
+/**
+ *  判断当前回调队列是否被禁用
+ *  @return { Boolean }    当前回调队列是否被禁用的布尔值
+ */
+disabled: function() {
+    /**
+     *  返回 list 的取反值
+     *      因为只有禁用回调对象时，list 才是 undefined，所以只需要判断 list 是否存在即可判断回调对象是否被禁用
+     */
+    return !list;
+}
+</code>
+</pre>  
+
+<h3 id="jQuery-Callbacks-lock"><a href="#jQuery-Callbacks-lock" class="headerlink" title="jQuery.Callbacks.lock"></a>jQuery.Callbacks.lock</h3><p>该方法用于将回调对象锁定</p>
+<pre class="line-numbers">
+<code class="language-javascript">
+/**
+ *  锁定回调对象
+ *  @return { Object }    返回 self 对象，以供链式调用
+ */
+lock: function() {
+    /**
+     *  1.  将 stack 置为 undefined
+     */
+    stack = undefined;
+
+    /**
+     *  2.  如果在调用 $.Callbacks 时没提供 memory 参数，那么就将回调对象禁用
+     *      也就是说，在没提供 memory 参数的情况下，锁定方法 lock 和 禁用方法 disable 是一样的
+     */
+    if ( !memory ) {
+        self.disable();
+    }
+
+    return this;
+}
+</code>
+</pre>  
+
+<h3 id="jQuery-Callbacks-locked"><a href="#jQuery-Callbacks-locked" class="headerlink" title="jQuery.Callbacks.locked"></a>jQuery.Callbacks.locked</h3><p>该方法用于将回调对象锁定</p>
+<pre class="line-numbers">
+<code class="language-javascript">
+/**
+ *  判断回调对象是否被锁定
+ *  @return { Boolean }    当前回调队列是否被锁定的布尔值
+ */
+locked: function() {
+    /**
+     *  返回 stack 的取反值
+     *      因为只有锁定回调对象时，stack 才是 undefined，所以只需要判断 stack 是否存在即可判断回调对象是否被锁定
+     */
+    return !stack;
+}
+</code>
+</pre>  
+
+<h3 id="jQuery-Callbacks-locked-1"><a href="#jQuery-Callbacks-locked-1" class="headerlink" title="jQuery.Callbacks.locked"></a>jQuery.Callbacks.locked</h3><p>该方法用于判断是否使用 <code>$.Callbacks.fire</code> 或者 <code>$.Callbacks.fireWith</code> 方法执行过所有回调</p>
+<pre class="line-numbers">
+<code class="language-javascript">
+/**
+ *  判断当前 list 队列是否执行过 $.Callbacks.fire 或者 $.Callbacks.fireWith 方法
+ *  @return { Boolean }    是否执行过 fire 的布尔值 
+ */
+fired: function() {
+    /**
+     *  返回 fired 的布尔值
+     *  只有执行过 $.Callbacks.fire 或者 $.Callbacks.fireWith 方法后，在内部的 fire 方法会才将 fired 置为 true，否则都是 false
+     */
+    return !!fired;
+}
+</code>
+</pre>
+
+
+
+            </div>
+        
+        
+        
+    </div>
+
+    
+        
+    <div id="post-nav" class="row">
+        
+        <div class="nav-prev col-md-4 col-sm-4 col-xs-6">
+            
+        </div>
+
+        <div class="nav-next col-md-4 col-md-offset-4 col-sm-4 col-sm-offset-4 col-xs-6">
+            
+                <a href="/jQuery/jQuery02.html" class="nav-next-link nav-link ellipsis">
+                    jQuery源码分析（二）
+                </a>
+                <i class="iconfont icon-qianjin"></i>
+            
+        </div>
+        
+    </div>
+
+    
+
+</li>
+                
+                
+            </div>
+        </div>
+        
+        
+
+        <script src="/js/jquery-2.0.3.min.js"></script>
+        <script src="/js/jquery.ztree.core.min.js"></script>
+        <script src="/js/index.js"></script>
+        <script src="/js/prism.js"></script>
+
+    </div>
+</body>
+</html>

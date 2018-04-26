@@ -1,0 +1,1466 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>LinHao</title>
+    <link href="https://cdn.bootcss.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.bootcss.com/animate.css/3.5.0/animate.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="/css/index.css">
+    <link rel="stylesheet" href="/css/zTreeStyle.css">
+</head>
+<body>
+    
+        <div id="sidebar_nav_mask" class="animated"></div>
+
+<div id="sidebar_nav" class="animated">
+    <div class="sidebar_nav_container">
+        <div class="nav_header">
+            <span class="nav_header_text AGaramondPro_Italic_Bold">Navigation</span>
+        </div>
+        <div class="nav_body">
+            <!-- <ul class="nav_lists">
+                <li class="list_item_copy list_item"></li>
+            </ul> -->
+            <div class="tree_nav clear">
+                <ul id="tree_nav" class="ztree"></ul>
+            </div>
+        </div>
+    </div>
+</div>
+    
+
+    <div id="blog" class="PingFang_SC_Normal">
+        <div id="header">
+    <div class="header-container container">
+        <div class="collapse navbar-collapse row" id="bs-example-navbar-collapse-1">
+            <ul class="header-list nav navbar-nav col-md-6 col-sm-6 col-xs-6">
+                
+                    <li class="header-list-item"><a href="/">HOME</a></li>
+                
+                    <li class="header-list-item"><a href="/article">ARTICLE</a></li>
+                
+                    <li class="header-list-item"><a href="/about">ABOUT</a></li>
+                
+            </ul>
+            
+        </div>
+        
+        
+            <div class="sidebar_nav_btn">
+                <i class="iconfont icon-menu2"></i>
+            </div>
+        
+    </div>
+</div>
+        <div id="header_scroll" >
+    <div class="header_scroll_block"></div>
+</div>
+        
+        <div id="main" class="clear">
+            <div class="main-container container">
+                
+
+                
+
+    
+
+    <div id="title" class="title-post">
+        <h3 class="title-container">
+            <span class="title-text AGaramondPro_Italic_Bold">Straight Matter</span>
+        </h3>
+    </div>
+
+
+
+<li class="article-item">
+    <div class="article-container">
+        <img class="article-img img-responsive" src="" alt="">
+        <h3 class="article-title">jQuery源码分析（二）</h3>
+        <div class="article-header">
+            <div class="article-info">
+                <i class="iconfont icon-xinxi"></i>
+                <span class="article-info-categories article-info-item">
+                    <span class="AGaramondPro_Bold article-info-title">Categories</span>
+                    <a class="category-link" href="/categories/jQuery/">jQuery源码分析</a>
+                </span>
+                <span class="article-info-tags article-info-item">
+                    <span class="AGaramondPro_Bold tags-info-title">Tags</span>
+                    
+                </span>
+                <span class="article-info-item article-info-date AGaramondPro_Regular"><span>2018-03-25</span></span>
+                <span class="article-info-item article-info-portrait clear">
+                    <img src="https://awcdn1.ahmad.works/writing/wp-content/uploads/2015/05/Author.jpg" alt="">
+                    <span class="article-info-item article-info-username AGaramondPro_Bold">LinHao</span>
+                </span>
+                
+            </div>
+        </div>
+        
+            <div class="article-content article-text">
+                <h2 id="jQuery-继承"><a href="#jQuery-继承" class="headerlink" title="jQuery 继承"></a>jQuery 继承</h2><p><code>jQuery</code> 的继承是通过 <code>extend</code> 方法实现的，该方法主要的作用有以下几点</p>
+<ol>
+<li>对象的深拷贝或者浅拷贝</li>
+<li>封装插件<br>可以扩展工具方法或者实例方法<br>注意：从源码中可以看到，<code>jQuery.extend</code> 和 <code>jQuery.fn.extend</code> 用的是同一套代码，那么是源码中是如何知道我是想扩展工具方法还是实例方法？其实肯简单，用到的就是 <code>this</code> 关键字，会将所有扩展的方法添加到 <code>this</code> 中。如果调用的是 <code>jQuery.extend</code>，那么其中的 <code>this</code> 就指向 <code>jQuery</code>；如果调用的是 <code>jQuery.fn.extend</code>，那么其中的 <code>this</code> 就指向 <code>jQuery.fn</code>。</li>
+<li>这个方法接受的参数按照功能可以分为如下三种：<br>插件封装：提供一个对象参数，对象中所有的属性会被扩展到 <code>jQuery</code> 或者 <code>jQuery.fn</code> 中<br>浅拷贝：第一个参数可以是 <code>false</code>，第二个参数是目标对象，第三个参数之后都是源对象列表；第一个参数也可以不提供 <code>false</code>，直接从目标对象开始<br>深拷贝：第一个参数是 <code>true</code>，第二个参数是目标对象，第三个参数之后都是源对象列表</li>
+</ol>
+<h3 id="jQuery-extend-和-jQuery-fn-extend-源码分析"><a href="#jQuery-extend-和-jQuery-fn-extend-源码分析" class="headerlink" title="jQuery.extend 和 jQuery.fn.extend 源码分析"></a>jQuery.extend 和 jQuery.fn.extend 源码分析</h3><pre class="line-numbers">
+<code class="language-javascript">
+jQuery.extend = jQuery.fn.extend = function() {
+    var options,                        // 循环保存每个参数的引用，如果第一个参数为布尔值，那么久从第二个参数开始保存
+        name, 
+        src, 
+        copy, 
+        copyIsArray,         
+        clone,
+        target = arguments[0] || {},    // 将第一个参数作为目标对象，如果没有传递参数，那么就保存一个空对象的引用
+        i = 1,                          // 循环变量，此时设置为 1，原因有两个，一是因为之后会和参数的个数比较是否相等，如果相等，就是封装插件，如果不相等，就是拷贝对象；二是如果是拷贝对象的话，那么之后遍历每个参数就会跳过第一个参数，从第二个参数开始遍历了
+        length = arguments.length,      // 参数的个数
+        deep = false;                   // 是否是深拷贝，默认为 false
+
+    /**
+     *  1.  处理提供深浅拷贝布尔值的情况，如果提供的话就要将这个参数放在第一位
+     *      先判断目标对象是否是布尔值（ 因为此时目标对象就是第一个参数 ）
+     *          如果是布尔值，说明指定了深拷贝（ true ） 或者浅拷贝（ false ）
+     *          此时先将布尔值保存在 deep 中，然后将 target 保存为第二个参数的引用，如果没有第二个参数，就保存一个空对象的引用
+     *          然后将循环变量设置为 2，因为第一个是布尔值，第二个是目标对象，所以从第三个参数开始遍历
+     */
+    if ( typeof target === "boolean" ) {
+        deep = target;
+        target = arguments[1] || {};
+        i = 2;
+    }
+
+    /**
+     *  2.  判断参数是否正确，如果参数不正确，就将目标对象设置为空对象
+     *      参数只能是对象或者函数
+     */
+    // Handle case when target is a string or something (possible in deep copy)
+    if ( typeof target !== "object" && !jQuery.isFunction(target) ) {
+        target = {};
+    }
+
+    /**
+     *  3.  判断是否是封装插件的情况，此时只能有一个参数
+     */
+    if ( length === i ) {
+        /**
+         *  如果是添加新的工具方法，那么就将 target 保存为 jQuery 类的引用
+         *  如果是添加新的实例方法，那么就将 target 保存为当前的 jQ 实例对象的引用
+         *  然后将循环 i 从 1 变为 0，用于之后只进行一次循环
+         */
+        target = this;
+        --i;
+    }
+
+    /**
+     *  4.  遍历参数，进行不同的拷贝
+     */
+    for ( ; i < length; i++ ) {
+        /**
+         *  如果是插件的话，options 保存的就是唯一参数的引用，然后判断 options 是否有效（ 即不是 null 或者 undefined ）
+         *      只循环一次参数对象，然后把每个属性对应的值保存在 copy 中，然后在目标对象 target 中创建同名的属性，然后将 copy 保存的值赋给 target 中的同名属性
+         *  如果是浅拷贝的话
+         *      如果没有提供是否是深浅拷贝的布尔值，那么此时循环变量 i 是 1，所以会跳过第一个参数，从第二个开始遍历
+         *      如果提供是否是深浅拷贝的布尔值为 false，那么此时循环变量 i 是 2，所以会跳过前两个参数，从第三个开始遍历
+         *  如果是深拷贝的话
+         *      此时循环变量就是 2，所以跳过前两个参数，从第三个参数开始遍历
+         */
+        if ( (options = arguments[ i ] ) != null ) {
+            /**
+             *  遍历当前参数的每个属性
+             *  src 变量保存的是在目标对象中，以当前属性 name 为键的值的引用，如果不存在就是 undefined
+             *  copy 变量保存的是在当前参数对象中，以当前属性 name 为键的值的引用
+             */
+            for ( name in options ) {
+                src = target[ name ];
+                copy = options[ name ];
+
+                /**
+                 *  如果 src 和 copy 指向同一块内存，则退出当前循环，进行下一次遍历，防止循环引用
+                 *  例如
+                 *      let obj = { name: 'IconMan' };
+                 *      $.extend( obj, { name: obj } );
+                 *      此时，target 和 copy 指向同一块内容，即 { name: 'IconMan' }，所以退出当次循环，防止循环引用
+                 *      如果不退出，此时就会出现循环引用，这样做的结果就是 obj 的结果如下
+                 *      {
+                 *            name: {
+                 *                  name: {
+                 *                        name: {
+                 *                              name: ...
+                 *                        }
+                 *                  }
+                 *            }
+                 *      }
+                 */
+                if ( target === copy ) {
+                    continue;
+                }
+
+                /**
+                 *  判断是深拷贝还是浅拷贝
+                 *  如果是插件的话，deep 的值为 false，直接进入 else，只要 copy 有效，就在目标对象中（ jQuery 或者当前 jQ 实例 ）添加一个以 name 属性，并保存 copy 的引用
+                 *  如果是浅拷贝，deep 的值为 false，直接进入 else，只要 copy 有效，就在目标对象中添加一个以 name 属性，并保存 copy 的引用
+                 *      如果没有提供第一个参数，那么目标对象就是第一个参数
+                 *      如果有提供第一个参数，那么目标对象就是第二个参数
+                 *  如果是深拷贝，deep 的值为 true，再判断 copy 的值是否存在以及 copy 是否是对象或者数组，如果都满足，进入 if
+                 *      如果 copy 不是对象或数组，那就不需要进行深拷贝了，进入 else 进行浅拷贝
+                 */
+                if ( deep && copy && ( jQuery.isPlainObject(copy) || (copyIsArray = jQuery.isArray(copy)) ) ) {
+                    /**
+                     *  处理 copy 是数组的情况
+                     *  先将保存 copy 是否是数组的布尔值置为 false，以确保下次循环不会出错
+                     *  如果在目标对象中存在当前的 name 属性并且其值也是一个数组，那么 clone 就保存的是 src 所指向的数组的引用
+                     *  如果在目标对象中不存在当前的 name 属性，或者存在但其并不是一个数组，那么 clone 就保存一个新的空数组的引用
+                     */
+                    if ( copyIsArray ) {
+                        copyIsArray = false;
+                        clone = src && jQuery.isArray(src) ? src : [];
+                    } 
+                    /**
+                     *  处理 copy 是 json 对象的情况
+                     *  如果在目标对象中存在当前的 name 属性并且也是一个对象，那么 clone 就保存的是 src 所指向的对象的引用
+                     *  如果在目标对象中不存在当前的 name 属性，或者存在但其并不是一个对象，那么 clone 就保存的是新的对象的引用
+                     */
+                    else {
+                        clone = src && jQuery.isPlainObject(src) ? src : {};
+                    }
+                    /**
+                     *  递归调用 extend 方法，并进行深拷贝
+                     *      此时，deep 的值为 true，肯定是深拷贝
+                     *      clone 的值分为两种
+                     *          1、目标对象中存在 name 属性并且和 copy 属于同一类型，此时 clone 指向的是目标对象中的 name 属性的值
+                     *          2、目标对象中不存在 name 属性，此时 clone 指向的是一个新的数组或 json 对象
+                     *      通过递归调用 extend 方法，最终将所有的引用类型都转换为了基本类型的赋值
+                     */
+                    target[ name ] = jQuery.extend( deep, clone, copy );
+                } 
+                /**
+                 *  浅拷贝
+                 *  先判断当前循环参数的值是否是 undefined，如果不是
+                 *  直接将当前循环参数的值赋给目标对象的同名参数（ 如果 copy 是引用类型，仅仅拷贝指针，即浅拷贝 ）
+                 */
+                else if ( copy !== undefined ) {
+                    target[ name ] = copy;
+                }
+            }
+        }
+    }
+
+    /**
+     *  5.  返回目标对象
+     */
+    return target;
+};
+</code>
+</pre>  
+
+<h4 id="示例一：扩展工具方法"><a href="#示例一：扩展工具方法" class="headerlink" title="示例一：扩展工具方法"></a>示例一：扩展工具方法</h4><pre class="line-numbers">
+<code class="language-javascript">
+function toolsA () {
+    console.log( '我是工具方法A' );
+}
+
+function toolsB () {
+    console.log( '我是工具方法B' );
+}
+
+/**
+ *  此时，由于只有一个参数，所以 target 就是这个对象，并且 length 和 i 都是 1，所以会进入 39 行的 if 中
+ *      此时，将 target 指向为 this（ 也就是 jQuery ），并将 i 减 1 变为 0
+ *  在接下来使用 for..in 遍历这个对象中，因为 jQuery 中不存在 toolsA 和 toolsB，所以每次的 src 都是 undefined，copy 分别指向 toolsA 和 toolsB，直接进入 136 的 else if 中，为 jQuery 添加两个属性 toolsA 和 toolsB，并保存 toolsA 和 toolsB 的引用
+ */
+$.extend({
+    toolsA: toolsA,
+    toolsB: toolsB
+});
+
+/**
+ *  扩展完之后，直接通过 jQuery 调用
+ */
+$.toolsA(); // 打印 我是工具方法A
+$.toolsB(); // 打印 我是工具方法B
+</code>
+</pre>  
+
+<h4 id="示例二：不提供布尔值的浅拷贝"><a href="#示例二：不提供布尔值的浅拷贝" class="headerlink" title="示例二：不提供布尔值的浅拷贝"></a>示例二：不提供布尔值的浅拷贝</h4><pre class="line-numbers">
+<code class="language-javascript">
+let data = {
+    names: [ 'IconMan', 'Nicholas' ],
+    age: [ 24, 30 ]
+};
+
+/**
+ *  由于没有提供深浅拷贝的布尔值，所以默认是浅拷贝，前面的三个 if 都不会进入，直接进入最后的 for 循环
+ *      此时，target 就是第一个空对象的引用，因为这个空对象中不存在 name 和 age 属性，所以每次的 src 都是 undefined，而 copy 就是 IconMan 和 24
+ *      最后，直接会进入 136 的 else if 中，在 target 中添加 name 和 age 属性，并将 copy 的值赋给这两个属性
+ *  最终，返回 target，也就是第一个对象的引用
+ */
+let res = $.extend( {}, data );
+/**
+ *  因为浅拷贝，所以只是地址的拷贝，所以 res 中的 names 和 data 中的 names 指向的是同一块内存
+ */
+console.log( res.names === data.names );    // true
+
+console.log( res ); // { name: [ 'IconMan', 'Nicholas' ], age: [ 24, 30 ] }
+</code>
+</pre>  
+
+<h4 id="示例三：提供布尔值的浅拷贝"><a href="#示例三：提供布尔值的浅拷贝" class="headerlink" title="示例三：提供布尔值的浅拷贝"></a>示例三：提供布尔值的浅拷贝</h4><pre class="line-numbers">
+<code class="language-javascript">
+let data = {
+    names: [ 'IconMan', 'Nicholas', 'Linh' ],
+    age: [ 24, 30 ]
+};
+
+let source = {
+    names: [ 'IconMan', 'Nicholas' ]
+};
+
+/**
+ *  由于提供的第一个参数是布尔值，所以会进入 21 行的 if 中，将 deep 保存为这个布尔值，并且将 target 保存为第二个参数的引用（ 也就是 source 变量 ），最后将 i 设置为 2
+ *  在 for 循环中，从第三个参数开始循环遍历，之后的操作就和前面一样
+ */
+let res = $.extend( false, source, data ); 
+console.log( res.names === data.names );    // true
+console.log( res );                         // { name: [ 'IconMan', 'Nicholas', 'LinH' ], age: [ 24, 30 ] }
+</code>
+</pre>  
+
+<h4 id="示例四：提供布尔值的深拷贝"><a href="#示例四：提供布尔值的深拷贝" class="headerlink" title="示例四：提供布尔值的深拷贝"></a>示例四：提供布尔值的深拷贝</h4><pre class="line-numbers">
+<code class="language-javascript">
+let data = {
+    names: [ 'IconMan', 'Nicholas', 'Linh' ],
+    age: [ 24, 30 ]
+};
+
+let source = {
+    names: [ 'IconMan', 'Nicholas' ]
+};
+
+/**
+ *  由于第一个参数是布尔值，所以会进入 21 行的 if，将布尔值保存在 deep 中（ 为 true ），将 target 保存为第二个参数的引用（ 即 source 变量 ），再将 i 设置为 2
+ *  然后直接进入 for 循环中，从第三个参数开始遍历，再使用 for..in 遍历每一个参数（ 在此例中，for 循环只会遍历一次，即 data 变量，for..in 也只会遍历 data ）
+ *      在 for..in 遍历每个属性中，src 保存的是在目标对象（ source 变量 ）中该属性的值的引用（ 此例中，遍历 names 时 src 是 [ 'IconMan', 'Nicholas' ]， 遍历 age 时 src 是 undefined ），copy 保存的是 data 中以该属性为值的引用（ 此例中，遍历 names 时 copy 是 [ 'IconMan', 'Nicholas', 'Linh' ]，遍历 age 时 copy 是 [ 24, 30 ] ）
+ *      因为 deep 是 true，所以会判断 copy 是数组还是对象，此例中是数组，所以会进入 109 行的 if 中
+ *          在 if 中，如果 src 存在并且是数组，就将 clone 保存为 src 的引用，然后递归调用 extend 方法（ 以遍历 names 为例 ）
+ *              此时，递归调用 extend，并将 deep（ true ），clone（ [ 'IconMan', 'Nicholas' ] } ）和 copy（ [ 'IconMan', 'Nicholas', 'Linh' ] ）作为参数传递，然后将 extend 的返回值设置为目标对象中的 names 属性值
+ *              在递归调用中，由于第一个参数是布尔值，所以会进入 21 行的 if，将布尔值（ true ）保存在内部 deep 中，再将内部 target 保存为外部 clone 的引用，再将内部循环变量 i 设置为 2
+ *              在 for 循环中，从第三个参数开始遍历，在 for..in 中，遍历外层 copy，此时外层 copy 是一个数组，所以内部 copy 分别是 IconMan、Nicholas 和 LinH，虽然内部 deep 是 true，但是 copy 不再是数组或对象，所以不会进入 if 中，直接进入 else，将 copy 中的元素分别保存在内部 target 中（ 也就是外部的 clone 中 ）
+ *              递归调用的 extend 结束后，会返回 target，也就是外层 clone 的引用，将其保存在外层 target（ source 变量 ）中的 names 属性，所以 target 中的 names 属性保存的就是 IconMan、Nicholas 和 LinH
+ */
+let res = $.extend( true, source, data );
+
+console.log( res );     // { names: [ 'IconMan', 'Nicholas', 'LinH' ], age: [ 24, 30 ] }
+console.log( res.names === data.names );    // false
+</code>
+</pre>
+
+<h2 id="jQuery-工具方法"><a href="#jQuery-工具方法" class="headerlink" title="jQuery 工具方法"></a>jQuery 工具方法</h2><p>下面这些方法都是通过 <code>extend</code> 方法扩展到 <code>jQuery</code> 类中的，所以是工具方法，其实这就是 <code>exnted</code> 方法中所说的插件，将参数对象中的所有属性扩展到 <code>jQuery</code> 类中，例如</p>
+<pre class="line-numbers">
+<code class="language-javascript">
+jQuery.extend({
+    // ...
+});
+</code>
+</pre>
+
+<h3 id="jQuery-expando"><a href="#jQuery-expando" class="headerlink" title="jQuery.expando"></a>jQuery.expando</h3><pre class="line-numbers">
+<code class="language-javascript">
+/**
+ * 生成一个唯一的字符串
+ * 格式是 " jQuery + 版本号 + 随机的小数 "，并且将其中的非数字，例如小数点替换为空字符串
+ * 例如：jQuery20306758780764383274
+ */
+expando: "jQuery" + ( core_version + Math.random() ).replace( /\D/g, "" )
+</code>
+</pre>
+
+<h3 id="jQuery-noConflict"><a href="#jQuery-noConflict" class="headerlink" title="jQuery.noConflict"></a>jQuery.noConflict</h3><p>这个方法用于将 <code>$</code> 或者 <code>jQuery</code> 构造函数的控制权交出去（ 即用别的变量代替 <code>$</code>或者 <code>jQuery</code> ），交出去后，<code>$</code> 或者 <code>jQuery</code> 就无法再使用了<br>之所以有这样的操作是因为，<code>$</code> 符号不仅仅是 <code>jQuery</code> 在使用，其他的库有可能也会用，为了防止冲突，需要在特定的时候交出 <code>$</code> 的控制权</p>
+<pre class="line-numbers">
+<code class="language-javascript">
+/**
+ *  @param  { Boolean  }  deep    是否移交 jQuery 的控制权
+ *  @return { Function }          jQuery 构造函数，用新的变量接受返回值，就可以使用新的变量来代替原来的 $ 或者 jQuery
+ */
+noConflict: function( deep ) {
+    /**
+     *  _$ 和 _jQuery 的值，这两个变量定义在 38 行和 41 行
+     *  如果在引入当前文件之前，没有修改 window.$ 和 window.jQuery 指向的话，那么 _$ 和 _jQuery 就是 undefined
+     *  如果在引入当前文件之前修改了 window.$ 和 window.jQuery 的指向，那么 _$ 和 _jQuery 就指向的是修改的那个对象
+     */
+
+    /**
+     *  处理 $ 的控制权
+     *  判断 window.$ 是否等于 jQuery，这个条件是始终成立的
+     *      如果在引入 jQuery 文件之前没有修改 window.$ 的指向，此时将 _$（ undefined ） 赋值给 window.$，即执行该方法之后，window.$ 就指向了 undefined
+     *      如果之前修改了 window.$ 的指向，保持原样，此时将 _$（ 修改的指向 ） 赋值给 window.$，即执行该方法之后，window.$ 就指向了 那个修改的对象
+     */
+    if ( window.$ === jQuery ) {
+        window.$ = _$;
+    }
+
+    /**
+     *  处理 jQuery 的控制权，如果要处理 jQuery 的控制权，那么 deep 参数必须为 true
+     *  判断 window.jQuery 是否等于 jQuery
+     *      如果在引入 jQuery 文件之前没有修改 window.jQuery 的指向，那么条件为 true，进入 if，此时将 _jQuery（ undefined ） 赋值给 window.jQuery，即执行该方法之后，window.jQuery 就指向了 undefined
+     *      如果之前修改了 window.jQuery 的指向，那么条件就为 false，不会进入 if，保持原样，即 window.jQuery 的指向还是之前修改的指向
+     */
+    if ( deep && window.jQuery === jQuery ) {
+        window.jQuery = _jQuery;
+    }
+
+    /**
+     *  直接返回 jQuery 对象，这样，可以将接受该方法的变量指向 jQuery 函数，所以可以用新的变量来代替 jQuery
+     */
+    return jQuery;
+}
+</code>
+</pre>
+
+<h4 id="示例一：交出-的控制权（-引入-jQuery-文件之前未修改-的指向-）"><a href="#示例一：交出-的控制权（-引入-jQuery-文件之前未修改-的指向-）" class="headerlink" title="示例一：交出 $ 的控制权（ 引入 jQuery 文件之前未修改 $ 的指向 ）"></a>示例一：交出 $ 的控制权（ 引入 jQuery 文件之前未修改 $ 的指向 ）</h4><pre class="line-numbers">
+<code class="language-javascript">
+(function ( window ) {
+
+    /**
+     *  在执行 noConflict 方法中，由于之前没有修改 $ 的指向，所以 _$ 为 undefined
+     *  在方法内部将 window.$ 的值也修改为 undefined
+     *  此时，将 $ 的控制权交出，无法再使用，但是可以使用 noConflict 的返回值作为 jQuery 构造函数
+     */
+    let myjQuery = $.noConflict();  
+    console.log( $ );               // undefined
+    console.log( myjQuery );        // jQuery 构造函数
+
+})( window );
+
+</code>
+</pre>  
+
+<h4 id="示例二：交出-的控制权（-引入-jQuery-文件之前修改-的指向-）"><a href="#示例二：交出-的控制权（-引入-jQuery-文件之前修改-的指向-）" class="headerlink" title="示例二：交出 $ 的控制权（ 引入 jQuery 文件之前修改 $ 的指向 ）"></a>示例二：交出 $ 的控制权（ 引入 jQuery 文件之前修改 $ 的指向 ）</h4><pre class="line-numbers">
+<code class="language-javascript">
+window.$ = function () {
+    console.log( 'custom $' );
+}
+
+(function ( window ) {
+
+    /**
+     *  在引进 jQuery 文件之前，window.$ 指向自定义的函数，在引入 jQuery 文件后，window.$ 的指向被修改为指向 jQuery 构造函数
+     *  在执行 noConflict 方法中，_$ 的指向是自定义的函数，并且将 window.$ 的指向也修改为自定义的函数
+     *  此时，将 $ 的控制权恢复为之前的对象，不再是 jQuery 构造函数，但是可以使用 noConflict 的返回值作为 jQuery 构造函数
+     */
+    (function ( window ) {
+
+        console.log( $ );       // jQuery 构造函数
+        let myjQuery = $.noConflict();
+        console.log( $ );       // 自定义函数
+
+    })( window );
+
+})( window );
+
+</code>
+</pre>  
+
+<p>交出 <code>jQuery</code> 的控制权和 <code>$</code> 一样，只不过要给 <code>noConfilict</code> 方法传递参数且为 <code>true</code></p>
+<h3 id="jQuert-isFunction"><a href="#jQuert-isFunction" class="headerlink" title="jQuert.isFunction"></a>jQuert.isFunction</h3><p>该方法用于判断一个对象是否是函数  </p>
+<pre class="line-numbers">
+<code class="language-javascript">
+/**
+ *  判断一个对象是否是函数
+ *  自从 1.3 版本之后，对于一些 DOM 方法和原生的函数，例如 alert 是检测不出来的，在一些低版本的 IE 浏览器中，检测出来的是 object 而非 function。(#2968)
+ *  @param  { Any }        obj    待判断的对象
+ *  @return { Boolean }    obj    是否是函数的布尔值
+*/
+isFunction: function( obj ) {
+    // 通过 $.type 工具方法来检测是否等于 function
+    return jQuery.type(obj) === "function";
+}
+</code>
+</pre>  
+
+<h3 id="jQuery-isArray"><a href="#jQuery-isArray" class="headerlink" title="jQuery.isArray"></a>jQuery.isArray</h3><p>该方法用于判断一个对象是否是数组</p>
+<pre class="line-numbers">
+<code class="language-javascript">
+/**
+ *  判断一个对象是否数组
+ *  实际就是 ES5 的 Array.isArray 方法
+ */
+isArray: Array.isArray
+</code>
+</pre>    
+
+<h3 id="jQuery-isWindow"><a href="#jQuery-isWindow" class="headerlink" title="jQuery.isWindow"></a>jQuery.isWindow</h3><p>该方法用于判断一个对象是 <code>window</code> 对象</p>
+<pre class="line-numbers">
+<code class="language-javascript">
+/**
+ *  判断一个对象是否是 window
+ *  @param  { Any }        obj    待判断的对象
+ *  @return { Boolean }    obj    是否是 window 的布尔值
+ */
+isWindow: function( obj ) {
+    // 首先判断 obj 如果不是 null 和 undefined，再判断其下面是否有 window 属性，只有 window 对象才会有 window 属性，如果有，返回 true，否则返回 false
+    return obj != null && obj === obj.window;
+}
+</code>
+</pre>    
+
+<h3 id="jQuery-isNumeric"><a href="#jQuery-isNumeric" class="headerlink" title="jQuery.isNumeric"></a>jQuery.isNumeric</h3><p>该方法用于判断一个对象是一个有效数字（ 不仅是数值类型，而且还要在 JS 能表示的范围内 ）</p>
+<pre class="line-numbers">
+<code class="language-javascript">
+/**
+ *  判断一个对象是否是有效数字
+ *  @param  { Any }        obj    待判断的对象
+ *  @return { Boolean }    obj    是否是有效数值的布尔值
+ */
+isNumeric: function( obj ) {
+    /**
+     *  首先通过 parseFloat 方法判断 obj 是否可以转换为数值，如果可以那么就返回对应的数值；如果不可以返回 NaN
+     *  再通过 isNaN 方法判断返回的结果是否是 NaN    
+     *      如果是，则说明 obj 不是数值，直接返回 false
+     *      如果不是，则说明 obj 是数值，再通过 isFinite 方法判断该数值是否在数值的范围内
+     *
+     *  为什么不直接使用 typeof 来判断，因为如果用 typeof 来判断 NaN 的话，那么得到的还是 number，这和我们想得到的结果不同
+     */
+    return !isNaN( parseFloat(obj) ) && isFinite( obj );
+}
+</code>
+</pre>    
+
+<h3 id="jQuery-type"><a href="#jQuery-type" class="headerlink" title="jQuery.type"></a>jQuery.type</h3><p>该方法用于获取一个对象的数据类型</p>
+<pre class="line-numbers">
+<code class="language-javascript">
+/**
+ *  判断 obj 对象的数据类型
+ *  @param  { Any }        obj    待判断的对象
+ *  @return { String }     obj    以字符串形式表示的数据类型
+ */
+type: function( obj ) {
+    /**
+     *  1.  先判断 obj 是否是 undefined 或者 null
+     *      如果是的话，直接通过 String 构造函数将 null 和 undefined 转换为字符串形式的 null 和 undefined
+     */ 
+    if ( obj == null ) {
+        return String( obj );
+    }
+
+    /**
+     *  2.  通过 typeof 来判断 obj 是否是 object 或者 function，因为只有这两种情况下，obj 才是引用类型
+     *          如果不满足，就是原始数据类型，直接返回 typeof 的返回值
+     *          如果满足，利用 Object.prototype.toString 方法，将 obj 转换为类似于 [ object Object ] 的形式，再从 class2type 对象中，查找该形式属性的值，直接返回；如果没有，则返回 object
+     *      此时，class2type 对象的内容如下
+     *      {
+     *          [object Array]:     'array',
+     *          [object Boolean]:   'boolean',
+     *          [object Date]:      'date',
+     *          [object Error]:     'error',
+     *          [object Function]:  'function',
+     *          [object Number]:    'number',
+     *          [object Object]:    'object',
+     *          [object RegExp]:    'regexp',
+     *          [object String]:    'string'
+     *      }
+     */
+    return typeof obj === "object" || typeof obj === "function" 
+        ? class2type[ core_toString.call(obj) ] || "object" 
+        : typeof obj;
+
+    /**
+     *  在 Safari 低版本中，使用 typeof 判断 RegExp 对象，会得到 function 而非 object
+     *  但是在 jQuery 中的 type 工具方法兼容了这个问题
+     */
+}
+</code>
+</pre>    
+
+<h3 id="jQuery-isPlainObject"><a href="#jQuery-isPlainObject" class="headerlink" title="jQuery.isPlainObject"></a>jQuery.isPlainObject</h3><p>该方法用于判断一个对象是否是字面量对象（ 直接继承 <code>Object</code> 的对象，即原型指向 <code>Object.prototype</code> )<br>只有以下两种情况创建的对象是字面量对象  </p>
+<ol>
+<li>使用对象字面量语法：<code>{  }</code>  </li>
+<li><p>直接实例化 <code>Object</code> 实例的对象<br>其他对象，例如：DOM 节点、<code>window</code> 对象、只要调用 <code>Object.prototype.toString</code> 的返回值不是 <code>[object Object]</code> 的对象，都不属于字面量对象</p>
+<pre class="line-numbers">
+<code class="language-javascript">
+/**
+*  判断一个对象是否是字面量对象
+*  @param  { Any }        obj    待判断的对象
+*  @return { Boolean }           表示 obj 是否是字面量对象的布尔值
+*/
+isPlainObject: function( obj ) {
+ /**
+  *  1.  先通过工具方法 type 判断 obj 的类型是否不等于 object
+  *      或者 obj 有 nodeType 属性（ DOM 节点 ）
+  *      或者 obj 是 window 对象
+  *      满足三者之一的，直接返回 false，即不是字面量对象
+  */
+ if ( jQuery.type( obj ) !== "object" || obj.nodeType || jQuery.isWindow( obj ) ) {
+     return false;
+ }
+
+ /**
+  *  2.  判断 obj 的 constructor 是否存在
+  *          构造函数的默认原型中是存在 constructor 属性的，并且指向该构造函数。但是如果我们重写了原型对象，那么该属性就被清除了，所以要先判断 constructor 属性是否存在
+  *              如果不存在，说明 obj 是属于自定义类的实例对象，直接返回 false
+  *              如果存在，再通过 hasOwnProperty 方法判断 obj 构造函数的原型是否有 isPrototypeOf 属性（ 该属性只存在于 Object.prototype 中 ），hasOwnProperty 方法只会查找实例本身的属性（ 包括实例属性和其原型上的属性 ）而不会查找其继承而来的属性
+  *          所以如果存在 isProperty 属性，那就说明 obj 是接继承 Object.prototype 的，直接跳出 if
+  *          如果不存在该属性，那就说明 obj 不是直接继承 Object.prototype 的，那么直接返回 false
+  * 
+  *      在 FireFox 20 以下，如果多次访问 window.location.constructor 会抛出异常，所以使用 try...catch 进行容错
+  */
+ try {
+     if ( obj.constructor && !core_hasOwn.call( obj.constructor.prototype, "isPrototypeOf" ) ) {
+         return false;
+     }
+ } catch ( e ) {
+     return false;
+ }
+
+ /**
+  *  3. 经过上面的筛选，如果能执行到这一句，那么就是对象字面量了，直接返回 true
+  */
+ return true;
+}
+</code>
+</pre>     
+
+</li>
+</ol>
+<h3 id="jQuery-isEmptyObject"><a href="#jQuery-isEmptyObject" class="headerlink" title="jQuery.isEmptyObject"></a>jQuery.isEmptyObject</h3><p>该方法用于判断一个对象是否是一个空对象，也就是没有任何<strong>可枚举</strong>属性  </p>
+<pre class="line-numbers">
+<code class="language-javascript">
+/**
+ *  判断一个对象是否是空对象（ 没有任何可枚举属性就是空对象 ）
+ *  @param  { Any }        obj    待判断的对象
+ *  @return { Boolean }           obj 是否是空对象的布尔值
+ */
+isEmptyObject: function( obj ) {
+    /**
+     *  1.  使用 for...in 循环遍历 obj，
+     *      如果 obj 存在属性，那么会进入 for 循环，直接返回 false；
+     *      如果 obj 不存在属性，就不会进入 for，直接返回 true
+     *      之所以使用 for...in 循环是因为 for...in 可以遍历到可枚举的属性，这样，不管 obj 存在实例属性还是继承的属性。只要是可枚举的，都可以遍历到
+     * 
+     *  2.  如果没有遍历到，说明 obj 中（ 包括实例属性和原型中的属性 ）没有可枚举的属性，它就是一个空对象，直接返回 true
+     */
+    var name;
+    for ( name in obj ) {
+        return false;
+    }
+    return true;
+}
+</code>
+</pre>   
+
+<h3 id="jQuery-error"><a href="#jQuery-error" class="headerlink" title="jQuery.error"></a>jQuery.error</h3><p>该方法用于抛出一条异常</p>
+<pre class="line-numbers">
+<code class="language-javascript">
+/**
+ *  抛出异常方法
+ *  @param { String }    msg    错误信息
+ */
+error: function( msg ) {
+    throw new Error( msg );
+}
+</code>
+</pre>  
+
+<h3 id="jQuery-globalEval"><a href="#jQuery-globalEval" class="headerlink" title="jQuery.globalEval"></a>jQuery.globalEval</h3><p>该方法用于将字符串 JS 代码解析为全局作用域中的代码<br>主要是通过 <code>window.eval</code> 这个函数实现的，<code>eval</code> 是 <code>JavaScript</code> 中的一个关键字，可以用来将字符串的 JS 代码解析为局部作用域中的代码；还有一个是 <code>window.eval</code>，它和 <code>eval</code> 的作用相同，只不过 <code>window.eval</code> 会将 JS 代码解析为全局作用域中的代码  </p>
+<pre class="line-numbers">
+<code class="language-javascript">
+globalEval: function( code ) {
+    var script,             // 在严格模式下保存 script 标签
+        indirect = eval;    // 此时，indirect 指向的是 window.eval 方法
+
+    // 1. 将代码的前后空格删掉
+    code = jQuery.trim( code );
+
+    // 2. 如果去掉空格后的代码不为空，进入 if
+    if ( code ) {
+        /**
+         *  2.1 判断代码中是否包含严格模式
+         *      如果包含严格模式，则新创建 script 标签，并将所有的代码 code 设置为 script 的 text 属性，这样，新建的 script 标签的内容就是 code
+         *      在创建 script 标签之后，执行了其中的代码，为什么最后还要将 script 标签移除？
+         *          是因为 JS 代码都是按照块来执行的，每个 script 标签中的 JS 代码执行后，就会在内存中分配地址，此时和 DOM 中的 script 标签完全没有关系了，所以可以删除
+         */
+        if ( code.indexOf("use strict") === 1 ) {
+            script = document.createElement("script");
+            script.text = code;
+            document.head.appendChild( script ).parentNode.removeChild( script );
+        } 
+        /**
+         *  2.2 如果代码不包含严格模式，则直接使用 window.eval 方法解析代码
+         *      此时解析的代码就在全局作用域中
+         */
+        else {
+            indirect( code );
+        }
+    }
+}
+</code>
+</pre> 
+
+<h3 id="jQuery-camelCase"><a href="#jQuery-camelCase" class="headerlink" title="jQuery.camelCase"></a>jQuery.camelCase</h3><p>该方法用于将 CSS 中含有 - 的属性转换为驼峰的写法<br>例如：<code>margin-left</code> 转换为 <code>marginLeft</code><br>需要注意：<br>    在 ie 下，含有前缀的样式名按照如下的方式转换：<br>    <code>-ms-transition</code> -&gt; <code>msTransition</code><br>    在非 ie 下，含有前缀的样式名按照如下的方式转换：<br>    <code>-moz-transition</code> -&gt; <code>MozTransition</code><br>可以看到，在 ie 浏览器下，会将前缀转换为小写字母开头，而非 ie 浏览器下会将前缀转换为大写字母开头</p>
+<pre class="line-numbers">
+<code class="language-javascript">
+/**
+ *  将 CSS 中含有 - 的部分转换为驼峰写法
+ *  @param  { String }    string    待转换的字符串
+ *  @return { String }              转换成功的字符串
+ */
+camelCase: function( string ) {
+    /**
+     *  1.  先用 rmsPrefix 正则匹配以 -ms- 开头的字符串，然后将匹配到的部分替换为 ms-
+     *      该正则定义在 81 行，用于匹配以 -ms- 开头的字符串
+     *  2.  再用 rdashAlpha 正则匹配上一步的结果，然后将匹配到的部分用 fcamelCase 回调的返回值代替
+     *      replace 方法的第二个参数也可以是一个函数，并且该函数接受多个参数
+     *          第一个参数是：rdashAlpha 正则匹配到的部分，例如 margin-left 就是 -l
+     *          第二个参数是：rdashAlpha 正则匹配到的部分中的第一个子项，也就是 l
+     *          之后的参数以此类推
+     */
+    return string.replace( rmsPrefix, "ms-" ).replace( rdashAlpha, fcamelCase );
+}
+</code>
+</pre>   
+
+<h3 id="jQuery-nodeName"><a href="#jQuery-nodeName" class="headerlink" title="jQuery.nodeName"></a>jQuery.nodeName</h3><p>该方法用于判断指定的 DOM 节点的标签名称是否和指定的名称相等</p>
+<pre class="line-numbers">
+<code class="language-javascript">
+/**
+ *  判断一个指定节点的标签名是否等于指定的名称
+ *  @param  { Object }    elem   指定的节点
+ *  @param  { String }    name   指定的名称
+ *  @return { Boolean }          该节点的标签名是否等于指定名称的布尔值
+ */
+nodeName: function( elem, name ) {
+    /**
+     *  1.  先判断 elem 是否是一个节点
+     *          如果是的话，获取该节点的 nodeName 标签名，并转小写，然后与指定的名称参数（ 也转小写 ）进行相等判断
+     *          之所以都转成小写是因为在不同的浏览器下，标签名可能是大写，也可能是小写的，所以为了统一，一律转换成小写的
+     *          如果不是的话，直接返回 false
+     */
+    return elem.nodeName && elem.nodeName.toLowerCase() === name.toLowerCase();
+}
+</code>
+</pre>  
+
+<h3 id="jQuery-each"><a href="#jQuery-each" class="headerlink" title="jQuery.each"></a>jQuery.each</h3><p>该方法用于遍历数组/类数组或者普通 json 对象的所有属性，并且会为每一个属性执行一个回调方法<br>该回调会接受两个参数：当前遍历到的属性和该属性对应的值<br>在回调中，可以返回 <code>false</code>，这代表结束遍历，即当前之后的所有属性不再遍历，相当于循环中 <code>break</code> 的作用；也可以返回 <code>true</code>，这代表结束当前次数的遍历，直接进入下一个属性的遍历，相当于循环中 <code>continue</code> 的作用。看过源码后，就可以理解为什么可以做到这样</p>
+<pre class="line-numbers">
+<code class="language-javascript">
+/**
+ *  遍历 json 对象或者数组/类数组
+ *  @param  { Object }    obj         待遍历的对象
+ *  @param  { Function }  callback    obj 中每个属性都会执行的回调
+ *  @param  { Array }     args        数组参数，只用于 jQ 内部使用
+ *  @param  { Object }                返回第一个参数 obj 的引用
+ */
+each: function( obj, callback, args ) {
+    var value,                            // 保存 callback 回调的返回值
+        i = 0,                            // 循环变量
+        length = obj.length,              // obj 的长度，只在 obj 是 数组/类数组下才有值
+        isArray = isArraylike( obj );     // 通过 isArraylike 方法判断 obj 是否是一个 数组/类数组，并保存其布尔值
+
+    /**
+     *  1.  先判断 args 是否存在，如果存在，说明是内部调用了 each 方法，进入 if 
+     */
+    if ( args ) {
+        //  1.1 判断 obj 是 json 对象还是 数组/类数组；如果 obj 数组/类数组，进入 if
+        if ( isArray ) {
+            /**
+             *  如果 obj 是数组/类数组，使用 for 循环，根据 obj 中的 length 属性遍历每个值
+             *  通过 apply 方法，将 callback 的作用域指向当前遍历到的对象，并且将参数 args 传递给 callback 作参数
+             *  并且将 callback 的返回值保存，如果返回值是 false，那么直接结束遍历
+             *  这也隐式的说明，如果返回 true，那么就会直接跳出 callback，并且执行下一个属性的遍历，相当于 continue
+             */
+            for ( ; i < length; i++ ) {
+                value = callback.apply( obj[ i ], args );
+
+                if ( value === false ) {
+                    break;
+                }
+            }
+        } 
+        //  1.2 obj 是 json 对象
+        else {
+            /**
+             *  和遍历数组一模一样，只不过使用 for...in 循环来遍历
+             *  通过 apply 方法将 callback 的作用域指向当前遍历的对象，并将参数 args 当做参数传递
+             *  并且将 callback 的返回值保存，如果返回值是 false，那么直接结束遍历
+             *  这也隐式的说明，如果返回 true，那么就会直接跳出 callback，并且执行下一个属性的遍历，相当于 continue
+             */
+            for ( i in obj ) {
+                value = callback.apply( obj[ i ], args );
+
+                if ( value === false ) {
+                    break;
+                }
+            }
+        }
+    }
+    /**
+     *  2.  如果 args 不存在，进入 else，通常我们调用 each 方法就会进入 else，因为 args 只供内部使用
+     */
+    else {
+        //     2.1 判断 obj 是 json 对象还是 数组/类数组；如果 obj 是数组/类数组，进入 if
+        if ( isArray ) {
+            /**
+             *  如果 obj 是 数组/类数组，使用 for 循环，根据 obj 中的 length 属性遍历每个值
+             *  通过 call 方法，将 callback 的作用域指向当前遍历到的值，并且将循环变量 i 和 i 所对应的值都传递给 callback 作参数
+             *  并且将 callback 的返回值保存，如果返回值是 false，那么直接结束遍历，相当于 break
+             *  这也隐式的说明，如果返回 true，那么就会直接跳出 callback，并且执行下一个属性的遍历，相当于 continue
+             */
+            for ( ; i < length; i++ ) {
+                value = callback.call( obj[ i ], i, obj[ i ] );
+
+                if ( value === false ) {
+                    break;
+                }
+            }
+        } 
+        //     2.2 obj 是 json 对象
+        else {
+            /**
+             *  和遍历数组一模一样，只不过使用 for...in 循环来遍历
+             *  通过 call 方法将 callback 的作用域指向当前遍历的对象，并将索引 i 和 obj[i] 当做参数传递
+             *  并且将 callback 的返回值保存，如果返回值是 false，那么直接结束遍历
+             *  这也隐式的说明，如果返回 true，那么就会直接跳出 callback，并且执行下一个属性的遍历，相当于 continue
+             */
+            for ( i in obj ) {
+                value = callback.call( obj[ i ], i, obj[ i ] );
+
+                if ( value === false ) {
+                    break;
+                }
+            }
+        }
+    }
+
+    /**
+     *  3.  返回 obj，即第一个参数的引用
+     */
+    return obj;
+}
+</code>
+</pre>  
+
+<h3 id="isArraylike"><a href="#isArraylike" class="headerlink" title="isArraylike"></a>isArraylike</h3><p>这是一个内部方法，用于判断一个对象是否是 数组/类数组</p>
+<pre class="line-numbers">
+<code class="language-javascript">
+/**
+ *  判断 obj 是否是数组或类数组
+ *  @param  { Any }       obj    待判断的对象
+ *  @return { Boolean }          obj 是否是数组/类数组的布尔值
+ */
+function isArraylike( obj ) {
+    var length = obj.length,        // 获取 obj 的长度，只有在 obj 是数组/类数组时才会有值
+        type = jQuery.type( obj );  // 通过工具方法 type 获取 obj 的数据类型
+
+    /**
+     *  1.  通过工具方法判断 obj 是否是 window 对象，如果是，直接返回 false
+     */
+    if ( jQuery.isWindow( obj ) ) {
+        return false;
+    }
+
+    // 2. 这个地方没有看懂，什么情况下进入 if
+    if ( obj.nodeType === 1 && length ) {
+        return true;
+    }
+
+    /**
+     *  3.  
+     *      第一步
+     *      如果 obj 的类型是数组，则进行第二步判断
+     *      如果 obj 不是数组，再判断 obj 是否是函数，因为函数也是对象，也可能存在 length 这样的属性，但是函数并不是一个数组/类数组
+     *          所以，如果 obj 是函数，直接返回 false
+     *          如果 obj 不是函数，此时，obj 就是除数组和函数以外的任意类型了，进行第二步的判断
+     * 
+     *      第二步
+     *      判断 length 是否是 0
+     *          如果 length 是 0，说明 obj 是一个数组/类数组，只是不存在任何元素，直接返回 true
+     *          之所以要判断是否是 0，原因在于之后的判断，如果 length 为 0 的话，那么下面 length - 1 就是 -1 了，-1 是不在 obj 为数组的情况中的，那么此时判断结果就是 false 了，但它实际应该是数组，应该返回 true，所以，为了避免这种情况，要先判断 length 是否是 0
+     *          如果 length 不是 0，那么判断 length 的类型是否是 number 以及是否大于 0，再判断 length - 1 的属性是否存在于 obj 中，如果都满足，那就是一个类数组/数组，返回 true
+     * 
+     *      注意
+     *          如果 obj 是 String 的实例，那么也是满足以下条件的，因为 String 的实例也属于类数组
+     *          String 的实例类似于 { 0: 'h', 1: 'e', 2: 'l', 3: 'l', 4: 'o', length: 5 }
+     */
+    return type === "array" || type !== "function" &&
+        ( length === 0 ||
+        typeof length === "number" && length > 0 && ( length - 1 ) in obj );
+}
+</code>
+</pre>  
+
+<h3 id="jQuery-trim"><a href="#jQuery-trim" class="headerlink" title="jQuery.trim"></a>jQuery.trim</h3><p>该方法用于将字符串的首尾空格去除，其实就是字符串的 <code>trim</code> 方法  </p>
+<pre class="line-numbers">
+<code class="language-javascript">
+/**
+ *  去出指定字符串的首尾空格
+ *  @param  { String }    text    待处理的字符串
+ *  @return { String }            处理完成的字符串
+ */
+trim: function( text ) {
+    /**
+     *  先判断 text 是否是 undefined 或者 null
+     *      如果是，则直接返回空字符串
+     *      如果不是，调用 String.prototype.trim 方法将 text 的首尾空格去除并返回
+     */           
+    return text == null ? "" : core_trim.call( text );
+}
+</code>
+</pre>     
+
+<h3 id="jQuery-merge"><a href="#jQuery-merge" class="headerlink" title="jQuery.merge"></a>jQuery.merge</h3><p>该方法用于合并数组/类数组，接受两个参数，第一个是目标对象，第二个是源对象，且两个参数都必须是数组/类数组，源对象还包括一种特殊的情况，就是没有 <code>length</code> 属性的类数组</p>
+<pre class="line-numbers">
+<code class="language-javascript">  
+/**
+ *  合并对象
+ *  @param  { Object | Array }    first      目标对象
+ *  @param  { Object | Array }    second     源对象
+ *  @return { Object | Array }               合并后的目标对象，即第一个参数的引用
+ */
+merge: function( first, second ) {
+    var l = second.length,  // 获取源对象的 length
+        i = first.length,   // 获取目标对象的 length
+        j = 0;              // 循环变量
+
+    /**
+     *  1.  判断源对象的 length 属性是否是数值类型，如果是，说明源对象是一个数组/类数组，进入 if
+     *          使用 for 循环遍历，遍历源对象长度个数，然后将源对象的每个属性值赋给目标对象以当前长度为属性的值，然后对长度 + 1
+     *          遍历完成之后，目标对象就会在原来的基础上，增加第源对象的每个属性值
+     */
+    if ( typeof l === "number" ) {
+        for ( ; j < l; j++ ) {
+            first[ i++ ] = second[ j ];
+        }
+    } 
+    /**
+     *  2.  如果源对象的 length 属性不是数值类型，进入 else，说明源对象是一个普通的 json 对象
+     *      通过 while 循环判断源对象每一个元素是否是 undeinfed
+     *          如果不是，则将源对象的每个属性值赋给目标对象以当前长度为属性的值，然后对长度 + 1
+     */
+    else {
+        while ( second[j] !== undefined ) {
+            first[ i++ ] = second[ j++ ];
+        }
+    }
+
+    /**
+     *  3. 将此时循环变量 i 的值赋给目标对象的 length 属性，此时 i 的值就是目标对象中元素的个数
+     */
+    first.length = i;
+
+    /**
+     *  4. 返回目标对象的引用
+     */
+    return first;
+}
+</code>
+</pre>    
+
+<h4 id="示例一：源对象是数组"><a href="#示例一：源对象是数组" class="headerlink" title="示例一：源对象是数组"></a>示例一：源对象是数组</h4><pre class="line-numbers">
+<code class="language-javascript">
+/**
+ *  此时，因为源对象是数组，进入 if
+ *      for 循环遍历源对象的长度，也就是 3 次，遍历过程中，将源对象的每个值都赋给目标对象以当前长度为属性的值，然后再将目标对象的长度 + 1
+ *      最后，手动修改目标对象的 lenght，也就是目标对象本来的长度再加上源对象的长度，本例中是 6
+ */
+let src = [ 4, 5, 6 ];    // 源对象
+let tar = [ 1, 2, 3 ];    // 目标对象
+let res = $.merge( tar, src );
+console.log( res );       // [ 1, 2, 3, 4, 5, 6 ]
+</code>
+</pre>  
+
+<h4 id="示例二：源对象是类数组"><a href="#示例二：源对象是类数组" class="headerlink" title="示例二：源对象是类数组"></a>示例二：源对象是类数组</h4><pre class="line-numbers">
+<code class="language-javascript">
+/**
+ *  此时，因为源对象是类数组，进入 if
+ *      for 循环遍历源对象的长度，也就是 3 次，遍历过程中，将源对象的每个值都赋给目标对象以当前长度为属性的值，然后再将目标对象的长度 + 1
+ *      最后，手动修改目标对象的 lenght，也就是目标对象本来的长度再加上源对象的长度，本例中是 6
+ */
+let src = { 0: 'a', 1: 'b', 2: 'c', length: 3 };    // 源对象
+let tar = [ 0, 1, 2 ];                              // 目标对象
+let res = $.merge( tar, src );
+console.log( res );                                 // [ 0, 1, 2, 'a', 'b', 'c' ]
+</code>
+</pre>  
+
+<h4 id="示例三：源对象是没有-length-的类数组"><a href="#示例三：源对象是没有-length-的类数组" class="headerlink" title="示例三：源对象是没有 length 的类数组"></a>示例三：源对象是没有 length 的类数组</h4><pre class="line-numbers">
+<code class="language-javascript">
+/**
+ *  此时，因为源对象不是数组/类数组（ 没有 length 属性 ），进入 else 
+ *      通过 while 判断源对象从 0 开始的每个属性值是否是 undefined
+ *          如果不是，将每个值赋给目标对象中以当前长度为属性的值，然后再将长度 + 1
+ *      最后将目标对象的 length 属性设置为当前目标对象中的元素个数，也就是目标对象本来的长度再加上源对象的长度
+ *  这种情况和示例二的结果虽然一样，但是执行过程却并不一样
+ */
+let src = { 0: 'a', 1: 'b', 2: 'c' };    // 源对象
+let tar = [ 0, 1, 2 ];                   // 目标对象
+let res = $.merge( tar, src );
+console.log( res );                      // [ 0, 1, 2, 'a', 'b', 'c' ]
+</code>
+</pre>  
+
+<h4 id="示例四：源对象是普通的-json-对象"><a href="#示例四：源对象是普通的-json-对象" class="headerlink" title="示例四：源对象是普通的 json 对象"></a>示例四：源对象是普通的 json 对象</h4><pre class="line-numbers">
+<code class="language-javascript">
+/**
+ *  此时，因为源对象不是数组/类数组（ 没有 length 属性 ），进入 else 
+ *      通过 while 判断源对象从 0 开始的每个属性值是否是 undefined，在本例中源对象没有从 0 开始的属性，所以不会进入 while
+ *      最终的结果就是目标对象仍然保持不变
+ */
+let src = { name: 'IconMan', age: 23 };    // 源对象
+let tar = [ 0, 1, 2 ];                     // 目标对象
+let res = $.merge( tar, src );
+console.log( res );                        // [ 0, 1, 2 ]
+</code>
+</pre>
+
+<h3 id="jQuery-makeArray"><a href="#jQuery-makeArray" class="headerlink" title="jQuery.makeArray"></a>jQuery.makeArray</h3><p>该方法用于将类数组（ 包括 <code>String</code> 实例对象 ）转换为真正的数组</p>
+<pre class="line-numbers">
+<code class="language-javascript">
+/**
+ *  将类数组、String 实例转换为真正的数组
+ *  @param  { Object | Array | String }    arr      待转换的对象
+ *  @param  { Array }                      results  只共内部使用的对象
+ *  @return { Array }                               转换成功后的数组对象
+ */
+makeArray: function( arr, results ) {
+    /**
+     *  1.  保存结果的数组
+     *      如果提供了内部参数 results，那么就保存其引用
+     *      否则保存一个新数组的引用
+     */
+    var ret = results || [];
+
+    /**
+     *  2.  判断 arr 是否是 undefined 或者 null    
+     *      如果不是，则通过 isArraylike 方法判断 obj 是否是一个数组/类数组/String 实例的类数组
+     *      这里将 arr 作为参数传入了构造函数 Object 中，是为了如果 arr 是一个字符串的话，通过 Object 构造函数可以将其转换为 String 的实例，就可以检测其是否属于类数组了
+     *          如果是的话，通过 merge 方法，将 arr 合并到 ret 中
+     *              如果 arr 是一个字符串的话，那么将其放入到一个新的数组中，因为 merge 方法的第二个参数必须是一个数组/类数组
+     *              如果 arr 不是字符串的话，那么就是数组或者类数组了，直接传入 merge 中并合并到 ret 中
+     *          如果 arr 不满足数组/类数组的条件，那么就通过 Array.prototype.slice 方法将 arr 转换为数组
+     */
+    if ( arr != null ) {
+        if ( isArraylike( Object(arr) ) ) {
+            jQuery.merge( ret,
+                typeof arr === "string" ?
+                [ arr ] : arr
+            );
+        } else {
+            core_push.call( ret, arr );
+        }
+    }
+
+    /**
+     *  3. 返回转换成功后的 ret 数组
+     */
+    return ret;
+}
+</code>
+</pre>     
+
+<h3 id="jQuery-inArray"><a href="#jQuery-inArray" class="headerlink" title="jQuery.inArray"></a>jQuery.inArray</h3><p>该方法用于获取指定元素在数组中的索引，其实就是 <code>Array</code> 的 <code>indexOf</code> 方法  </p>
+<pre class="line-numbers">
+<code class="language-javascript">
+/**
+ *  搜索 elem 在数组 arr 中的索引
+ *  @param { Any }     elem 要查找到元素
+ *  @param { Array }   arr 从 arr 数组中查找
+ *  @param { Number }  i 开始查找的位置，如果该是大于数组的 length，那么就不会在数组中查找，直接返回 -1
+ */
+inArray: function( elem, arr, i ) {
+    /**
+     *  先判断 arr 是否是 undefined 或者 null
+     *      如果是，直接返回 -1
+     *      如果不是，再调用 Array.prototype.indexOf 方法搜索，并且返回搜索的结果
+     */
+    return arr == null ? -1 : core_indexOf.call( arr, elem, i );
+}
+</code>
+</pre>  
+
+<h4 id="示例一：查找基本数据类型"><a href="#示例一：查找基本数据类型" class="headerlink" title="示例一：查找基本数据类型"></a>示例一：查找基本数据类型</h4><pre class="line-numbers">
+<code class="language-javascript"> 
+let res = -1;
+let arr = [ 1, 2, 3, 4, 5 ];
+res = $.inArray( 2, arr );  // 1
+res = $.inArray( 5, arr );  // 4
+res = $.inArray( 0, arr );  // -1
+</code>
+</pre>    
+
+<h4 id="示例二：查找引用数据类型"><a href="#示例二：查找引用数据类型" class="headerlink" title="示例二：查找引用数据类型"></a>示例二：查找引用数据类型</h4><pre class="line-numbers">
+<code class="language-javascript"> 
+let _obj1 = { name: 'IconMan' };
+let _obj2 = { name: 'Nicholas' };
+let _obj3 = { name: 'Linh' };
+let arr = [ _obj1, _obj2, _obj3 ];
+let res = -1;
+res = $.inArray( _obj1, arr );  // 0
+res = $.inArray( _obj2, arr );  // 1
+res = $.inArray( _obj3, arr );  // 2
+/**
+ *  查找引用数据类型实际上查找的是地址，就算是属性全部相同，也是两个保存不同地址的变量
+ *  下面的例子中，新创建的对象和 _obj1 的属性全部一样，但是它们是两块不同的内存，所以新创建的对是无法查到的，返回 -1
+ */
+res = $.inArray( { name: 'IconMan' }, arr );  // -1
+</code>
+</pre>    
+
+<h4 id="示例三：从指定的位置开始查找"><a href="#示例三：从指定的位置开始查找" class="headerlink" title="示例三：从指定的位置开始查找"></a>示例三：从指定的位置开始查找</h4><pre class="line-numbers">
+<code class="language-javascript"> 
+/**
+ *  inArray 提供的第三个参数，可指定从该位置开始查找
+ */ 
+let _obj1 = { name: 'IconMan' };
+let _obj2 = { name: 'Nicholas' };
+let _obj3 = { name: 'Linh' };
+let arr = [ _obj1, _obj2, _obj3 ];
+let res = -1;
+res = $.inArray( _obj1, arr, 1 );   // -1  从指定的位置开始查找，而不会再找该位置之前的元素
+res = $.inArray( _obj3, arr, 1 );   // 2   
+res = $.inArray( _obj3, arr, 4 );   // -1  指定的位置超出数组的长度，返回 -1
+</code>
+</pre>    
+
+<h3 id="jQuery-grep"><a href="#jQuery-grep" class="headerlink" title="jQuery.grep"></a>jQuery.grep</h3><p>该方法用于按照指定的条件过滤一个新的数组，类似于 ES5 中数组的 <code>filter</code> 方法  </p>
+<pre class="line-numbers">
+<code class="language-javascript">
+/**
+ *  过滤数组
+ *  @param  { Array | Object }    elems         待过滤的数组/类数组
+ *  @param  { Function }          callback      过滤回调，即 elems 中的每个元素都会执行该回调，如果回调返回 true，
+ *  @param  { Boolean }           inv           是否按照 callback 中的相反条件进行过滤，如果提供 true，那么最终得到的结果就是过滤条件相反的结果    
+ *  @return { Array }                           过滤后的新数组
+ */
+grep: function( elems, callback, inv ) {
+    var retVal,                 // 保存回调的返回值，是一个 布尔值
+        ret = [],               // 返回的新数组
+        i = 0,                  // 循环变量
+        length = elems.length;  // 数组的长度
+
+    //  1.  取得第三个参数的布尔值
+    inv = !!inv;
+
+    //  2.  循环遍历数组
+    for ( ; i < length; i++ ) {
+        /**
+         *  2.1  调用 callback 方法，并将当前遍历的元素和索引当做参数传递，并且将 callback 的返回值转换为布尔值
+         */
+        retVal = !!callback( elems[ i ], i );
+        /**
+         *  2.2  判断 callback 的返回值和第三个参数的布尔值是否相等
+         *       如果 callback 返回 true，即当前元素满足过滤条件
+         *           此时若 inv 为 true，那么直接将不满足过滤条件的元素 push 到新数组中
+         *           如果 inv 为 false，那么就将满足过滤条件的元素 push 到新数组中
+         *       如果不满足过滤条件，即 callback 返回 false
+         *           此时若 inv 为 true，那么直接将满足过滤条件的元素 push 到新数组中
+         *           如果 inv 为 false，那么就将不满足过滤条件的元素 push 到新数组中
+         * 
+         *       总的来说，就是判断 callback 的返回值与第三个参数的布尔值是否相等
+         *           如果相等，则将不满足过滤条件的元素 push 到新的数组中
+         *           如果不相等，则将满足过滤条件的元素 push 到新的数组中
+         */            
+        if ( inv !== retVal ) {
+            ret.push( elems[ i ] );
+        }
+    }
+
+    /**
+     *  3.  返回过滤后的数组
+     */
+    return ret;
+}
+</code>
+</pre>  
+
+<h4 id="示例一：-不提供第三个参数"><a href="#示例一：-不提供第三个参数" class="headerlink" title="示例一： 不提供第三个参数"></a>示例一： 不提供第三个参数</h4><pre class="line-numbers">
+<code class="language-javascript">
+/**
+ *  grep 的第三个参数没有提供，也就是 undefined，转换为布尔值就是 false
+ *  因为回调方法是判断当前元素是否大于 2，如果是的话，返回 true；否则返回 false
+ *  对于 1 和 2 来说，肯定返回 false，而此时第三个参数是 false，所以不会将 1 和 2 push 到结果数组中
+ *  对于 3、4 和 5 来说，肯定返回 true，而此时第三个参数是 false，所以会将 3、4 和 5 push 到结果数组中
+ */
+let arr = [ 1, 2, 3, 4, 5 ];
+let res = $.grep( arr, item => item > 2 );
+console.log( res ); // [ 3, 4, 5 ]
+</code>
+</pre>  
+
+<h4 id="示例二：提供第三个参数"><a href="#示例二：提供第三个参数" class="headerlink" title="示例二：提供第三个参数"></a>示例二：提供第三个参数</h4><pre class="line-numbers">
+<code class="language-javascript">
+/**
+ *  grep 的第三个参数没提供是 true
+ *  因为回调方法是判断当前元素是否大于 2，如果是的话，返回 true；否则返回 false
+ *  对于 1 和 2 来说，肯定返回 false，而此时第三个参数是 true，所以会将 1 和 2 push 到结果数组中
+ *  对于 3、4 和 5 来说，肯定返回 true，而此时第三个参数是 true，所以不会将 3、4 和 5 push 到结果数组中
+ */
+let arr = [ 1, 2, 3, 4, 5 ];
+let res = $.grep( arr, item => item > 2, true );
+console.log( res ); // [ 1, 2 ]
+</code>
+</pre>  
+
+<h3 id="jQuery-map"><a href="#jQuery-map" class="headerlink" title="jQuery.map"></a>jQuery.map</h3><p>该方法将数组中的每个元素进行一次回调中的操作，并将回调的返回值保存到一个新的数组中，和 ES5 中数组的 <code>map</code> 方法一样  </p>
+<pre class="line-numbers">
+<code class="language-javascript">
+/**
+ *  映射数组
+ *  @param  { Array | Object }    elems        可以是数组或类数组
+ *  @param  { Function }          callback     每个元素执行的回调
+ *  @param  { Object }            arg          jQuery 内部使用的时提供的参数
+ *  @return                                    映射后的新数组
+ */
+map: function( elems, callback, arg ) {
+    var value,
+        i = 0,                          // 循环变量
+        length = elems.length,          // 获取数组/类数组的长度
+        isArray = isArraylike( elems ), // 判断 elems 是否是数组/类数组
+        ret = [];                       // 映射后的新数组
+
+    //  1.  判断 elems 是数组还是类数组，如果是数组/类数组，进入 if
+    if ( isArray ) {
+        /**
+         *  使用 for 循环遍历数组/类数组
+         *  每循环一次，调用一次 callback，并将当前遍历的元素、索引、arg 当做参数传入
+         *  判断 callback 的返回值是否是 undefined 或者 null
+         *      如果不是，则将 callback 的返回值添加到 ret 数组以当前长度为索引的元素
+         */
+        for ( ; i < length; i++ ) {
+            value = callback( elems[ i ], i, arg );
+
+            if ( value != null ) {
+                ret[ ret.length ] = value;
+            }
+        }
+    } 
+
+    //  2.  如果不是数组/类数组，也就是普通的 json 对象，进入 else
+    else {
+        /**
+         *  使用 for...in 遍历对象
+         *  每循环一次，调用一次 callback，并将当前遍历的元素、索引、arg 当做参数传入
+         *  判断 callback 的返回值是否是 undefined 或者 null
+         *      如果不是，则将 callback 的返回值添加到 ret 数组以当前长度为索引的元素
+         */
+        for ( i in elems ) {
+            value = callback( elems[ i ], i, arg );
+
+            if ( value != null ) {
+                ret[ ret.length ] = value;
+            }
+        }
+    }
+
+    /**
+     *  3.  通过 concat 方法将保存结果的数组 ret 与一个新的数组进行连接，并返回结果
+     *      这样做可以防止在 callback 中返回的就是一个数组，保证该方法得到的新数组是一个简单的数组，而不是嵌套的数组
+     */ 
+    return core_concat.apply( [], ret );
+}
+</code>
+</pre>  
+
+<h3 id="jQuery-proxy"><a href="#jQuery-proxy" class="headerlink" title="jQuery.proxy"></a>jQuery.proxy</h3><p>该方法用于修改指定函数的作用域，也就是 <code>this</code> 的指向，修改成功后，返回一个新的函数，这个新的函数内部会调用 <strong>指定的函数</strong></p>
+<pre class="line-numbers">
+<code class="language-javascript">
+/**
+ *  修改函数的作用域
+ *  @param  { Function | Object }    fn        可以是待修改的方法（ 也可以是作用域对象 ）
+ *  @param  { Object   | String }    context   可以是作用域对象（ 也可以是待修改方法的字符串名称 ）
+ *  @return { Function }                       一个新的函数
+ */
+proxy: function( fn, context ) {
+    var tmp, args, proxy;
+
+    /**
+     *  1.  判断作用域 context 是否是字符串
+     *      作用域 context 本身应该是一个对象，但如果它是一个字符串，那么就说明它现在是作用域对象中的方法，而此时作用域对象就是 fn
+     *      交换 context 和 fn，使作用域对象存储在 context 中，而方法存储在 fn 中
+     */
+    if ( typeof context === "string" ) {
+        tmp = fn[ context ];
+        context = fn;
+        fn = tmp;
+    }
+
+    // 2. 判断 fn 是否是函数，如果不是，直接退出函数
+    if ( !jQuery.isFunction( fn ) ) {
+        return undefined;
+    }
+
+    /**
+     *  3.  从 arguments 转换为数组，并且去除前两个元素，因为第一个元素和第二个元素分别是作用域对象和方法
+     */
+    args = core_slice.call( arguments, 2 );
+
+    /**
+     *  4.  创建一个新的函数，该函数返回 fn 调用的结果。$.proxy 最终返回的就是这个函数
+     *      修改 fn 中的 this 执行，如果 context 存在，则修改为 context；如果不存在 context，则修改为 this，也就是 jQuery
+     *      因为 $.proxy() 的返回值是一个函数，所以也可以调用，将调用返回方法时传递的参数转换为数组，并和 args 合并为一个数组，然后传递给 fn 做参数
+     */
+    proxy = function() {
+        return fn.apply( context || this, args.concat( core_slice.call( arguments ) ) );
+    };
+
+    /**
+     *  5.  为返回的新函数和传进来的函数 fn 设置唯一的标识
+     *      该标识如果在 fn 中存在，那么直接设置
+     *      如果不存在，那么使用 jQuery.guid 的值 + 1
+     */
+    proxy.guid = fn.guid = fn.guid || jQuery.guid++;
+
+    /**
+     *  5.  返回新创建的函数
+     */
+    return proxy;
+}
+</code>
+</pre>  
+
+<h4 id="示例一"><a href="#示例一" class="headerlink" title="示例一"></a>示例一</h4><pre class="line-numbers">
+<code class="language-javascript">
+function sayThis () {
+    return this;
+}
+
+console.log( sayThis() );   // window
+/**
+ *  此时，将 sayThis 方法中的 this 修改为指向 document
+ *      在 $.proxy 方法中，作用域对象 context 指向的是 document，fn 指向的是 sayThis 方法
+ *      而前两个 if 都不满足，所以不会进入，调用 $.proxy 时又没有提供多余的参数，所以 args 是一个空数组
+ *      将 fn 方法中的 this 修改为 document，并将调用 $.proxy 返回值方法时传递的参数转换为数组，再和 args 合并，将合并后的数组传递到 fn 参数中
+ *      合并后的数组是一个空数组，所以 sayThis 方法不会接受到任何参数
+ */
+let proxy = $.proxy( sayThis, document );
+console.log( proxy() );
+</code>
+</pre>  
+
+<h4 id="示例二"><a href="#示例二" class="headerlink" title="示例二"></a>示例二</h4><pre class="line-numbers">
+<code class="language-javascript">
+function sayThis ( data1, data2 ) {
+    console.log( data1, data2 );    // 'data1', 'data2'
+    return this;
+}
+
+console.log( sayThis() );
+/**
+ *  此时，将 sayThis 方法中的 this 修改为指向 document
+ *      在 $.proxy 方法中，作用域对象 context 指向的是 document，fn 指向的是 sayThis 方法
+ *      而前两个 if 都不满足，所以不会进入，在调用 $.proxy 时，传入了其他参数，所以第 30 行的 args 是一个包含 'data1' 和 'data2' 两个元素的数组
+ *      将 fn 的 this 修改为指向 document，并将调用 $.proxy 返回值方法时传递的参数转换为数组（ 是一个 [] ），再和 args 连接
+ *          将连接后的数组当做实参传递给 fn，所以 fn 中接受两个参数，分别是 'data1' 和 'data2'
+ */
+let proxy = $.proxy( sayThis, document, 'data1', 'data2' );
+console.log( proxy() );
+</code>
+</pre>  
+
+<h4 id="示例三"><a href="#示例三" class="headerlink" title="示例三"></a>示例三</h4><pre class="line-numbers">
+<code class="language-javascript">
+function sayThis ( param1, param2, param3 ) {
+    console.log( param1, param2, param3 );  // { name: "IconMan" } { name: "Nicholas" } { name: "Linh" }
+    return this;
+}
+
+let _obj1 = {
+    name: 'IconMan'
+};
+let _obj2 = {
+    name: 'Nicholas'
+};
+let _obj3 = {
+    name: 'Linh'
+};
+
+console.log( sayThis() );   // window
+/**
+ *   此时，将 sayThis 方法中的 this 修改为指向 document
+ *   在 $.proxy 方法中，作用域对象 context 指向的是 document，fn 指向的是 sayThis 方法
+ *      而前两个 if 都不满足，所以不会进入，在调用 $.proxy 时，传入两个参数（ _obj1 和 _obj2 ），所以第 30 行的 args 就是 [ _obj1, _obj2 ]
+ *      将 fn 的 this 修改为指向 document，并将调用 $.proxy 返回中方法时传递的参数转换为数组（ [ _obj3 ] ），再和 args 连接
+ *          将连接后的数组当做实参传递给 fn，所以 fn 中接受三个参数，分别是 _obj1、_obj2 和 _obj3
+ */
+let proxy = $.proxy( sayThis, document, _obj1, _obj2 );
+console.log( proxy( _obj3 ) );
+</code>
+</pre>   
+
+<h4 id="示例四"><a href="#示例四" class="headerlink" title="示例四"></a>示例四</h4><pre class="line-numbers">
+<code class="language-javascript">
+// 直接调用 obj.sayThis，那么其中的 this 肯定指向的 obj 对象，现在想让它指向 data，使用 $.proxy 来达到目的
+let data = {
+    name: 'IconMan'
+};
+let obj = {
+    sayThis: function () {
+        console.log( this );
+    }
+};
+
+obj.sayThis();  // { sayThis: ƒ }
+
+const _sayThis = $.proxy( obj.sayThis, data );
+_sayThis();     // { name: "IconMan" }
+
+/**
+ *  这种写法和 $.proxy( obj.sayThis, obj ) 是一模一样的
+ *      在 $.proxy 方法中，第一个 if 满足，此时 fn 指向 obj，二而 context 是 'sayThis'，将它们进行交换，是的 fn 指向 obj.sayThis 方法，而 context 指向 obj
+ *      之后的操作就和前面一样了 
+ */
+const _sayThis_2 = $.proxy( obj, 'sayThis' );
+_sayThis_2();   // { sayThis: ƒ }
+</code>
+</pre>  
+            </div>
+        
+        
+        
+    </div>
+
+    
+        
+    <div id="post-nav" class="row">
+        
+        <div class="nav-prev col-md-4 col-sm-4 col-xs-6">
+            
+                <a href="/jQuery/jQuery03.html" class="nav-prev-link nav-link ellipsis">
+                    <i class="iconfont icon-houtui"></i>
+                    jQuery源码分析（三）—— 回调对象
+                </a>
+            
+        </div>
+
+        <div class="nav-next col-md-4 col-md-offset-4 col-sm-4 col-sm-offset-4 col-xs-6">
+            
+                <a href="/jQuery/jQuery01.html" class="nav-next-link nav-link ellipsis">
+                    jQuery源码分析（一）
+                </a>
+                <i class="iconfont icon-qianjin"></i>
+            
+        </div>
+        
+    </div>
+
+    
+
+</li>
+                
+                
+            </div>
+        </div>
+        
+        
+
+        <script src="/js/jquery-2.0.3.min.js"></script>
+        <script src="/js/jquery.ztree.core.min.js"></script>
+        <script src="/js/index.js"></script>
+        <script src="/js/prism.js"></script>
+
+    </div>
+</body>
+</html>

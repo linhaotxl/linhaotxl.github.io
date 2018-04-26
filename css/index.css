@@ -1,13 +1,4 @@
-
-html, body, #blog {
-    height: 100%;
-}
-
-#main {
-    background-color: #fff;
-}
-
 #posts {
-    width: 84%;
-    margin: 0 auto;
+  width: container-width-84;
+  margin: 0 auto;
 }

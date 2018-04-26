@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>LinHao</title>
+    <link href="https://cdn.bootcss.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.bootcss.com/animate.css/3.5.0/animate.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="/css/index.css">
+    <link rel="stylesheet" href="/css/zTreeStyle.css">
+</head>
+<body>
+    
+
+    <div id="blog" class="PingFang_SC_Normal">
+        <div id="header">
+    <div class="header-container container">
+        <div class="collapse navbar-collapse row" id="bs-example-navbar-collapse-1">
+            <ul class="header-list nav navbar-nav col-md-6 col-sm-6 col-xs-6">
+                
+                    <li class="header-list-item"><a href="/">HOME</a></li>
+                
+                    <li class="header-list-item"><a href="/article">ARTICLE</a></li>
+                
+                    <li class="header-list-item"><a href="/about">ABOUT</a></li>
+                
+            </ul>
+            
+        </div>
+        
+        
+    </div>
+</div>
+        <div id="header_scroll" >
+    <div class="header_scroll_block"></div>
+</div>
+        
+        <div id="main" class="clear">
+            <div class="main-container container">
+                
+
+                
+
+    
+
+    <div id="title" class="title-post">
+        <h3 class="title-container">
+            <span class="title-text AGaramondPro_Italic_Bold">Straight Matter</span>
+        </h3>
+    </div>
+
+
+
+<li class="article-item">
+    <div class="article-container">
+        <img class="article-img img-responsive" src="" alt="">
+        <h3 class="article-title"></h3>
+        <div class="article-header">
+            <div class="article-info">
+                <i class="iconfont icon-xinxi"></i>
+                <span class="article-info-categories article-info-item">
+                    <span class="AGaramondPro_Bold article-info-title">Categories</span>
+                    
+                </span>
+                <span class="article-info-tags article-info-item">
+                    <span class="AGaramondPro_Bold tags-info-title">Tags</span>
+                    
+                </span>
+                <span class="article-info-item article-info-date AGaramondPro_Regular"><span>2018-04-11</span></span>
+                <span class="article-info-item article-info-portrait clear">
+                    <img src="https://awcdn1.ahmad.works/writing/wp-content/uploads/2015/05/Author.jpg" alt="">
+                    <span class="article-info-item article-info-username AGaramondPro_Bold">LinHao</span>
+                </span>
+                
+            </div>
+        </div>
+        
+            <div class="article-content article-text">
+                <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>proxy</title>
+</head>
+<body>
+    
+    <script src="../jquery-2.0.3.js"></script>
+
+    <!-- 
+        示例一
+     -->
+    <script>
+        (function () {
+            console.log( '---------- 示例一 ----------' );
+            
+            function sayThis () {
+                return this;
+            }
+            
+            console.log( sayThis() );   // window
+            /**
+             *  此时，将 sayThis 方法中的 this 修改为指向 document
+             *      在 $.proxy 方法中，作用域对象 context 指向的是 document，fn 指向的是 sayThis 方法
+             *      而前两个 if 都不满足，所以不会进入，调用 $.proxy 时又没有提供多余的参数，所以 args 是一个空数组
+             *      将 fn 方法中的 this 修改为 document，并将调用 $.proxy 返回值方法时传递的参数转换为数组，再和 args 合并，将合并后的数组传递到 fn 参数中
+             *      合并后的数组是一个空数组，所以 sayThis 方法不会接受到任何参数
+             */
+            let proxy = $.proxy( sayThis, document );
+            console.log( proxy() );
+
+        })( window, jQuery );
+    </script>
+
+    <!-- 
+        示例二
+     -->
+    <script>
+        (function ( window, $ ) {
+            console.log( '---------- 示例二 ----------' );
+
+            function sayThis ( data1, data2 ) {
+                console.log( data1, data2 );    // 'data1', 'data2'
+                return this;
+            }
+
+            console.log( sayThis() );
+            /**
+             *   此时，将 sayThis 方法中的 this 修改为指向 document
+             *      在 $.proxy 方法中，作用域对象 context 指向的是 document，fn 指向的是 sayThis 方法
+             *      而前两个 if 都不满足，所以不会进入，在调用 $.proxy 时，传入了其他参数，所以第 30 行的 args 是一个包含 'data1' 和 'data2' 两个元素的数组
+             *      将 fn 的 this 修改为指向 document，并将调用 $.proxy 返回值方法时传递的参数转换为数组（ 是一个 [] ），再和 args 连接
+             *          将连接后的数组当做实参传递给 fn，所以 fn 中接受两个参数，分别是 'data1' 和 'data2'
+             */
+            let proxy = $.proxy( sayThis, document, 'data1', 'data2' );
+            console.log( proxy() );
+            
+        })( window, jQuery );
+    </script>
+
+    <!-- 
+        示例三
+     -->
+    <script>
+        (function ( widow, $ ) {
+            console.log( '---------- 示例三 ----------' );
+
+            function sayThis ( param1, param2, param3 ) {
+                console.log( param1, param2, param3 );  // { name: "IconMan" } { name: "Nicholas" } { name: "Linh" }
+                return this;
+            }
+
+            let _obj1 = {
+                name: 'IconMan'
+            };
+            let _obj2 = {
+                name: 'Nicholas'
+            };
+            let _obj3 = {
+                name: 'Linh'
+            };
+
+            console.log( sayThis() );   // window
+            /**
+             *   此时，将 sayThis 方法中的 this 修改为指向 document
+             *   在 $.proxy 方法中，作用域对象 context 指向的是 document，fn 指向的是 sayThis 方法
+             *      而前两个 if 都不满足，所以不会进入，在调用 $.proxy 时，传入两个参数（ _obj1 和 _obj2 ），所以第 30 行的 args 就是 [ _obj1, _obj2 ]
+             *      将 fn 的 this 修改为指向 document，并将调用 $.proxy 返回中方法时传递的参数转换为数组（ [ _obj3 ] ），再和 args 连接
+             *          将连接后的数组当做实参传递给 fn，所以 fn 中接受三个参数，分别是 _obj1、_obj2 和 _obj3
+             */
+            let proxy = $.proxy( sayThis, document, _obj1, _obj2 );
+            console.log( proxy( _obj3 ) );
+
+        })( window, jQuery );
+    </script>
+
+    <!-- 
+        示例四
+     -->
+    <script>
+    
+        (function ( window, $ ) {
+            console.log( '---------- 示例四 ----------' );
+
+            // 直接调用 obj.sayThis，那么其中的 this 肯定指向的 obj 对象，现在想让它指向 data，使用 $.proxy 来达到目的
+            let data = {
+                name: 'IconMan'
+            };
+            let obj = {
+                sayThis: function () {
+                    console.log( this );
+                }
+            };
+
+            obj.sayThis();  // { sayThis: ƒ }
+
+            const _sayThis = $.proxy( obj.sayThis, data );
+            _sayThis();     // { name: "IconMan" }
+
+            /**
+             *  这种写法和 $.proxy( obj.sayThis, obj ) 是一模一样的
+             *      在 $.proxy 方法中，第一个 if 满足，此时 fn 指向 obj，二而 context 是 'sayThis'，将它们进行交换，是的 fn 指向 obj.sayThis 方法，而 context 指向 obj
+             *      之后的操作就和前面一样了 
+             */
+            const _sayThis_2 = $.proxy( obj, 'sayThis' );
+            _sayThis_2();   // { sayThis: ƒ }
+
+        })( window, jQuery );
+
+    </script>
+
+</body>
+</html>
+            </div>
+        
+        
+        
+    </div>
+
+    
+        
+    
+
+</li>
+                
+                
+            </div>
+        </div>
+        
+        
+
+        <script src="/js/jquery-2.0.3.min.js"></script>
+        <script src="/js/jquery.ztree.core.min.js"></script>
+        <script src="/js/index.js"></script>
+        <script src="/js/prism.js"></script>
+
+    </div>
+</body>
+</html>

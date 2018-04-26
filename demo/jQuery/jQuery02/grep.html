@@ -1,0 +1,47 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>grep</title>
+</head>
+
+<body>
+    <script src="https://cdn.bootcss.com/jquery/2.0.3/jquery.js"></script>
+
+    <!-- 
+        示例一：不提供第三个参数
+     -->
+    <script>
+        (function ( window, $ ) {
+            /**
+             *  grep 的第三个参数没有提供，也就是 undefined，转换为布尔值就是 false
+             *  因为回调方法是判断当前元素是否大于 2，如果是的话，返回 true；否则返回 false
+             *  对于 1 和 2 来说，肯定返回 false，而此时第三个参数是 false，所以不会将 1 和 2 push 到结果数组中
+             *  对于 3、4 和 5 来说，肯定返回 true，而此时第三个参数是 false，所以会将 3、4 和 5 push 到结果数组中
+             */
+            let arr = [ 1, 2, 3, 4, 5 ];
+            let res = $.grep( arr, item => item > 2 );
+            console.log( res ); // [ 3, 4, 5 ]
+        })( window, jQuery );
+    </script>
+
+    <!-- 
+        示例二：提供第三个参数
+     -->
+     <script>
+        (function ( window, $ ) {
+            /**
+             *  grep 的第三个参数没提供是 true
+             *  因为回调方法是判断当前元素是否大于 2，如果是的话，返回 true；否则返回 false
+             *  对于 1 和 2 来说，肯定返回 false，而此时第三个参数是 true，所以会将 1 和 2 push 到结果数组中
+             *  对于 3、4 和 5 来说，肯定返回 true，而此时第三个参数是 true，所以不会将 3、4 和 5 push 到结果数组中
+             */
+            let arr = [ 1, 2, 3, 4, 5 ];
+            let res = $.grep( arr, item => item > 2, true );
+            console.log( res ); // [ 1, 2 ]
+        })( window, jQuery );
+    </script>
+</body>
+
+</html>

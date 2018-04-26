@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>noConflict</title>
+</head>
+<body>
+    
+    <!-- 
+        示例一：交出 $ 的控制权，引入 jQuery 文件之前未修改 $ 的指向
+    -->
+    <!-- <script src="https://cdn.bootcss.com/jquery/2.0.3/jquery.js"></script>
+    <script>
+    
+        (function ( window ) {
+
+            /**
+             *  在执行 noConflict 方法中，由于之前没有修改 $ 的指向，所以 _$ 为 undefined
+             *  在方法内部将 window.$ 的值也修改为 undefined
+             *  此时，将 $ 的控制权交出，无法再使用，但是可以使用 noConflict 的返回值作为 jQuery 构造函数
+             */
+            let myjQuery = $.noConflict();  
+            console.log( $ );               // undefined
+            console.log( myjQuery );        // jQuery 构造函数
+
+        })( window );
+
+    </script> -->
+
+    <!-- 
+        示例二：交出 $ 的控制权，引入 jQuery 文件之前修改 $ 的指向
+    -->
+    <script>
+        window.$ = function () {
+            console.log( 'custom $' );
+        }
+
+    </script>
+    <script src="https://cdn.bootcss.com/jquery/2.0.3/jquery.js"></script>
+    <script>
+
+        /**
+         *  在引进 jQuery 文件之前，window.$ 的指向指向自定义的函数，在引入 jQuery 文件后，window.$ 的指向被修改为指向 jQuery 构造函数
+         *  在执行 noConflict 方法中，_$ 的指向是自定义的函数，并且将 window.$ 的指向也修改为自定义的函数
+         *  此时，将 $ 的控制权恢复为之前的对象，不再是 jQuery 构造函数，但是可以使用 noConflict 的返回值作为 jQuery 构造函数
+         */
+        (function ( window ) {
+            console.log( $ );       // jQuery 构造函数
+            let myjQuery = $.noConflict();
+            console.log( $ );       // 自定义函数
+
+        })( window );
+
+    </script>
+
+</body>
+</html>

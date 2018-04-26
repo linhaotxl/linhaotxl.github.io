@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>LinHao</title>
+    <link href="https://cdn.bootcss.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.bootcss.com/animate.css/3.5.0/animate.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="/css/index.css">
+    <link rel="stylesheet" href="/css/zTreeStyle.css">
+</head>
+<body>
+    
+
+    <div id="blog" class="PingFang_SC_Normal">
+        <div id="header">
+    <div class="header-container container">
+        <div class="collapse navbar-collapse row" id="bs-example-navbar-collapse-1">
+            <ul class="header-list nav navbar-nav col-md-6 col-sm-6 col-xs-6">
+                
+                    <li class="header-list-item"><a href="/">HOME</a></li>
+                
+                    <li class="header-list-item"><a href="/article">ARTICLE</a></li>
+                
+                    <li class="header-list-item"><a href="/about">ABOUT</a></li>
+                
+            </ul>
+            
+        </div>
+        
+        
+    </div>
+</div>
+        <div id="header_scroll" >
+    <div class="header_scroll_block"></div>
+</div>
+        
+        <div id="main" class="clear">
+            <div class="main-container container">
+                
+
+                
+
+    
+
+    <div id="title" class="title-post">
+        <h3 class="title-container">
+            <span class="title-text AGaramondPro_Italic_Bold">Straight Matter</span>
+        </h3>
+    </div>
+
+
+
+<li class="article-item">
+    <div class="article-container">
+        <img class="article-img img-responsive" src="" alt="">
+        <h3 class="article-title"></h3>
+        <div class="article-header">
+            <div class="article-info">
+                <i class="iconfont icon-xinxi"></i>
+                <span class="article-info-categories article-info-item">
+                    <span class="AGaramondPro_Bold article-info-title">Categories</span>
+                    
+                </span>
+                <span class="article-info-tags article-info-item">
+                    <span class="AGaramondPro_Bold tags-info-title">Tags</span>
+                    
+                </span>
+                <span class="article-info-item article-info-date AGaramondPro_Regular"><span>2018-04-23</span></span>
+                <span class="article-info-item article-info-portrait clear">
+                    <img src="https://awcdn1.ahmad.works/writing/wp-content/uploads/2015/05/Author.jpg" alt="">
+                    <span class="article-info-item article-info-username AGaramondPro_Bold">LinHao</span>
+                </span>
+                
+            </div>
+        </div>
+        
+            <div class="article-content article-text">
+                <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+<body>
+    
+    <script src="../jquery-2.0.3.js"></script>
+
+    <!-- 
+        示例二：提供 memory 参数
+     -->
+    <script>
+    
+        (function ( window, $) {
+            console.log( '---------- 实例一开始 ----------' );
+
+            // 获取回调对象
+            const cb = $.Callbacks( 'memory' );
+
+            /**
+             *  定义回调
+             */
+            function func1 ( value ) {
+                console.log( 'func1 被调用开始' );
+                console.log( 'func1 的参数是: ' + value );
+                console.log( 'func1 被调用结束' );
+            }
+
+            function func2 ( value ) {
+                console.log( 'func2 被调用开始' );
+                console.log( 'func2 的参数是: ' + value );
+                console.log( 'func2 被调用结束' );
+            }
+
+            cb.add( func1 );
+
+            /**
+             *  此时，在内部的 fire 方法中，func1 回调会被执行，并且此时没有提供 once 参数，所以会进入 66 行的 if 中，并且什么也不做
+             *      并且由于执行了内部的 fire 方法，又提供了 memory 参数，所以内部 fire 方法中的 memory 变量保存的就是合并后的数组，此时也就是 self 对象和含有一个属性的 arguments 对象
+             */
+            cb.fire( 1 );
+
+            /**
+             *  在 2s 后，再一次执行 add 方法，并将 func2 回调添加到了回调队列中
+             *      在回调添加成功后，先判断调用 $.Callbacks.add 方法是否处于某个回调中，此时 firing 是 false，所以不会进入 if，而 memory 变量又存在，所以会进入 else
+             *      此时，将添加回调之前的长度赋给 firingStart（ 此时是 1 ），然后再调用内部的 fire 方法，并将 memory 作为参数传递
+             *          在内部的 fire 方法中，firingIndex 的值也是 1，而此时通过 for 循环遍历回调队列时，是从 1 开始的，而此时回调队列的长度已经变为 2 了，所以会调用新添加的回调方法
+             */
+            setTimeout(_ => {
+                // cb.add( func2 );
+            }, 2000);
+
+            console.log( '---------- 实例一结束 ----------' );
+
+        })( window, jQuery );
+
+    </script>
+
+    <!-- 
+        实例二：在回调中使用使用 add
+     -->
+    <script>
+    
+    (function ( window, $) {
+            console.log( '---------- 实例二开始 ----------' );
+
+            // 获取回调对象
+            const cb = $.Callbacks( 'memory' );
+
+            /**
+             *  定义回调
+             */
+            function func1 ( value ) {
+                console.log( 'func1 被调用开始' );
+                console.log( 'func1 的参数是: ' + value );
+                cb.add( func2 );
+                console.log( 'func1 被调用结束' );
+            }
+
+            function func2 ( value ) {
+                console.log( 'func2 被调用开始' );
+                console.log( 'func2 的参数是: ' + value );
+                console.log( 'func2 被调用结束' );
+            }
+
+            /**
+             *  在这个添加方法中，只是将 func1 添加到回调队里中，其他什么都不会做，不会进入 add 的 if 或 else
+             */
+            cb.add( func1 );
+
+            /**
+             *  使用 $.Callbacks.fire 方法遍历回调队列，最终会调用内部的 fire 方法来遍历
+             *      在执行 func1 回调时，又调用了 $.Callbacks.add 方法
+             *          此时，将 func2 回调添加到回调队列中，然后判断 firing 是否为 true，因为此时是在回调中执行的 add 方法，所以条件成立，进入 if
+             *          将最新的回调队列的长度赋值给 firingLength，然后就退出 $.Callbacks.add 方法
+             *      此时，在内部的 fire 方法中遍历 func1 之前时，firingLength 的值是 1，当执行完 func1 后，firingLength 的值就变为了 2，所以会再进行一次遍历操作，此时就会执行新添加的 func2 回调了
+             */
+            cb.fire( 1 );
+
+            console.log( '---------- 实例二结束 ----------' );
+
+        })( window, jQuery );
+
+    </script>
+
+    <!-- 
+        示例三：提供 memory 和 once
+     -->
+    <script>
+        console.log( '---------- 实例三开始 ----------' );
+    
+        (function ( window, $ ) {
+
+            // 获取回调对象，提供 once 和 memory 参数
+            const cb = $.Callbacks( 'once memory' );
+
+            /**
+             *  定义回调
+             */
+             function func1 ( value ) {
+                console.log( 'func1 被调用开始' );
+                console.log( 'func1 的参数是: ' + value );
+                console.log( 'func1 被调用结束' );
+            }
+
+            function func2 ( value ) {
+                console.log( 'func2 被调用开始' );
+                console.log( 'func2 的参数是: ' + value );
+                console.log( 'func2 被调用结束' );
+            }
+
+            // 添加回调
+            cb.add( func1 );
+
+            /**
+             *  执行所有回调
+             *      此时，在内部的 fire 方法遍历完回调队列后，以为提供了 once 参数，所有 stack 是 false，不会进入 if，而又提供了 memory 参数，所以 memory 变量存在，进入 81 行的 else if
+             *      此时，将回调队列置为一个空数组，之所以要这样做，是因为提供了 once 参数，所以在第一次执行 $.Callbacks.fire 或者  $.Callbacks.fireWith 方法时，就将其置空，这样，之后再使用 $.Callbacks.fire 或者  $.Callbacks.fireWith 方法时，遍历的仅仅是一个空数组了
+             *      但是为什么不使用 $.Callbacks.disable 方法将回调对象禁用呢？
+             *          这是因为同时还挺了 memory 参数，memory 参数的作用就是第一次调用 $.Callbacks.fire 或者  $.Callbacks.fireWith 方法后，之后再使用 $.Callbacks.add 方法时，会将新添加的回调执行，如果将回调对象禁用的话，那么回调队列 list 就会被置为 undefined 了，而在使用 $.Callbacks.add 方法时，都是基于 list 是数组的情况下的，所以将 list 设置为一个新的空数组
+             */
+            cb.fire( '通过 fire 执行所有回调' );
+
+            /**
+             *  此时，回调队列在上一步已经被置为一个空数组，所以在使用 $.Callbacks.add 方法时，又将 func2 添加到空数组中，添加完之后再次调用内部的 fire 方法遍历，遍历执行完成之后，又重复上一步的操作，将 list 置为一个新的空数组
+             *  所以，每次调用完内部的 fire 方法之后，都会将 list 置为一个新的空数组，这就保证了在提供 once 和 memory 参数的情况下，回调对象能正常工作
+             */
+            cb.add( func2 );
+
+            // Result:
+            // func1 被调用开始
+            // func1 的参数是: 通过 fire 执行所有回调
+            // func1 被调用结束
+            // func2 被调用开始
+            // func2 的参数是: 通过 fire 执行所有回调
+            // func2 被调用结束
+
+        })( window, jQuery );
+
+        console.log( '---------- 实例三结束 ----------' );
+    
+    </script>
+
+    <!-- 
+        示例四：remove
+     -->
+    <script>
+        console.log( '---------- 实例四开始 ----------' );
+    
+        (function ( window, $ ) {
+
+            // 获取回调对象，提供 once 和 memory 参数
+            const cb = $.Callbacks();
+
+            /**
+             *  定义回调
+             */
+             function func1 ( value ) {
+                console.log( 'func1 被调用开始' );
+                console.log( 'func1 的参数是: ' + value );
+                console.log( 'func1 被调用结束' );
+                cb.remove( func1 );
+                // cb.list();
+            }
+
+            function func2 ( value ) {
+                console.log( 'func2 被调用开始' );
+                console.log( 'func2 的参数是: ' + value );
+                console.log( 'func2 被调用结束' );
+            }
+
+            function func3 ( value ) {
+                console.log( 'func3 被调用开始' );
+                console.log( 'func3 的参数是: ' + value );
+                console.log( 'func3 被调用结束' );
+            }
+
+            cb.add( func1, func2, func3 );
+
+            cb.fire( 1 );
+
+            // cb.remove( func1 );
+
+            console.log( '--------------' )
+
+            // cb.fire( 2 );
+
+        })( window, jQuery );
+
+        console.log( '---------- 实例四结束 ----------' );
+    </script>
+
+</body>
+</html>
+            </div>
+        
+        
+        
+    </div>
+
+    
+        
+    
+
+</li>
+                
+                
+            </div>
+        </div>
+        
+        
+
+        <script src="/js/jquery-2.0.3.min.js"></script>
+        <script src="/js/jquery.ztree.core.min.js"></script>
+        <script src="/js/index.js"></script>
+        <script src="/js/prism.js"></script>
+
+    </div>
+</body>
+</html>

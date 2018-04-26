@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>LinHao</title>
+    <link href="https://cdn.bootcss.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.bootcss.com/animate.css/3.5.0/animate.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="/css/index.css">
+    <link rel="stylesheet" href="/css/zTreeStyle.css">
+</head>
+<body>
+    
+
+    <div id="blog" class="PingFang_SC_Normal">
+        <div id="header">
+    <div class="header-container container">
+        <div class="collapse navbar-collapse row" id="bs-example-navbar-collapse-1">
+            <ul class="header-list nav navbar-nav col-md-6 col-sm-6 col-xs-6">
+                
+                    <li class="header-list-item"><a href="/">HOME</a></li>
+                
+                    <li class="header-list-item"><a href="/article">ARTICLE</a></li>
+                
+                    <li class="header-list-item"><a href="/about">ABOUT</a></li>
+                
+            </ul>
+            
+        </div>
+        
+        
+    </div>
+</div>
+        <div id="header_scroll" >
+    <div class="header_scroll_block"></div>
+</div>
+        
+        <div id="main" class="clear">
+            <div class="main-container container">
+                
+
+                
+
+    
+
+    <div id="title" class="title-post">
+        <h3 class="title-container">
+            <span class="title-text AGaramondPro_Italic_Bold">Straight Matter</span>
+        </h3>
+    </div>
+
+
+
+<li class="article-item">
+    <div class="article-container">
+        <img class="article-img img-responsive" src="" alt="">
+        <h3 class="article-title"></h3>
+        <div class="article-header">
+            <div class="article-info">
+                <i class="iconfont icon-xinxi"></i>
+                <span class="article-info-categories article-info-item">
+                    <span class="AGaramondPro_Bold article-info-title">Categories</span>
+                    
+                </span>
+                <span class="article-info-tags article-info-item">
+                    <span class="AGaramondPro_Bold tags-info-title">Tags</span>
+                    
+                </span>
+                <span class="article-info-item article-info-date AGaramondPro_Regular"><span>2018-04-18</span></span>
+                <span class="article-info-item article-info-portrait clear">
+                    <img src="https://awcdn1.ahmad.works/writing/wp-content/uploads/2015/05/Author.jpg" alt="">
+                    <span class="article-info-item article-info-username AGaramondPro_Bold">LinHao</span>
+                </span>
+                
+            </div>
+        </div>
+        
+            <div class="article-content article-text">
+                <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Callback 01</title>
+</head>
+<body>
+    
+    <script src="../jquery-2.0.3.js"></script>
+
+    <!-- 
+        示例一：不提供任何参数
+     -->
+    <script>
+        console.log( '---------- 示例一开始 ----------' );
+    
+        (function ( window, $ ) {
+
+            /**
+             *  这句代码执行结束后，cb 就是 self 对象的引用，即回调对象
+             *  此时 cb 中的回调队列还是一个空数组
+             */
+            let cb = $.Callbacks();
+
+            /**
+             *  定义回调函数
+             */
+            function func1 ( a, b, c ) {
+                console.log( 'func1 回调执行开始' );
+                console.log( a, b, c )
+                console.log( this === cb );     // true
+                console.log( 'func1 回调执行结束' );
+            }
+
+            /**
+             *  先不用考虑 add 方法具体做了什么，总之这句代码执行结束后，cb 的回调队列中含有一个元素，即 func1
+             */
+            cb.add( func1 );
+
+            /**
+             *  这句代码执行结束后，cb 的回调队列中含有一个元素，即 func1
+             *  此时，fire 方法内部实际调用的是 fireWith，并将 this（ 也就是 self 对象 ）传了过去
+             *      在 fireWith 方法中，因为没有提供 args 参数，所以 args 保存的是空数组的引用，并将 self 对象和这个空数组合并为一个新的数组
+             *      之后，又调用了内部的 fire 方法，将合并后的数组传了过去
+             *          因为没有提供 memory 参数，所以 memory 变量的值是 false；之后开始遍历回调队列，并将每个回调的作用域设置为 self
+             *          所以在 func1 的回调中，this 就是 cb，所以打印是 true
+             */
+            // cb.fire();
+             
+            /**
+             *  如果执行下面的代码，则 fire 方法内部调用 fireWith 时，除了传第一个参数 self 对象外，还会将包含 '1', '2', { name: 'IconMan' } 三个属性值的 arguments 对象传过去
+             *      在前面的 cb.fire() 中，因为没有传入任何参数，所以调用 fireWith 时传不传 arguments 是一样的
+             *      在 fireWith 中，将 self 对象和带有三个属性值的 arguments 对象合并为一个新的数组，并传入内部的 fire 方法
+             *      在内部的 fire 中，在遍历回调队列中，不仅会修改回调的作用域为 self 对象，还会将参数（ 包含三个属性值的 arguments 对象 ）通过 apply 的方法传给每个回调
+             *      所以在 func1 中，会接受三个参数，分别是 '1'、'2' 和 { name: 'IconMan' }
+             */
+            cb.fire( '1', '2', { name: 'IconMan' } );
+
+            /**
+             *  此时再调用一次 $.Callbacks.fire 方法时，内部还是调用 $.Callbacks.fireWith 方法
+             *      此时回调队列 list 还是存在的，但是 fired 已经被设置为 false 了，所以要判断 satck 的值
+             *      由于调用 $.Callbacks 时没有传递 once 参数，所以 stack 是一个空数组，所以会进入 if
+             *      之后的操作和上面一样，还是会再次遍历回调队列，所以 func1 再次被执行
+             */
+            cb.fire( '1', '2', { name: 'IconMan' } );
+
+        })( window, jQuery );
+
+        console.log( '---------- 示例一结束 ----------' );
+
+    </script>
+
+    <!-- 
+        示例二：提供 once 参数
+     -->
+    <script>
+        console.log( '---------- 示例二开始 ----------' );
+        
+        (function ( window, $ ) {
+
+            /**
+             *  定义回调对象，并且提供 once 参数，此时 stack 就是 false 
+             */
+            let cb = $.Callbacks( 'once' );
+
+            /**
+             *  定义回调方法 
+             */
+            function func1 () {
+                console.log( '回调方法开始' );
+                console.log( '回调方法结束' );
+            }
+
+            /**
+             *  添加回调方法 func1 
+             */
+            cb.add( func1 );
+
+            /**
+             *  调用 fire 时，内部会调用 fireWith 方法，和前面一样，还是调用内部的 fire 方法
+             *      在内部的 fire 方法中，遍历完所有的回调之后，因为提供了 once 参数（ 所以 stack 是 false ）并且没有提供 memory 参数（ 所以 memory 是 false ）
+             *      所以会进入最后的 else 中，将当前的回调对象禁用，禁用会将回调队列 list 设置为 undefined
+             */
+            cb.fire();  // 回调 func1 被执行
+
+            /**
+             *  由于之前已经将回调对象禁用（ 回调队列 list 设置为 undefined ），所以之后再调用 $.Callbacks.fire 或者 $.Callbacks.fireWith 方法时，无法进入 if，所以也就无法调用内部的 fire 方法进行遍历
+             *  once 参数就保证了只有第一次的 $.Callbacks.fire 或者 $.Callbacks.fireWith 方法是有效的
+             */
+            cb.fire();  // 回调 func1 不被执行   
+            cb.fire();  // 回调 func1 不被执行   
+
+        })( window, jQuery );
+
+        console.log( '---------- 示例二结束 ----------' );
+
+    </script>
+
+    <!-- 
+        实例三：在回调中再次调用 fire 方法  
+     -->
+    <script>
+        console.log( '---------- 示例三开始 ----------' );
+    
+        (function ( window, $ ) {
+
+            let cb = $.Callbacks();
+            let isCalled = false;
+
+            function func1 ( args ) {
+                /**
+                 *  第二步
+                 *  在回调中调用 $.Callbacks.fire（ 调用 $.Callbacks.fireWith 方法也是一样的 ）
+                 *      内部还是调用 $.Callbacks.fireWith 方法，此时，list 队列存在，并且 fired 已经被置为了 true，所以要判断 stack
+                 *          由于在调用 $.Callbacks 时没有提供 once 参数，所以 stack 是一个数组，进入 if，将作用域对象和参数合并到数组中
+                 *          此时，由于是执行回调方法，所以 firing 是 true，所以进入 if，将合并后的数组 push 到 stack 数组中，然后该函数执行结束，此时并没有调用内部的 fire 方法来遍历
+                 *          因为此时正在遍历执行每个回调，所以不会在此时再次遍历执行每个回调，而是将回调所需要的参数保存起来，之后再遍历
+                 */
+                console.log( '---------- 回调 func1 开始 ----------' );
+                console.log( args )
+                if ( !isCalled ) {
+                    cb.fire( 'func1 中调用 fire 方法' );
+                    isCalled = !isCalled;
+                }
+                console.log( '----------回调 func1 结束 ----------' );
+            }
+
+            cb.add( func1 );
+
+            /**
+             *  第一步 
+             *  这一步的调用和之前一样，直到调用内部的 fire 方法遍历回调队列时，此时开始执行 func1 回调
+             */
+            /**
+             *  第三步
+             *  当遍历完所有的回调后，此时 list 仍然存在，并且此时 stack 已经是含有一个元素的数组了（ 这个元素就是在 func1 回调中调用 $.Callbacks.fire 方法时，有作用域对和参数对象组成的数组 ）
+             *      此时，将 stack 的数组从开始弹出，将弹出的元素传入到内部的 fire 中，在此调用内部的 fire 方法
+             *          和之前一样，又会重新遍历一次回调队列，执行其中的每个回调，并设置作用域和参数，所以，func1 回调又会被执行一次
+             *          遍历结束后，list 队列仍然存在，但此时 stack 已经没有元素了，所以什么也做，退出函数
+             *      调用完内部的 fire 方法后，退出内部的 fire 方法
+             */
+            cb.fire( '外部调用 fire 方法' );
+
+        })( window, jQuery );
+
+        console.log( '---------- 示例三结束 ----------' );
+    </script>
+
+    <!-- 
+        示例三：提供 stopOnFalse 
+     -->
+    <script>
+        console.log( '---------- 示例四开始 ----------' );
+        (function ( window, $ ) {
+
+            // 获得回调对象
+            let cb = $.Callbacks( 'stopOnFalse' );
+
+            /**
+             *  回调1 
+             */
+            function func1 ( value ) {
+                console.log( 'func1 回调执行开始' );
+                console.log( value );
+                console.log( 'func1 回调执行结束' );
+                return false;
+            }
+
+            /**
+             *  回调2
+             */
+            function func2 () {
+                console.log( 'func2 回调执行开始' );
+                console.log( value );
+                console.log( 'func2 回调执行结束' );
+            }
+
+            // 添加回调
+            cb.add( func1, func2 );
+
+            /**
+             *  和之前一样，最终调用的是内部的 fire 方法，并且该方法接受的参数的合并后的数组，第一个元素是 self 对象，第二个元素是含有一个参数的 arguments 对象
+             *      此时，回调队列中有两个回调，在执行第一个回调 func1 的时候，打印出 1，执行完后判断其返回值是否等于 fasle，条件成立，再判断调用 $.Callbacks 时
+             *      是否传递了 stopOnceFalse 参数，条件成立，所以直接 break 掉 for 循环，导致之后的所有回调都无法执行
+             */
+            cb.fire( '1' );
+
+            /**
+             *  再调用一次也一样，不同的是在 fireWith 方法中，fired 已经被设置为 true，所以要判断 stack 是否存在，因为没有提供 once 参数，所以 stack 是一个数组，再次进入 if
+             *  调用内部的 fire 遍历回调队列，当执行到第一个回调时，会打印 2，执行完后判断其返回值是否等于 fasle，条件成立，再判断调用 $.Callbacks 时
+             *      是否传递了 stopOnceFalse 参数，条件成立，所以直接 break 掉 for 循环，导致之后的所有回调都无法执行
+             */
+            cb.fire( '2' );
+
+        })( window, jQuery );
+        console.log( '---------- 示例四结束 ----------' );
+    </script>
+
+</body>
+</html>
+            </div>
+        
+        
+        
+    </div>
+
+    
+        
+    
+
+</li>
+                
+                
+            </div>
+        </div>
+        
+        
+
+        <script src="/js/jquery-2.0.3.min.js"></script>
+        <script src="/js/jquery.ztree.core.min.js"></script>
+        <script src="/js/index.js"></script>
+        <script src="/js/prism.js"></script>
+
+    </div>
+</body>
+</html>

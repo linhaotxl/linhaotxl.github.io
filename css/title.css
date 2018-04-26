@@ -1,0 +1,23 @@
+#title {
+  margin: 36px auto 0 auto;
+  text-align: left;
+}
+#title.title-home {
+  width: container-width-84;
+}
+#title .title-text {
+  cursor: default;
+  position: relative;
+  font-size: 32px;
+}
+.title-text::after {
+  content: '';
+  width: 5px;
+  height: 5px;
+  background-color: active-color;
+  border-radius: 50%;
+  display: block;
+  position: absolute;
+  right: -10px;
+  bottom: 10px;
+}

@@ -1,0 +1,100 @@
+#sidebar_nav_mask {
+  height: 100%;
+  width: 100%;
+  position: fixed;
+  left: 0;
+  top: 0;
+  background-color: rgba(0,0,0,0.7);
+  z-index: header_sidebar_nav_mask;
+  display: none;
+  animation-duration: 0.3s;
+}
+#sidebar_nav {
+  position: fixed;
+  right: 0;
+  top: 0;
+  z-index: header_sidebar_nav;
+  width: 20%;
+  height: 100%;
+  background-color: #fff;
+  transform: translate3d(100%, 0, 0);
+  -webkit-transform: translate3d(100%, 0, 0);
+  animation-duration: 0.3s;
+}
+#sidebar_nav .sidebar_nav_container {
+  height: 100%;
+}
+#sidebar_nav .nav_header {
+  height: 188px;
+  background-color: active-color;
+  position: relative;
+}
+#sidebar_nav .nav_header_text {
+  position: absolute;
+  left: 16px;
+  bottom: 14px;
+  font-size: 28px;
+}
+#sidebar_nav .nav_body {
+  padding: 8px 14px;
+  height: calc(100% - 188px);
+  overflow: auto;
+}
+#sidebar_nav .nav_lists {
+  padding: 0;
+  font-size: 16px;
+}
+#sidebar_nav .list_item {
+  margin: 3px 0;
+  color: #666;
+  cursor: pointer;
+  transition: all 0.5s;
+}
+#sidebar_nav .list_item.list_item_copy {
+  display: none;
+}
+#sidebar_nav .list_item:hover {
+  color: active-color;
+}
+#tree_nav {
+  padding: 0;
+}
+#tree_nav .button.noline_open,
+#tree_nav .button.noline_close {
+  background: none;
+  position: relative;
+  transition: all 0.3s;
+  transform-origin: left center;
+}
+#tree_nav .button.noline_open {
+  top: -1px;
+  transform: rotate(90deg);
+}
+#tree_nav .button.noline_close {
+  top: 2px;
+  transform: rotate(0);
+}
+#tree_nav a {
+  height: 24px;
+  transition: all 0.5s;
+}
+#tree_nav a:hover {
+  text-decoration: none;
+  color: active-color;
+}
+#tree_nav .node_name {
+  font-size: 14px;
+  font-family: 'PingFang_SC_Normal' !important;
+}
+#tree_nav .button.ico_open,
+#tree_nav .button.ico_close,
+#tree_nav .button.ico_docu {
+  display: none;
+}
+#tree_nav .curSelectedNode {
+  background: none;
+  border: 0;
+}
+#tree_nav .button.switch {
+  width: nav-arrow-width-placeholder;
+}

@@ -1,0 +1,34 @@
+/* 
+ *  Post Footer Nav
+ */
+#post-nav {
+  width: container-width-94;
+  margin: 30px auto !important;
+  font-size: 16px;
+}
+.nav-next {
+  text-align: right;
+}
+.nav-next,
+.nav-prev {
+  position: relative;
+}
+.icon-qianjin,
+.icon-houtui {
+  position: absolute;
+  top: 0;
+}
+.icon-qianjin {
+  right: 0;
+}
+.icon-houtui {
+  left: 0;
+}
+.nav-link {
+  display: block;
+  color: #666;
+  text-shadow: 0 2px 0 #ccc, 0px -2px 1px #fff;
+}
+.nav-link:hover {
+  text-decoration: none;
+}

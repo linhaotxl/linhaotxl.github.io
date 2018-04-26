@@ -1,77 +1,139 @@
-.article-item {
-    border-radius: 2px;
-    margin-top: 30px;
-    padding-bottom: 40px;
-    border-bottom: 1px dashed #ccc;
-}
-
 .article-img {
-    display: block;
-    width: 100%;
-    border-radius: 10px;
+  display: block;
+  width: 100%;
+  border-radius: 10px;
 }
-
 .article-title {
-    color: #333;
-    margin-top: 2%;
-    text-align: center;
-    font-size: 28px;
-    font-weight: 700;
+  color: article-title-color;
+  margin-top: 2%;
+  text-align: center;
+  font-size: 28px;
+  font-weight: 700;
 }
-
 .article-container {
-    width: 94%;
-    margin: 0 auto;
+  width: 94%;
+  margin: 0 auto;
+  padding: 40px 0;
+  border-bottom: 1px dashed #ccc;
 }
-
+.article-header {
+  margin-top: 20px;
+}
 .article-info {
-    display: flex;
-    align-items: center;
-    color: #999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: article-info-color;
 }
-
 .article-info-item {
-    margin-left: 2%;
+  margin-left: 2%;
 }
-
+.article-info-title,
+.tags-info-title {
+  margin-right: 4px;
+}
+.article-info-categories .category-link,
+.article-info-tags .tag-link {
+  font-size: 12px;
+  color: article-info-color;
+  padding-bottom: 1px;
+  border-bottom: 1px dotted #ccc;
+  display: inline-block;
+  height: 100%;
+  vertical-align: middle;
+  transition: all 0.3s;
+}
+.article-info-categories .category-link:hover,
+.article-info-tags .tag-link:hover {
+  text-decoration: none;
+  color: active-color;
+}
+.article-info-portrait {
+  width: 10%;
+  display: flex;
+  align-items: center;
+}
 .article-info-portrait img {
-    display: block;
-    width: 30px;
-    height: 30px;
-    border-radius: 50%;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
 }
-
 .article-info-username {
-    color: #666;
-    border-bottom: 1px dotted #666;
-    line-height: 12px;
-    cursor: pointer;
-    transition: all 0.5s;
+  color: article-info-color;
+  border-bottom: 1px dotted #666;
+  line-height: 12px;
+  cursor: pointer;
+  transition: all 0.5s;
+  margin-left: 10px;
 }
-
 .article-info-username:hover {
-    color: #ea833e;
+  color: active-color;
 }
-
-.article-excerpt {
-    margin: 2% 0;
-    color: #666;
-    line-height: 2;
-    font-size: 14px;
+.article-text {
+  margin: 2% 0;
+  color: article-content-color;
+  line-height: 2;
+  font-size: 14px;
 }
-
 .article-readall-btn {
-    display: block;
-    width: 150px;
-    height: 40px;
-    line-height: 40px;
-    border-radius: 20px;
-    border: 1px solid #ea833e;
-    font-size: 14px;
-    transition: all 0.5s;
+  text-align: center;
+  display: block;
+  width: article-readall-width;
+  height: article-readall-height;
+  line-height: article-readall-height;
+  border-radius: article-readall-border-radius;
+  border: 1px solid active-color;
+  font-size: 14px;
+  transition: all 0.5s;
+  color: article-content-color;
+  overflow: hidden;
+  position: relative;
 }
-
-.article-readall-btn:hover {
-    color: #fff;
-    background-color: #ea833e;
+.article-readall-text {
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  left: 0;
+  top: 0;
+  transition: all 0.3s;
+}
+.article-readall-mark {
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  left: 0;
+  top: -100%;
+  background-color: active-color;
+  transition: all 0.3s;
+}
+.article-readall-mark .iconfont {
+  font-size: 24px;
+  font-weight: 700;
+  color: #fff;
+}
+.article-readall-btn:hover .article-readall-mark {
+  top: 0;
+}
+.article-readall-btn:hover .article-readall-text {
+  top: 100%;
+}
+/* 
+ *  设置不同分辨率下的信息样式
+ */
+@media screen and (max-width: 750px) {
+  .article-info,
+  .article-info-categories,
+  .article-info-tags,
+  .article-info-date,
+  .article-info-portrait {
+    display: block;
+    text-align: center;
+    width: 100%;
+  }
+  .article-info-item {
+    margin-left: 0;
+  }
+  .article-readall-btn {
+    margin: 0 auto;
+  }
 }

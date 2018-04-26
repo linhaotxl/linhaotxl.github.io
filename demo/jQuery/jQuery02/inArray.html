@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>inArray</title>
+</head>
+<body>
+    
+    <script src="https://cdn.bootcss.com/jquery/2.0.3/jquery.js"></script>
+
+    <!-- 
+        示例一：查找基本数据类型
+     -->
+    <script>
+        (function ( window, $ ) {
+            let res = -1;
+            let arr = [ 1, 2, 3, 4, 5 ];
+            res = $.inArray( 2, arr );  // 1
+            res = $.inArray( 5, arr );  // 4
+            res = $.inArray( 0, arr );  // -1
+            console.log( res );
+        })( window, jQuery );
+    </script>
+
+    <!-- 
+        示例二：查找引用数据类型
+     -->
+    <script>
+        (function ( window, $ ) {
+            let _obj1 = { name: 'IconMan' };
+            let _obj2 = { name: 'Nicholas' };
+            let _obj3 = { name: 'Linh' };
+            let arr = [ _obj1, _obj2, _obj3 ];
+            let res = -1;
+            res = $.inArray( _obj1, arr );  // 0
+            res = $.inArray( _obj2, arr );  // 1
+            res = $.inArray( _obj3, arr );  // 2
+            res = $.inArray( { name: 'IconMan' }, arr );  // -1
+            console.log( res );
+        })( window, jQuery )
+    </script>
+
+    <!-- 
+        示例三：从指定的位置开始查找
+     -->
+    <script>
+        (function ( window, $ ) {
+            let _obj1 = { name: 'IconMan' };
+            let _obj2 = { name: 'Nicholas' };
+            let _obj3 = { name: 'Linh' };
+            let arr = [ _obj1, _obj2, _obj3 ];
+            let res = -1;
+            res = $.inArray( _obj1, arr, 1 );   // -1
+            res = $.inArray( _obj3, arr, 1 );   // 2
+            res = $.inArray( _obj3, arr, 4 );   // -1
+            console.log( res );
+        })( window, jQuery );
+    </script>
+
+</body>
+</html>

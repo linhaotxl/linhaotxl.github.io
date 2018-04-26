@@ -1,0 +1,13 @@
+#header_scroll {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: header-scroll-height;
+  z-index: 100;
+}
+.header_scroll_block {
+  width: 0;
+  height: 100%;
+  background-color: active-color;
+}
