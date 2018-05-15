@@ -1,0 +1,1309 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>LinHao</title>
+    <link href="https://cdn.bootcss.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.bootcss.com/animate.css/3.5.0/animate.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="/css/index.css">
+    <link rel="stylesheet" href="/css/zTreeStyle.css">
+</head>
+<body>
+    
+        <div id="sidebar_nav_mask" class="animated"></div>
+
+<div id="sidebar_nav" class="animated">
+    <div class="sidebar_nav_container">
+        <div class="nav_header">
+            <span class="nav_header_text AGaramondPro_Italic_Bold">Navigation</span>
+        </div>
+        <div class="nav_body">
+            <!-- <ul class="nav_lists">
+                <li class="list_item_copy list_item"></li>
+            </ul> -->
+            <div class="tree_nav clear">
+                <ul id="tree_nav" class="ztree"></ul>
+            </div>
+        </div>
+    </div>
+</div>
+    
+
+    <div id="blog" class="PingFang_SC_Normal">
+        <div id="header">
+    <div class="header-container container">
+        <div class="collapse navbar-collapse row" id="bs-example-navbar-collapse-1">
+            <ul class="header-list nav navbar-nav col-md-6 col-sm-6 col-xs-6">
+                
+                    <li class="header-list-item"><a href="/">HOME</a></li>
+                
+                    <li class="header-list-item"><a href="/article">ARTICLE</a></li>
+                
+                    <li class="header-list-item"><a href="/about">ABOUT</a></li>
+                
+            </ul>
+            
+        </div>
+        
+        
+            <div class="sidebar_nav_btn">
+                <i class="iconfont icon-menu2"></i>
+            </div>
+        
+    </div>
+</div>
+        <div id="header_scroll" >
+    <div class="header_scroll_block"></div>
+</div>
+        
+        <div id="main" class="clear">
+            <div class="main-container container">
+                
+
+                
+
+    
+
+    <div id="title" class="title-post">
+        <h3 class="title-container">
+            <span class="title-text AGaramondPro_Italic_Bold">Straight Matter</span>
+        </h3>
+    </div>
+
+
+
+<li class="article-item">
+    <div class="article-container">
+        <img class="article-img img-responsive" src="" alt="">
+        <h3 class="article-title">jQuery源码分析（五）—— 数据缓存</h3>
+        <div class="article-header">
+            <div class="article-info">
+                <i class="iconfont icon-xinxi"></i>
+                <span class="article-info-categories article-info-item">
+                    <span class="AGaramondPro_Bold article-info-title">Categories</span>
+                    <a class="category-link" href="/categories/jQuery/">jQuery源码分析</a>
+                </span>
+                <span class="article-info-tags article-info-item">
+                    <span class="AGaramondPro_Bold tags-info-title">Tags</span>
+                    
+                </span>
+                <span class="article-info-item article-info-date AGaramondPro_Regular"><span>2018-05-02</span></span>
+                <span class="article-info-item article-info-portrait clear">
+                    <img src="https://awcdn1.ahmad.works/writing/wp-content/uploads/2015/05/Author.jpg" alt="">
+                    <span class="article-info-item article-info-username AGaramondPro_Bold">LinHao</span>
+                </span>
+                
+            </div>
+        </div>
+        
+            <div class="article-content article-text">
+                <h2 id="数据缓存系统引入"><a href="#数据缓存系统引入" class="headerlink" title="数据缓存系统引入"></a>数据缓存系统引入</h2><p>我们经常会遇到这样的一种情况，需要给一个指定的 DOM 元素添加一些数据，此时通常会利用 <code>attr</code> 方法，将数据作为 DOM 元素的一个属性添加。除此之外，还可以用到数据缓存系统，将特定的数据与特定的 DOM 元素绑定起来，这样，数据就会在内存中保存下来。而且，如果给 DOM 元素添加一些复杂的数据属性，那么会容易引起内存泄漏。所以，将数据与 DOM 元素绑定的最佳做法就是使用数据缓存系统。  </p>
+<p>在 jQuery 中，数据缓存对外提供的 API 中，都是基于一个 <code>Data</code> 实例来实现的，所以首先来看 <code>Data</code> 的构造方法  </p>
+<h2 id="Data-分析"><a href="#Data-分析" class="headerlink" title="Data 分析"></a>Data 分析</h2><h3 id="Data-构造方法"><a href="#Data-构造方法" class="headerlink" title="Data 构造方法"></a>Data 构造方法</h3><p>在定义 Data 的构造方法之前，首先定义了一些基本变量以及正则，如下  </p>
+<pre class="line-numbers">
+<code class="language-javascript">
+var data_user, data_priv,                       // 保存 Data 实例的两个对象，一个用于内部，一个用于暴露给外部
+    rbrace = /(?:\{[\s\S]*\}|\[[\s\S]*\])$/,    // 检测 json 语法，必须有 {} 或者 []
+    rmultiDash = /([A-Z])/g;                    // 检测大写字母
+</code>
+</pre>  
+
+<p>其中，<code>date_user</code> 在下面称为公用缓存；而 <code>date_priv</code> 被称为私有缓存</p>
+<p><code>Data</code> 的构造方法其实很简单，只是添加了两个基本的属性。其中，<code>cache</code> 是存储数据的属性，所有的数据都会存储在这个属性的对象中。<code>expando</code> 是一个 <code>Data</code> 实例的唯一标识。  </p>
+<pre class="line-numbers">
+<code class="language-javascript">
+function Data() {
+    /**
+     *  1.  为 Data 实例的 cache 属性对象添加一个 0 属性
+     *      这个 0 属性只提供了 getter，所以只能访问，不能设置
+     *      从这可以看出，cache 应该是一个类数组
+     */
+    Object.defineProperty( this.cache = {}, 0, {
+        get: function() {
+            return {};
+        }
+    });
+
+    /**
+     *  2.  为 Data 实例设置 expando 属性，该属性的值是 jQuery.expando 再加上一个随机数    
+     */
+    this.expando = jQuery.expando + Math.random();
+}
+</code>
+</pre>  
+
+<h3 id="Data-静态属性"><a href="#Data-静态属性" class="headerlink" title="Data 静态属性"></a>Data 静态属性</h3><h4 id="Data-uid"><a href="#Data-uid" class="headerlink" title="Data.uid"></a>Data.uid</h4><pre class="line-numbers">
+<code class="language-javascript">
+/**
+ *  当为一个 DOM 元素添加数据时，就会在 cache 中添加一个索引（ 就是该属性 ），每个 DOM 在 cache 中只有一个唯一的索引
+ *  添加成功后对该值 + 1
+ */
+Data.uid = 1;
+</code>
+</pre>   
+
+
+<h4 id="Data-accepts"><a href="#Data-accepts" class="headerlink" title="Data.accepts"></a>Data.accepts</h4><pre class="line-numbers">
+<code class="language-javascript">
+/**
+ *  判断指定的参数是否是指定的数据（ 该数据如果是节点，那么必须是元素节点或者 document（ 剩余节点都会返回 false ），如果不是节点，都会返回 true ）
+ *  @param  { Element | Object }    owner   待检测的对象    
+ *  @return { Boolean }                     检测结果
+ */
+Data.accepts = function( owner ) {
+    /**
+     *  只要 owner 是元素节点、文档节点、其他任何类型都返回 true
+     *  如果是文本节点、注释节点这些，则返回 false
+     */
+    return owner.nodeType 
+        ? owner.nodeType === 1 || owner.nodeType === 9 
+        : true;
+};
+</code>
+</pre>   
+
+<h3 id="Data-prototype"><a href="#Data-prototype" class="headerlink" title="Data.prototype"></a>Data.prototype</h3><h4 id="Data-prototype-key"><a href="#Data-prototype-key" class="headerlink" title="Data.prototype.key"></a>Data.prototype.key</h4><p>该方法用于获取一个 DOM 元素在 <code>cache</code> 中的索引  </p>
+<pre class="line-numbers">
+<code class="language-javascript">
+/**
+ *  获取 owner 在 cache 中的 key 值，一个 owner 在 cache 中只有一个唯一的 key 值，从 1 开始
+ *  @param  { Element | Object }    owner    获取索引的 DOM 元素
+ *  @return { Number }                       DOM 元素在 cache 中的索引 key
+ */
+key: function( owner ) {
+    /**
+     *  1.  判断参数的类型，只要 owner 不满足要求，就会进入 if 返回 0
+     */
+    if ( !Data.accepts( owner ) ) {
+        return 0;
+    }
+
+    /**
+     *  2.  定义描述对象，用于 Object.defineProperty 方法中
+     *      获取 owner 中以当前 Data 实例的 expando 为属性的值（ 当前 DOM 元素在 cache 中的 key 值 ），如果是第一次，那么该值就是 undefined
+     */
+    var descriptor = {},
+        unlock = owner[ this.expando ];    
+
+    /**
+     *  3.  如果 DOM 元素在 cache 中不存在索引值，那么就为其创建一个
+     */
+    if ( !unlock ) {
+        /**
+         *  2.1 先保存当前静态属性 uid 的值到 unlock 中，然后对静态属性 uid + 1
+         */
+        unlock = Data.uid++;
+
+        /**
+         *  2.2 这里会通过两种方式将 expando 为属性，unlock 为值的键值对添加到 owner 中
+         *          方式一：通过 Object.properties 方法，这种方式的好处就是可以将此属性的值设置为常量，但是低版本的浏览器存在兼容性问题
+         *          方式二：通过 jQuery.extend 方法，不存在兼容性问题
+         */
+        try {
+            descriptor[ this.expando ] = { value: unlock };
+            Object.defineProperties( owner, descriptor );
+        } catch ( e ) {
+            descriptor[ this.expando ] = unlock;
+            jQuery.extend( owner, descriptor );
+        }
+    }
+
+    /**
+     *  3.  如果在 cache 中不存在 owner 对应的对象
+     *      此时，就为当前的 DOM 元素在 cache 中设置了与其对应的 key
+     */
+    if ( !this.cache[ unlock ] ) {
+        this.cache[ unlock ] = {};
+    }
+
+    /**
+     *  4.  返回 owner 在 cache 中的索引
+     */
+    return unlock;
+}
+</code>
+</pre>  
+
+<h5 id="示例一：key-方法到底做了什么"><a href="#示例一：key-方法到底做了什么" class="headerlink" title="示例一：key 方法到底做了什么"></a>示例一：key 方法到底做了什么</h5><p>现在有如下的 HTML    </p>
+<pre>
+<code class="language-markup">
+&lt;div id="box"&gt;&lt;/div&gt;
+</code>
+</pre>    
+
+<p>假设有一个 <code>Data</code> 实例</p>
+<pre>
+<code class="language-javascript">
+// 假设此时 data.expando 是 jQuery203082927000654699530.5417398863999434
+let data = new Date();
+</code>
+</pre>     
+
+<p>初始化完成之后，<code>data.cache</code> 就是如下的形式  </p>
+<pre>
+<code class="language-javascript">
+{
+    0: {}
+}
+</code>
+</pre>    
+
+<p>现在，将 <code>#box</code> 传入到 <code>data.key</code> 的参数中   </p>
+<pre>
+<code class="language-javascript">  
+/**
+ *  此时，因为参数是 DOM 元素，所以不会进入 11 行的 if
+ *  而 #div 中是不存在以 enpando 为属性的值的，所以 unlocak 是 undefiend，进入 25 行的 if 中
+ *      将 unlock 的值保存为 1，而 Data.uid + 1 成为 2
+ *  然后为 #div 添加了一个属性 'jQuery203082927000654699530.5417398863999434' 且该属性的值为 1，相当于下面的 HTML 片段
+ *  然后在 cache 中不存在以 1 为属性的值，所以进入 49 行的 if，在 cache 中添加一个属性 1 并将其值置为一个空的对象
+ *  最后返回 1
+ */
+data.key( $('#box')[0] );
+</code>
+</pre>  
+
+<pre>
+<code class="language-markup">
+&lt;div id="box" jQuery203082927000654699530.5417398863999434="1"&gt;&lt;/div&gt;
+</code>
+</pre>  
+
+<p>经过上面的代码，<code>data.cache</code> 就是如下的形式  </p>
+<pre>
+<code class="language-javascript">
+{
+    0: {},
+    1: {}
+}
+</code>
+</pre>   
+
+<p>此时，若是再次调用 <code>data.key( $(&#39;#box&#39;)[0] )</code> 方法的话，<code>unlock</code> 就是 1，所以直接回返回 1，不再进入任何的 <code>if</code>   </p>
+<h4 id="Data-prototype-set"><a href="#Data-prototype-set" class="headerlink" title="Data.prototype.set"></a>Data.prototype.set</h4><p>这个方法可以为指定的 DOM 元素设置指定的值（ 该值可以是字符串或者对象 ）  </p>
+<pre class="line-numbers">
+<code class="language-javascript">
+/**
+ *  根据指定的 DOM 元素，为其设置指定的值
+ *  @param  { Element }             owner   操作的 DOM 元素
+ *  @param  { String | Object }     data    为 String 时，将 value 作为 data 键的值；为 Object 时，将 data 作为 owner 在 cache 的 json 对象
+ *  @param  { Any }                 value   当 data 为 String 时要设置的值
+ *  @return { Object }                      owner 在 cache 中的 json 对象
+ */
+set: function( owner, data, value ) {
+    var prop,
+        //  1.  获取 owner 在 cache 中的索引
+        unlock = this.key( owner ),
+        //  2.  获取 owner 在 cache 中的对象
+        cache = this.cache[ unlock ];
+
+    /**
+     *  3.  处理数据是字符串的情况
+     *      以 data 为键，value 为值存入 owner 在 cache 中的对象
+     */
+    if ( typeof data === "string" ) {
+        cache[ data ] = value;
+    } 
+    /**
+     *  4.  处理数据是对象的情况
+     */
+    else {
+        /**
+         *  如果 owner 在 cache 中的对象是一个空的对象，那么就将 data 中的所有属性通过 $.extend 方法赋给 owner 在 cache 中的对象
+         *  如果不是，那么通过 for...in 将 data 中的所有属性添加给 owner 在 cache 中的对象
+         */
+        if ( jQuery.isEmptyObject( cache ) ) {
+            jQuery.extend( this.cache[ unlock ], data );
+        } else {
+            for ( prop in data ) {
+                cache[ prop ] = data[ prop ];
+            }
+        }
+    }
+
+    /**
+     *  5.  返回 owner 在 cache 中的对象
+     */
+    return cache;
+}
+</code>
+</pre>  
+
+<h5 id="示例一：set-方法做了什么"><a href="#示例一：set-方法做了什么" class="headerlink" title="示例一：set 方法做了什么"></a>示例一：set 方法做了什么</h5><p>假设在上一个示例的基础之上，还是上一个 <code>Data</code> 实例，现有如下的 HTML 片段   </p>
+<pre>
+<code class="language-markup">
+&lt;div id="box2"&gt;&lt;/div&gt;
+</code>
+</pre>   
+
+<p>此时 <code>date</code> 对象中的 <code>cache</code> 如下（ 基于上一个示例 ）   </p>
+<pre>
+<code class="language-javascript">
+{
+    0: {},
+    1: {}
+}
+</code>
+</pre>
+
+<p>再调用 <code>Data</code> 实例的 <code>set</code> 方法   </p>
+<pre class="line-numbers">
+<code class="language-javascript">
+/**
+ *  再调用 set 方法中，首先会调用 key 方法，在 cache 中创建一个以 2 为属性的空对象
+ *  然后再这个空对象中添加一个 name 属性，其值为 IconMan
+ */
+const $div = $( '#box2 )[0];
+data.set( $div, 'name', 'IconMan' );
+</code>
+</pre>     
+
+<p>此时，公用缓存的 cache 如下   </p>
+<pre>
+<code class="language-javascript">
+{
+    0: {},
+    1: {},
+    2: {
+        name: "IconMan"
+    }
+}
+</code>
+</pre>
+
+<p>当再次调用 <code>Data</code> 实例的 <code>set</code> 方法时   </p>
+<pre class="line-numbers">
+<code class="language-javascript">
+/**
+ *  再调用 set 方法中，首先会调用 key 方法，此时直接获取到 #div2 在 cache 中的索引 2
+ *  然后再通过 for..in 向这个对象中添加 age 和 sex 属性
+ */
+const $div = $( '#box2 )[0];
+data.set( $div, { age: 2, sex: '男' } );
+</code>
+</pre>   
+
+<p>此时，<code>data</code> 实例的 <code>cache</code> 对象如下   </p>
+<pre>
+<code class="language-javascript">
+{
+    0: {},
+    1: {},
+    2: {
+        name: "IconMan",
+        age: 2,
+        sex: "男"
+    }
+}
+</code>
+</pre>   
+
+
+<h4 id="Data-prototype-get"><a href="#Data-prototype-get" class="headerlink" title="Data.prototype.get"></a>Data.prototype.get</h4><p>该方法用于获取指定的 DOM 元素在 cache 中对应的对象   </p>
+<pre class="line-numbers">
+<code class="language-javascript">
+/**
+ *  获取指定 DOM 元素在 cache 中的 json 对象
+ *  @param  { Element | Object }    owner    从 owner DOM 元素上取值
+ *  @param  { Number }              key      在缓存对象中的 key 值 
+ *  @return { Object }                       owner 在 cache 中对应的对象
+ */
+get: function( owner, key ) {
+    /**
+     *  1.  通过 key 方法找出 owner 对象在 cache 中的的索引
+     *      然后根据索引获取 cache 中的以该索引为属性的对象，也就是 owner 在 cache 中对应的对象
+     */
+    var cache = this.cache[ this.key( owner ) ];
+
+    /**
+     *  2.  判断是否传递了参数
+     *          如果传递了参数，那么就返回 owner 在 cache 中以 key 为属性的值
+     *          如果没传递参数，那么就直接返回 owner 在 cache 中对应的对象
+     */
+    return key === undefined 
+        ? cache 
+        : cache[ key ];
+}
+</code>
+</pre>     
+
+<h5 id="示例一：get-方法使用"><a href="#示例一：get-方法使用" class="headerlink" title="示例一：get 方法使用"></a>示例一：get 方法使用</h5><p>还是基于上一个示例  </p>
+<pre class="line-numbers">
+<code class="language-javascript">
+const $div = $( '#box2' );  
+/**
+ *  此时，内部调用 key 方法，获取 #div2 在公用缓存 cache 中对应的索引（ 是 2 ），再从缓存 cache 中获取以这个索引为属性的对象
+ *  然后因为没有提供参数，所以直接返回这个对象
+ *  即 { name: "IconMan", age: 2, sex: "男" }
+ */
+const dataAll = data.get( $div[0] );
+
+/**
+ *  和上面一样，获取 #div2 在公用缓存 cache 中对应的索引（ 是 2 ），再从缓存 cache 中获取以这个索引为属性的对象
+ *  因为此时提供了参数，所以再从这个对象中获取以参数为索引的值，即分别是 IconMan、2、男
+ */
+const dataName = data.get( $div[0], 'name' );
+const dataAge = data.get( $div[0], 'age' );
+const dataSex = data.get( $div[0], 'sex' );
+</code>
+</pre>
+
+<h4 id="Data-prototype-access"><a href="#Data-prototype-access" class="headerlink" title="Data.prototype.access"></a>Data.prototype.access</h4><pre class="line-numbers">
+<code class="language-javascript">
+/**
+ *  将 set 和 get 方法结合的方法
+ *  @param  { Element }    owner    操作的 DOM
+ *  @param  { String }     key        
+ *  @param  { Any }        key    
+ */
+access: function( owner, key, value ) {
+    var stored;
+    /**
+     *  1.  判断是否是取值的情况
+     *          如果没有提供 key 值
+     *          如果提供了一个字符串的 key 值并且没有提供 value
+     */
+    if ( key === undefined || ((key && typeof key === "string") && value === undefined) ) {
+        /**
+         *  1.1 调用 get 方法，获取 owner 在 cache 中以 key 为属性的值
+         *      如果提供了 key 值，那么就是以 key 为属性的值
+         *      如果没提供 key 值，那么就是 owner 在 cache 中对应的对象
+         */
+        stored = this.get( owner, key );
+
+        /**    
+         *  1.2 判断 get 的返回值是否是 undefied
+         *      只有一种情况可能是 undefined，就是提供了 key 值，但是 owner 在 cache 中的对象并没有以 key 为属性的值，此时就会得到 undefined
+         *      此时就会将 key 转换为驼峰写法，然后再一次调用 get 方法，然后返回 get 的返回值
+         *          如果在 cache 中存在属性 firstName，那么传递 first-name 也可以获得该值
+         */
+        return stored !== undefined 
+            ? stored 
+            : this.get( owner, jQuery.camelCase(key) );
+    }
+
+    /**
+     *  2.  如果不是获取值的情况，那么就是设置数据的情况了
+     *      此时也有两种情况
+     *          key 为 String，value 存在
+     *          key 为 Object，value 不存在
+     *      通过 set 方法对 owner 在 cache 中进行数据的设置
+     */
+    this.set( owner, key, value );
+
+    /**
+     *  3.  根据是否提供了 value 参数来确定返回值
+     *          如果提供了 value 参数，那么就返回 value
+     *          如果没提供 calue 参数，那么就返回 key 值
+     */
+    return value !== undefined ? value : key;
+}
+</code>
+</pre>     
+
+<h5 id="示例一：access-方法使用"><a href="#示例一：access-方法使用" class="headerlink" title="示例一：access 方法使用"></a>示例一：access 方法使用</h5><pre>
+<code class="language-javascript">
+const $div = $( '#box2' )[0];
+
+data.access( $div );                                        // 等价于 data.get( $div )
+data.access( $div, 'name' );                                // 等价于 data.get( $div, 'name' )
+data.access( $div, 'grade', 99 );                           // 等价于 data.set( $div, 'grade', 99 );
+data.access( $div, { propA: 'propA', propB: 'propB' } );    // 等价于 data.set( $div, { propA: 'propA', propB: 'propB' } )
+</code>
+</pre>
+
+<h4 id="Data-prototype-remove"><a href="#Data-prototype-remove" class="headerlink" title="Data.prototype.remove"></a>Data.prototype.remove</h4><p>该方法用于删除指定的 DOM 元素在缓存中指定的属性   </p>
+<pre class="line-numbers">
+<code class="language-javascript">
+/**
+ *  删除指定 DOM 元素在 cache 中的属性
+ *  @param  { Element }                     owner    DOM 元素
+ *  @param  { Undefined | String | Array }  key        删除的 key 值或者是一个数组，里面包含的是多个 key
+ */
+remove: function( owner, key ) {
+    var i, name, camel,
+        //  1.  通过 key 方法获取 owner 在 cache 中的索引
+        unlock = this.key( owner ),        
+        //  2.  获取 owner 在 cache 中以索引为属性的对象
+        cache = this.cache[ unlock ];    
+
+    /**
+     *  3.  判断是否提供了 key 参数
+     *      如果没提供，那么直接将 owner 在 cache 中以索引为属性的对象清空
+     */
+    if ( key === undefined ) {
+        this.cache[ unlock ] = {};
+    } 
+    /**
+     *  4.  如果提供了 key 参数，此时会判断 key 的类型
+     */
+    else {
+        /**
+         *  4.1 如果 key 是一个数组，其中的每个元素都是要删除的属性名
+         *          首先将 key 中的所有元素转换成驼峰的写法，然后将转换后的元素拼接到原数组的后面，最终将结果保存在 name 变量中
+         */
+        if ( jQuery.isArray( key ) ) {
+            name = key.concat( key.map( jQuery.camelCase ) );
+        } 
+        /**
+         *  4.2 如果提供的 key 不是数组，那么就是字符串
+         *      首先将字符串 key 转换为驼峰写法并保存在 camel 中
+         *          然后判断未转换前的 key 是否在 cache 中
+         *              如果存在的话，则新创建一个数组并保存在 name 中，里面分别存储未转换和转换后的两个值
+         *              如果不存在的话，那么判断驼峰写法是否存在于 cache 中
+         *                  如果存在，那么新创建一个数组并保存在 name 中，将转换后的值放进数组中
+         *                  如果不存在，那么就用 core_rnotwhite 正则（ 非空格外的任何字符 ）将 name 匹配到的内容保存在一个新的数组中，然后将其引用赋给 name 变量
+         *                      例如：'name age' 会被匹配为 [ 'name', 'age' ]
+         */
+        else {
+            camel = jQuery.camelCase( key );
+            if ( key in cache ) {
+                name = [ key, camel ];
+            } else {
+                name = camel;
+                name = name in cache 
+                    ? [ name ] 
+                    : ( name.match( core_rnotwhite ) || [] );
+            }
+        }
+
+        /**
+         *  4.3 遍历上述操作后的结果数组 name
+         *      使用 delete 操作符删除 cache 中以数组中的每个元素为键的属性
+         */
+        i = name.length;
+        while ( i-- ) {
+            delete cache[ name[ i ] ];
+        }
+    }
+}
+</code>
+</pre>     
+
+<h5 id="示例一：不提供任何参数"><a href="#示例一：不提供任何参数" class="headerlink" title="示例一：不提供任何参数"></a>示例一：不提供任何参数</h5><p><code>Data</code> 实例还是上面的，保持不变</p>
+<pre>
+<code class="language-markup">
+&lt;div id="div6"&gt;&lt;/div&gt;
+</code>
+</pre>   
+
+<pre>
+<code class="language-javascript">
+data.set({
+    name: 'Nicholas',
+    age: 99
+});
+</code>
+</pre>   
+
+<p>此时，<code>cache</code> 如下   </p>
+<pre>
+<code class="language-javascript">
+{
+    0: {},
+    1: {},
+    2: {
+        name: "IconMan",
+        age: 2,
+        sex: "男"
+    },
+    3: {
+        name: "Nicholas",
+        age: 99
+    }
+}
+</code>
+</pre>    
+此时，执行下面的代码   
+<pre>
+<code class="language-javascript">
+/**
+ *  内部首先调用 key 方法获取 #div6 在 cache 中的索引（ 是 3 ），然后再从 cache 中获取以该索引为属性的对象
+ *  因为没有提供任何参数，所以会直接将 $div6 在 cache 中的数据清空，所以直接将 #div6 在 cache 中以该索引为属性的值，指向了一个新的空对象来达到目的
+ */
+data.remove( $div6 );
+</code>
+</pre>   
+
+<p>此时，<code>cache</code> 如下   </p>
+<pre>
+<code class="language-javascript">
+{
+    0: {},
+    1: {},
+    2: {
+        name: "IconMan",
+        age: 2,
+        sex: "男"
+    },
+    3: {}
+}
+</code>
+</pre>  
+
+<h5 id="示例二：提供数组参数"><a href="#示例二：提供数组参数" class="headerlink" title="示例二：提供数组参数"></a>示例二：提供数组参数</h5><pre>
+<code class="language-javascript">
+/**
+ *  恢复删除之前的数据
+ */
+data.set({
+    myName: 'Nicholas',
+    age: 99
+});   
+
+/**
+ *  此时，因为提供了一个数组参数，所以会进入 29 行的 if 中，将其中每个元素转换为驼峰写法，再拼到原数组后面，结果就是 [ 'my-name', 'age', 'myName' ]
+ *  然后会在 while 循环中，在 #div6 在 cache 中的对象，用 delete 操作符删除结果数组中的每个元素为属性的键值对
+ */
+data.remove( [ 'my-name', 'age' ] );
+</code>
+</pre>   
+
+<p>此时，<code>cache</code> 如下   </p>
+<pre>
+<code class="language-javascript">
+{
+    0: {},
+    1: {},
+    2: {
+        name: "IconMan",
+        age: 2,
+        sex: "男"
+    },
+    3: {}
+}
+</code>
+</pre>  
+
+<h5 id="示例三：提供字符串参数"><a href="#示例三：提供字符串参数" class="headerlink" title="示例三：提供字符串参数"></a>示例三：提供字符串参数</h5><pre>
+<code class="language-javascript">
+/**
+ *  恢复删除之前的数据
+ */
+data.set({
+    myName: 'Nicholas',
+    myAge: 99
+}); 
+
+/**
+ *  此时，因为传递了一个字符串参数，所以进入 42 行的 else 中，然后因为提供的 参数 myName 属性存在于 #div6 在缓存中的对象，所以进入 44 行的 if 中，将参数的原始值和驼峰写法保存在 name 数组中（ 此时 name 就是 [ myName ] ）
+ *  然后在 while 循环中，在 #box6 在 cache 中的对象，用 delete 操作符删除 name 数组中的每个元素为属性的键值对
+ */
+data.remove( $div6, 'myName' );
+
+/**
+ *  此时，还是会进入 42 行的 else 中，但是此时提供的参数并不在 #box6 的缓存对象中，所以进入了 46 行的 else 中，判断驼峰写法是否存在于缓存中，结果存在，将驼峰写法的值保存在 name 数组中（ 此时 name 就是 [ myAge ] ）
+ *  然后在 while 中处理
+ */
+data.remove( $div6, 'my-age' );
+</code>
+</pre>  
+
+<p>此时，<code>cache</code> 如下   </p>
+<pre>
+<code class="language-javascript">
+{
+    0: {},
+    1: {},
+    2: {
+        name: "IconMan",
+        age: 2,
+        sex: "男"
+    },
+    3: {}
+}
+</code>
+</pre>  
+
+<h5 id="示例四：提供以空格分割的字符串参数"><a href="#示例四：提供以空格分割的字符串参数" class="headerlink" title="示例四：提供以空格分割的字符串参数"></a>示例四：提供以空格分割的字符串参数</h5><pre>
+<code class="language-javascript">
+/**
+ *  恢复删除之前的数据
+ */
+data.set({
+    myName: 'Nicholas',
+    myAge: 99
+}); 
+
+/**
+ *  此时，因为参数还是字符串，所以进入 42 行的 else 中，camel 变量此时保存的就是参数转换驼峰后的写法，此例中就是 'myName myAge'
+ *  因为提供的参数并不在 #box6 的缓存对象中，所以进入 46 行的 else 中，此时，转换驼峰后的写法也不在 #box6 的缓存对象中，所以会使用 core_rnotwhite 正则，将驼峰写法按照空格匹配，结果就是 [ myName, myAge ]，将结果数组保存在 name 变量中
+ *  最后通过 while 处理
+ */
+data.remove( $div6, 'my-name my-age' );
+</code>
+</pre>  
+
+<p>此时，<code>cache</code> 如下   </p>
+<pre>
+<code class="language-javascript">
+{
+    0: {},
+    1: {},
+    2: {
+        name: "IconMan",
+        age: 2,
+        sex: "男"
+    },
+    3: {}
+}
+</code>
+</pre> 
+
+<h4 id="Data-prototype-hasData"><a href="#Data-prototype-hasData" class="headerlink" title="Data.prototype.hasData"></a>Data.prototype.hasData</h4><p>该方法用于检测指定的 DOM 元素在缓存中是否存在数据   </p>
+<pre class="line-numbers">
+<code class="language-javascript">
+/**
+ *  判断指定的 DOM 元素在 cache 中的 json 对象中是否存在数据
+ *  @param  { Element }    owner    判断的 DOM 元素
+ *  @return { Boolean }             owner 在 cache 中的对象是否存在数据的布尔值
+ */
+hasData: function( owner ) {
+    /**
+     *  首先获取到 owner 中以 expando 为键的值（ 这个值就是 owner 在缓存 cache 中的索引 ）
+     *  再在 cache 中获取以该索引为属性的对象
+     *      如果此时 owner 在缓存 cache 中存在对应的对象，那么就将这个对象传入 $.isEmptyObject 中
+     *      如果不存在这个对象，则代表此时没有执行过 Data.prototype.key 方法，所以在缓存 cache 中根本不存在以索引值为属性的对象，此时得到的就是 undefined，所以将一个空对象传入 $.isEmptyObject 中
+     *  最后通过 $.isEmptyObject 来判断结果是否存在数据
+     */
+    return !jQuery.isEmptyObject(
+        this.cache[ owner[ this.expando ] ] || {}
+    );
+}
+</code>
+</pre>  
+
+<h4 id="Data-prototype-discard"><a href="#Data-prototype-discard" class="headerlink" title="Data.prototype.discard"></a>Data.prototype.discard</h4><p>该方法直接删除指定的 DOM 元素在缓存中的对象（ 直接删除该属性 ）  </p>
+<pre class="line-numbers">
+<code class="language-javascript">
+/**
+ *  删除指定 DOM 元素在 cache 中的对象（ 直接删除该属性 ）
+ *  @param  { Element }    owner    操作的 DOM 元素
+ */
+discard: function( owner ) {
+    /**
+     *  首先判断 DOM 元素在 cache 中是否存在对应的索引
+     *      如果存在的话，那么就将 DOM 在 cache 中对应的索引删除，即也删除了对应的 json 对象
+     */
+    if ( owner[ this.expando ] ) {
+        delete this.cache[ owner[ this.expando ] ];
+    }
+}
+</code>
+</pre>    
+
+<h3 id="两个-Data-实例"><a href="#两个-Data-实例" class="headerlink" title="两个 Data 实例"></a>两个 Data 实例</h3><p>在 <code>Data</code> 的构造方法之前，已经定义了两个变量 <code>data_user</code> 和 <code>data_priv</code>。这两个变量在此时会实例化为 <code>Data</code> 的实例。并且根据名字就可以看出，一个是对外提供的，一个只用于 jQuery 内部   </p>
+<pre>
+<code class="language-javascript">
+data_user = new Data();     // 对外的数据缓存对象
+data_priv = new Data();     // 私有的数据缓存对象
+</code>
+</pre>
+
+<h3 id="jQuery-有关数据缓存的实例方法"><a href="#jQuery-有关数据缓存的实例方法" class="headerlink" title="jQuery 有关数据缓存的实例方法"></a>jQuery 有关数据缓存的实例方法</h3><h4 id="内部方法-dataAttr"><a href="#内部方法-dataAttr" class="headerlink" title="内部方法 dataAttr"></a>内部方法 dataAttr</h4><p>在之前，我们先要看一个内部定义的方法 <code>dataAttr</code>。这个方法主要是将 HTML5 中自定义的属性存入缓存   </p>
+<pre class="line-numbers">
+<code class="language-javascript">
+/**
+ *  在缓存对象中设置 HTML5 的自定义属性
+ *  @param  { Element }    elem    操作的 DOM 元素
+ *  @param  { String }     key     自定义属性 data- 之后的值（ 该值已经转换为了驼峰写法 ），例如 data-custom-index 就是 customIndex
+ *  @param  { String }     data    elem 在 cache 中的对象以 key 为属性的值；如果是第一次设置，那么该值为 undefined
+ *  @return  { Any }               设置成功后的 data
+ */
+function dataAttr( elem, key, data ) {
+    var name;
+    /**
+     *  1.  判断 data 是否是 undefined，也就是在 cache 中是否存在以 key 为属性的值
+     *      如果不存在且 elem 是元素，进入 if
+     */
+    if ( data === undefined && elem.nodeType === 1 ) {
+        /**
+         *  1.1 将 key 的驼峰写法转换为 - 的写法，然后将 key 中的大写字母全部转换为小写字母，最后用 data- 拼接转换后的结果到 name 中
+         *      $1 代表的是 rmultiDash 正则中第一个子项（ 第一个用 () 括起来的内容 ）
+         */
+        name = "data-" + key.replace( rmultiDash, "-$1" ).toLowerCase();
+        //     1.2    通过原生的 getAttribute 方法来获取 elem 元素中以 name 为属性的值，将结果保存在 data 中
+        data = elem.getAttribute( name );
+        /**
+         *  1.3    根据不同的值，来进行不同的处理
+         *      如果获取到的自定义属性值是字符串
+         *          字符串 true，转换为布尔值 true
+         *          字符串 false，转换为布尔值 false
+         *          字符串 null，转换为 null
+         *          字符串数值，转换为数值
+         *          字符串 json，转换为对应的 js 对象
+         *      如果值不是字符串，那么就将自定义属性值设置为 undefined
+         */
+        if ( typeof data === "string" ) {
+            try {
+                data = data === "true" ? true :
+                    data === "false" ? false :
+                    data === "null" ? null :
+                    /**
+                     *  之所以要将 data 先转换为数值（ 用 + 号 ），再转换为字符串（ 拼接空字符串 ），是因为确保原始的 data 是一个纯的字符串数字
+                     *      如果是一个纯数字字符串，那么得到的结果就是该数值
+                     *      如果不是（ 又有字符、又有数字 ），那么 +data 得到 NaN，再转换为字符串 NaN，与原始的 data 就不相等了，就不会得到该数值，进入下一个判断
+                     */
+                    +data + "" === data ? +data :
+                    /**
+                     *  利用 rbrace 正则判断 data 是否是 json 字符串
+                     *      如果是的话，通过 JSON.parse 将其装换为 js 的对象/数组
+                     */
+                    rbrace.test( data ) ? JSON.parse( data ) :
+                    //  如果不满足以上所有的条件，那么直接获取原始的数据
+                    data;
+            } catch( e ) {}
+
+            /**
+             *  调用公用缓存对象的 set 方法，为 elem 在公用缓存中设置以 key 为属性，data 为其值的缓存
+             */
+            data_user.set( elem, key, data );
+        } else {
+            data = undefined;
+        }
+    }
+
+    /**
+     *  2.  返回 data
+     */
+    return data;
+}
+</code>
+</pre>  
+
+<h4 id="jQuery-fn-data"><a href="#jQuery-fn-data" class="headerlink" title="jQuery.fn.data"></a>jQuery.fn.data</h4><p>现在来看 data 方法，data 方法既可以获取缓存，也可以设置缓存，关键就在于提供的参数   </p>
+<pre class="line-numbers">
+<code class="language-javascript">
+data: function( key, value ) {
+    var attrs, name,
+        //  1.  获取当前 jQ 对象中的第一个 DOM 元素，如果在一个 jQ 对象中有多个 DOM 元素，那么使用 data 方法获取值时，只会返回第一个 DOM 元素的值
+        elem = this[ 0 ],
+        i = 0,
+        data = null;
+
+    /**
+     *  2.  判断有没有提供参数
+     *          如果没有提供任何参数，那么就会获取当前 jQuery 实例第一个 DOM 元素在 cache 中的对象
+     */
+    if ( key === undefined ) {
+        //  2.1 判断当前 jQ 对象是否存在 DOM 元素，如果不存在，则直接返回 null
+        if ( this.length ) {
+            //  2.1.1 从公用缓存中获取 elem 元素的缓存对象
+            data = data_user.get( elem );
+            /**
+             *  2.1.2 
+             *      设置 HTML5 自定义的属性，例如 data-custom-index
+             *      首先 elem 必须是一个元素
+             *      其次，在私有缓存中，如果 elem 不存在 hasDataAttrs 属性，进入 if
+             */
+            if ( elem.nodeType === 1 && !data_priv.get( elem, "hasDataAttrs" ) ) {
+                //  2.1.2.1 获取 elem 元素所有属性节点的集合（ 该集合是一个类数组，包括 HTML5 自定义的属性 ）并将其引用保存在 attrs 变量中
+                attrs = elem.attributes;
+                /**
+                 *  2.1.2.2    
+                 *  遍历 attrs 变量（ 其中每个元素都是一个属性节点，获取该属性的名称可以用 name 属性获得，获取该属性的值可以用 value 获得 ）
+                 *      获取到每一个属性节点的属性名，判断属性名中是否存在 data-，即是否是自定义属性
+                 *          如果是的话，那么将 data- 之后的内容转换为驼峰写法，例如 data-custom-index 会转换为 customIndex
+                 *              然后通过 dataAttr 方法为 elem 元素在公用缓存中设置自定义属性以及其值
+                 *          如果不是的话，那么进行下一次的遍历循环
+                 */
+                for ( ; i < attrs.length; i++ ) {
+                    name = attrs[ i ].name;
+
+                    if ( name.indexOf( "data-" ) === 0 ) {
+                        name = jQuery.camelCase( name.slice(5) );
+                        dataAttr( elem, name, data[ name ] );
+                    }
+                }
+                /**
+                 *  2.1.2.2
+                 *      在私有缓存中，为 elem 元素设置 hasDataAttr 属性为 true
+                 *          这样，当第二次之后使用 data 方法获取 DOM 的数据时，就不会再进入这个 if 了
+                 *          这个 if 的作用只是获取到 elem 的自定义属性，并设置到公用 cache 中，所以只会设置一次
+                 */
+                data_priv.set( elem, "hasDataAttrs", true );
+            }
+        }
+
+        /**
+         *  2.2 返回 data 变量（ elem 在公用缓存中的对象 ）
+         */
+        return data;
+    }
+
+    /**
+     *  3.  处理 key 是一个对象的时候（ 也就是设置多个值 ）
+     *      调用 each 方法，为当前 jQuery 实例中的每一个 DOM 元素在公用缓存中设置 key 中所有的键值对
+     */
+    if ( typeof key === "object" ) {
+        return this.each(function() {
+            data_user.set( this, key );
+        });
+    }
+
+    /**
+     *  4.  处理一个值的情况（ key 是键，value 是值 ）
+     */
+    return jQuery.access( this, function( value ) {
+        var data,
+            //  4.1 将 key 转换为驼峰写法并保存在 camelKey 中
+            camelKey = jQuery.camelCase( key );
+
+        /**
+         *  4.2 如果 data 方法中只提供了一个参数（ 即 value 是 undefined ），并且当前 jQuery 实例中至少存在一个 DOM 元素
+         *      那么就会获取这个 DOM 元素在公用缓存中的对象以 key 为键的值
+         */
+        if ( elem && value === undefined ) {
+            /**
+             *  4.2.1 
+             *      获取 elem 元素在公用缓存中以 key 为键的值
+             *      如果该值存在，那么直接退出函数返回该值
+             *      如果不存在，再进行下一步处理
+             */
+            data = data_user.get( elem, key );
+            if ( data !== undefined ) {
+                return data;
+            }
+
+            /**
+             *  4.2.2 
+             *      获取 elem 元素在公用缓存中以 key 的驼峰写法为键的值
+             *      如果该值存在，那么直接退出返回该值
+             *      如果该值不存在，那么再进行下一步处理
+             */
+            data = data_user.get( elem, camelKey );
+            if ( data !== undefined ) {
+                return data;
+            }
+
+            /**
+             *  4.2.3 
+             *      获取 elem 元素在公用缓存中以 data- + key 为键的值    
+             *      如果该值存在，那么直接退出返回该值
+             *      如果该值不存在，那么再进行下一步处理
+             */
+            data = dataAttr( elem, camelKey, undefined );
+            if ( data !== undefined ) {
+                return data;
+            }
+
+            /**
+             *  4.2.4 如果经过上述的步骤都没有获取到，那么就说明不存在，返回 undefined
+             */
+            return ;
+        }
+
+        /**
+         *  4.3 设置一个值的情况
+         *      通过 each 方法遍历当前 jQuery 对象中的每个 DOM 元素
+         */
+        this.each(function() {
+            /**
+             *  4.3.1 获取当前 DOM 在公有缓存中，以 camelKey 为键的值
+             */
+            var data = data_user.get( this, camelKey );
+
+            /**
+             *  4.3.2 在公有缓存中为当前 DOM 元素设置以 camelKey 为属性，value 为值的数据
+             */
+            data_user.set( this, camelKey, value );
+
+            /**
+             *  如果 key 中存在 -，并且当前 DOM 元素在公有缓存中存在以 camelKey 为属性的值
+             *  那么就会在公有缓存中为当前 DOM 元素添加一个以 key 为属性，value 为值的数据
+             */
+            if ( key.indexOf("-") !== -1 && data !== undefined ) {
+                data_user.set( this, key, value );
+            }
+        });
+    }, null, value, arguments.length > 1, null, true );
+}
+</code>
+</pre>   
+
+
+<h5 id="示例一：使用-data-方法获取整个缓存对象"><a href="#示例一：使用-data-方法获取整个缓存对象" class="headerlink" title="示例一：使用 data 方法获取整个缓存对象"></a>示例一：使用 data 方法获取整个缓存对象</h5><pre>
+<code class="language-markup">
+&lt;div id="box"&gt;&lt;/div&gt;
+</code>
+</pre>
+<pre class="lie-numbers">
+<code class="language-javascript">
+const $div = $( '#box' );
+
+/**
+ *  假设此时公用缓存对象 data_user 的 expando 属性为 jQuery203070126265190928350.046724943387240536
+ *  此时，调用 data 方法时，因为没有传任何的参数，所以会进入 13 行的 if 中；然后调用公用缓存对象的 get 方法
+ *      在 get 方法中，又会调用公用缓存对象的 key 方法（ 并将 #div 作为参数传递 ）
+ *          在 key 方法中，因为参数（ #div ）满足条件，所以 11 行的 if 不会进入；然后会从 #div 中获取以公用缓存对象的 expando 为属性的值（ 此时是 undefined ），所以就进入 25 行的 if 中
+ *              首先保存此时静态属性 uid（ 此时为1 ）到 unlock 中，然后对其 + 1；然后为 #div 添加一个属性，属性名为公用缓存对象的 expando，值为 unlock 的值
+ *              相当于为 #div 添加一个属性，即 jQuery203070126265190928350.046724943387240536 = "1"
+ *              然后，因为此时在公用缓存 cache 中不存在 #div 的对象，所以会进入 49 行的 if 中，为 #div 在公用缓存中创建一个属于自己的空对象（ 属性名为 unlock，属性值是空对象 ）
+ *              此时，公用缓存的 cache 就是如下的形式
+ *              {
+ *                  0: {},
+ *                  1: {}
+ *              }
+ *              最后返回 unlock 的值（ 1 ）
+ *      在 get 方法中，调用 key 方法的结果是 1；然后会从公用缓存 cache 中获取以 1 为属性的值（ 空对象 ），获取到之后，因为调用 get 方法值传递了一个参数，所以直接将获取到的结果返回
+ *  在 data 方法中，调用 get 的就是就是一个空对象，最后返回这个空对象（ 因为此处不涉及自定义属性，所以先不用看 24 行的 if ） 
+ */ 
+const emptyData = $div.data();  // 空对象
+</code>
+</pre>  
+
+<h5 id="示例二：使用-data-方法获取整个缓存对象（-包括自定义属性-）"><a href="#示例二：使用-data-方法获取整个缓存对象（-包括自定义属性-）" class="headerlink" title="示例二：使用 data 方法获取整个缓存对象（ 包括自定义属性 ）"></a>示例二：使用 data 方法获取整个缓存对象（ 包括自定义属性 ）</h5><pre>
+<code class="language-markup">
+&lt;div id="box" data-custom-index="1"&gt;&lt;/div&gt;
+</code>
+</pre>
+<pre class="lie-numbers">
+<code class="language-javascript">
+const $div2 = $( '#box2' );
+
+/**
+ *  和示例一完全相同，相同的就不再说了，直接从 data 方法中调用完 get 方法开始，此时 data 变量还是一个空对象
+ *  此时会先调用私有缓存对象的 get 方法，并将 #div2 当做参数（ 结果就是在私有缓存 cache 中，为 #div2 创建一个空的对象，然后从这个空对象中查找是否存在 hasDataAttrs 属性，当然是没有 ），进入 if
+ *      获取 #div2 的所有属性的集合（ { 0: id, 1: data-custom-index } ），然后开始遍历这个集合
+ *          遍历过程中，会判断每一个属性名是否带有 data-（ 此例中只有 data-custom-index 符合，以此为例说明 ）
+ *          进入 38 行的 if 中，首先将 data- 之后的部分截取，并当做 $.camelCase 的参数，该参数会将参数转换为驼峰的写法，调用完成之后，就是 customIndex，然后会调用内部的 dataAttr 方法，分别传入 #div2、customIndex、undefined（ 因为此时在公用缓存 cache 中，#div2 对应的对象中并没有 customIndex 属性，所以是 undefiend ）
+ *              在 dataAttr 方法中，会进入 15 行的 if 中，首先将 customIndex 转换为 data-custom-index，然后通过 getAttribute 方法获取 $div2 中该属性的值（ 是 1 ）并保存到 data 中，然后对齐进行类型的转换（ 因为此时是纯数字字符串，所以将其转换为数值 1 并保存在 data 中 ），然后调用公用缓存对象的 set 方法，将 customIndex 和 1 保存在 #div2 对应的对象中
+ *      循环遍历完集合后，会调用私有缓存对象的 set 方法，为 #div2 对应的对象中，添加一个 hasDataAttrs 属性，且其值为 true，防止下一次调用 data 方法时又进入 24 行的 if 中  
+ *      此时，公用缓存的 cache 就是如下的形式  
+ *      {
+ *          0: {},
+ *          1: {
+ *              customIndex: 1
+ *          }
+ *      }
+ */
+const data = $div2.data();  // { customIndex: 1 }
+</code>
+</pre>  
+
+<h5 id="示例三：使用-data-方法提供一个对象参数"><a href="#示例三：使用-data-方法提供一个对象参数" class="headerlink" title="示例三：使用 data 方法提供一个对象参数"></a>示例三：使用 data 方法提供一个对象参数</h5><pre>
+<code class="language-markup">
+&lt;div id="box3"&gt;&lt;/div&gt;
+</code>
+</pre>
+<pre class="lie-numbers">
+<code class="language-javascript">
+const $div = $( '#box3' );
+
+/**
+ *  调用 data 方法时，提供了一个参数且为对象，所以会进入 63 行的 if 中
+ *      此时，会遍历当前的 jQuery 对象中的每个 DOM 元素（ 此例中只有一个，就是 #div3 ），然后调用公用缓存对象的 set 方法，将每个 DOM 元素和 data 方法的对象参数作为 set 的参数
+ *          在 set 方法中，首先会调用 key 方法，结果就是在公用缓存的 cache 中为每一个 DOM 元素创建一个空对象，并获取这个空对象在 cache 中的索引，将索引保存在 unlock 变量中，将这个空对象的引用保存在 cache 变量中
+ *          调用完 key 方法之后，会判断参数的类型，因为此时参数是一个对象，所以进入 26 行的 else 中，然后将 set 方法的对象参数中的每个属性（ 此例中是 name 和 age ）添加到 cache 变量中
+ *      所以，循环调用完 set 方法后，公用缓存的 cache 就是如下的形式
+ *      {
+ *          0: {},
+ *          1: {
+ *              name: "IconMan"
+ *              age: 25
+ *          }
+ *      }
+ */ 
+$div.data({
+    name: 'IconMan',
+    age: 25
+});
+
+const data = $div.data();  // { name: "IconMan", age: 25 }
+</code>
+</pre>  
+
+<h5 id="示例四：使用-data-方法提供一个字符串参数"><a href="#示例四：使用-data-方法提供一个字符串参数" class="headerlink" title="示例四：使用 data 方法提供一个字符串参数"></a>示例四：使用 data 方法提供一个字符串参数</h5><pre>
+<code class="language-markup">
+&lt;div id="box4" data-custom-index="1"&gt;&lt;/div&gt;
+</code>
+</pre>
+<pre class="lie-numbers">
+<code class="language-javascript">
+const $div = $( '#box4' );
+$div.data({
+    'customName': 'Nicholas',
+    'custom-age': 30
+});
+
+/**
+ *  此时，调用 data 提供的参数是一个字符串，所以会直接到 72 行的 return，并调用 $.access，然后会调用 access 中的函数参数
+ *      在这个函数参数中，如果当前 jQuery 对象至少存在一个 DOM 元素并且 data 方法只提供了一个字符串参数，那么就会进入 81 行的 if 中
+ *          在 if 中，会调用公用缓存对象的 get 方法，获取第一个 DOM 元素在公用缓存 cache 中的对象，再从中获取以 data 参数为属性的值，如果获取到了，直接返回；如果没有，再次进行一次获取，只不过这次将 data 参数的驼峰写法作为参数，获取到了直接返回
+ */
+const data       = $div.data();                  // { customName: "Nicholas", custom-age: 30, customIndex: 1 }
+const dataName1  = $div.data( 'custom-name' );   // Nicholas 通过 4.2.2 获取
+const dataName2  = $div.data( 'customName' );    // Nicholas 通过 4.2.1 获取
+const dataAge    = $div.data( 'custom-age' );    // 30       通过 4.2.1 获取
+const dataIndex  = $div.data( 'custom-index' );  // 1        通过 4.2.2 获取
+const dataIndex2 = $div.data( 'customIndex' );   // 1        通过 4.2.1 获取
+</code>
+</pre>  
+
+<h5 id="示例五：使用-data-方法提供两个字符串参数"><a href="#示例五：使用-data-方法提供两个字符串参数" class="headerlink" title="示例五：使用 data 方法提供两个字符串参数"></a>示例五：使用 data 方法提供两个字符串参数</h5><pre>
+<code class="language-markup">
+&lt;div id="box5" data-my-name="123"&gt;&lt;/div&gt;
+</code>
+</pre>
+<pre class="lie-numbers">
+<code class="language-javascript">
+const $div = $( '#box5' );
+const data1 = $div.data();  // { myName: 123 }
+
+/**
+ *  此时，因为 data 方法提供了两个参数且都为字符串，所以直接进入 72 行的 return 中，调用 $.access，然后调用参数函数
+ *      在参数函数中，因为 data 方法提供了两个参数，所以不会进入 81 行的 if 中，直接到 125 行的遍历中，遍历当前 jQuery 对象中的每个 DOM 元素
+ *          首先获取当前 DOM 元素在公用缓存中的对象，然后从中获取以 data 第一个参数驼峰写法为属性的值（ 此例中是获取 myName 的值，即 123 ），然后为当前 DOM 元素在公用缓存中设置一个键值对（ 属性为 data 第一个参数的驼峰写法，值为第二个参数 ）
+ *          然后会进入 140 的 if 中，为当前 DOM 元素在公用缓存中设置一个以第一个参数为属性，第二个参数为值的键值对
+ *  此时，公用缓存的 cache 就是如下的形式
+ *  {
+ *      0: {},
+ *      1: {
+ *          myName: "IconMan",
+ *          my-name: "IconMan"
+ *      }
+ *  }
+ */
+$div.data( 'my-name', 'IconMan' );
+const data = $div.data();   // { myName: "IconMan", my-name: "IconMan" }
+</code>
+</pre>  
+
+<h4 id="jQuery-fn-removeData"><a href="#jQuery-fn-removeData" class="headerlink" title="jQuery.fn.removeData"></a>jQuery.fn.removeData</h4><p>该方法用于将当前 jQuery 实例中的所有 DOM 元素在公用缓存对象中，删除指定的属性  </p>
+<pre class="line-numbers">
+<code class="language-javascript">
+/**
+ *  删除调用该方法的 jQuery 对象中的所有 DOM 元素 在 cache 中指定的属性
+ *  @param  { Undefined | String | Array }    key    要删除的某个属性（ String ），或者多个属性（ Array ），或者在 cache 中的 json 对象（ Undefined ）
+ */
+removeData: function( key ) {
+    /**
+     *  遍历当前 jQuery 实例中的所有 DOM 元素，为每一个 DOM 元素执行公用缓存对象的 remove 方法
+     */
+    return this.each(function() {
+        data_user.remove( this, key );
+    });
+}
+</code>
+</pre>    
+
+<p>从源码中可以看出来，这个方法其实就是遍历当前 jQuery 实例，然后循环调用公用缓存对象的 <code>remove</code> 方法，并将当前遍历的 DOM 元素作为参数。具体示例可以看 <code>Data.prototype.remove</code> 方法的示例  </p>
+<h3 id="jQuery-有关数据缓存的工具方法"><a href="#jQuery-有关数据缓存的工具方法" class="headerlink" title="jQuery 有关数据缓存的工具方法"></a>jQuery 有关数据缓存的工具方法</h3><h4 id="jQuery-acceptData"><a href="#jQuery-acceptData" class="headerlink" title="jQuery.acceptData"></a>jQuery.acceptData</h4><p>这个方法其实很简单，就是 <code>Data</code> 的静态方法 <code>accepts</code>。在源码中就是一句话   </p>
+<pre>
+<code class="language-javascript">
+acceptData: Data.accepts
+</code>
+</pre>  
+
+<h4 id="jQuery-hasData"><a href="#jQuery-hasData" class="headerlink" title="jQuery.hasData"></a>jQuery.hasData</h4><p>这个方法在内部也是调用 <code>Data</code> 示例的 <code>hasData</code> 方法，也就是判断指定的 DOM 元素在缓存的对象中是否有数据   </p>
+<pre>
+<code class="language-javascript">
+hasData: function( elem ) {
+    /**
+     *  先在公用缓存中判断，如果没有再从私有缓存中判断
+     */
+    return data_user.hasData( elem ) || data_priv.hasData( elem );
+}
+</code>
+</pre>  
+
+<h4 id="jQuery-data"><a href="#jQuery-data" class="headerlink" title="jQuery.data"></a>jQuery.data</h4><p>这个方法在内部也是调用 <code>Data</code> 示例的 <code>data</code> 方法   </p>
+<pre>
+<code class="language-javascript">
+data: function( elem, name, data ) {
+    /**
+     *  调用公用缓存对象的 access 方法，向公用缓存中设置、查找数据
+     */
+    return data_user.access( elem, name, data );
+}
+</code>
+</pre>  
+
+<h4 id="jQuery-removeData"><a href="#jQuery-removeData" class="headerlink" title="jQuery.removeData"></a>jQuery.removeData</h4><p>这个方法在内部也是调用 <code>Data</code> 示例的 <code>data</code> 方法   </p>
+<pre>
+<code class="language-javascript">
+removeData: function( elem, name ) {
+    /**
+     *  调用公用缓存对象的 remove 方法，从公用缓存中删除数据
+     */
+    data_user.remove( elem, name );
+}
+</code>
+</pre>  
+
+<p>以上几个工具方法都是操作公用缓存的，<code>jQuery</code> 还提供了两个私有方法，用于操作私有缓存，但这只是在 <code>jQuery</code> 内部使用  </p>
+<h4 id="jQuery-data-1"><a href="#jQuery-data-1" class="headerlink" title="jQuery._data"></a>jQuery._data</h4><p>这个方法在内部也是调用 <code>Data</code> 示例的 <code>data</code> 方法   </p>
+<pre>
+<code class="language-javascript">
+_data: function( elem, name, data ) {
+    /**
+     *  调用私有缓存对象的 access 方法，向私有缓存中设置、查找数据
+     */
+    return data_priv.access( elem, name, data );
+}
+</code>
+</pre>  
+
+<h4 id="jQuery-removeData-1"><a href="#jQuery-removeData-1" class="headerlink" title="jQuery._removeData"></a>jQuery._removeData</h4><p>这个方法在内部也是调用 <code>Data</code> 示例的 <code>data</code> 方法   </p>
+<pre>
+<code class="language-javascript">
+_removeData: function( elem, name ) {
+    /**
+     *  调用私有缓存对象的 remove 方法，从私有缓存中删除数据
+     */
+    data_priv.remove( elem, name );
+}
+</code>
+</pre>
+
+            </div>
+        
+        
+        
+    </div>
+
+    
+        
+    <div id="post-nav" class="row">
+        
+        <div class="nav-prev col-md-4 col-sm-4 col-xs-6">
+            
+                <a href="/jQuery/jQuery06.html" class="nav-prev-link nav-link ellipsis">
+                    <i class="iconfont icon-houtui"></i>
+                    jQuery源码分析（六）—— 队列操作
+                </a>
+            
+        </div>
+
+        <div class="nav-next col-md-4 col-md-offset-4 col-sm-4 col-sm-offset-4 col-xs-6">
+            
+                <a href="/jQuery/jQuery04.html" class="nav-next-link nav-link ellipsis">
+                    jQuery源码分析（四）—— 延迟对象
+                </a>
+                <i class="iconfont icon-qianjin"></i>
+            
+        </div>
+        
+    </div>
+
+    
+
+</li>
+                
+                
+            </div>
+        </div>
+        
+        
+
+        <script src="/js/jquery-2.0.3.min.js"></script>
+        <script src="/js/jquery.ztree.core.min.js"></script>
+        <script src="/js/index.js"></script>
+        <script src="/js/prism.js"></script>
+
+    </div>
+</body>
+</html>

@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>LinHao</title>
+    <link href="https://cdn.bootcss.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.bootcss.com/animate.css/3.5.0/animate.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="/css/index.css">
+    <link rel="stylesheet" href="/css/zTreeStyle.css">
+</head>
+<body>
+    
+
+    <div id="blog" class="PingFang_SC_Normal">
+        <div id="header">
+    <div class="header-container container">
+        <div class="collapse navbar-collapse row" id="bs-example-navbar-collapse-1">
+            <ul class="header-list nav navbar-nav col-md-6 col-sm-6 col-xs-6">
+                
+                    <li class="header-list-item"><a href="/">HOME</a></li>
+                
+                    <li class="header-list-item"><a href="/article">ARTICLE</a></li>
+                
+                    <li class="header-list-item"><a href="/about">ABOUT</a></li>
+                
+            </ul>
+            
+        </div>
+        
+        
+    </div>
+</div>
+        <div id="header_scroll" >
+    <div class="header_scroll_block"></div>
+</div>
+        
+        <div id="main" class="clear">
+            <div class="main-container container">
+                
+
+                
+
+    
+
+    <div id="title" class="title-post">
+        <h3 class="title-container">
+            <span class="title-text AGaramondPro_Italic_Bold">Straight Matter</span>
+        </h3>
+    </div>
+
+
+
+<li class="article-item">
+    <div class="article-container">
+        <img class="article-img img-responsive" src="" alt="">
+        <h3 class="article-title"></h3>
+        <div class="article-header">
+            <div class="article-info">
+                <i class="iconfont icon-xinxi"></i>
+                <span class="article-info-categories article-info-item">
+                    <span class="AGaramondPro_Bold article-info-title">Categories</span>
+                    
+                </span>
+                <span class="article-info-tags article-info-item">
+                    <span class="AGaramondPro_Bold tags-info-title">Tags</span>
+                    
+                </span>
+                <span class="article-info-item article-info-date AGaramondPro_Regular"><span>2018-04-28</span></span>
+                <span class="article-info-item article-info-portrait clear">
+                    <img src="https://awcdn1.ahmad.works/writing/wp-content/uploads/2015/05/Author.jpg" alt="">
+                    <span class="article-info-item article-info-username AGaramondPro_Bold">LinHao</span>
+                </span>
+                
+            </div>
+        </div>
+        
+            <div class="article-content article-text">
+                <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>when 基本使用_03</title>
+</head>
+<body>
+    
+    <script src="../jquery-2.0.3.js"></script>
+
+    <script>
+        
+        const dfd1 = $.Deferred();
+
+        setTimeout(() => {
+            dfd1.resolve( 1 );
+        }, 1000);
+
+        const dfd2 = $.Deferred();
+
+        setTimeout(() => {
+            dfd2.resolve( 2 );
+        }, 2000);
+
+        /**
+         *  此时，when 方法传递了两个延迟对象，remaining 和 length 都是 2，deferred 变量是一个新的延迟对象
+         *      然后会进入 87 行的 if 遍历每一个参数，因为每个参数都是延迟对象，所以会向每个延迟对象的三种状态分别添加一个回调
+         *          此时，resolveContexts、progressContexts 和 progressValues 都是包含两个元素的空数组，而 resolveValues 是包含 dfd1 和 dfd2 的数组
+         *          此时，dfd1 的成功回调对象中，已经存在三个回调，失败也是三个回调，进行中是没有的（ dfd2 也是一样 ），在遍历过程中，又向 dfd1（ dfd2 ） 的成功、失败和进行中的回调对象添加了一个新的回调
+         *              这个新的回调是 updateFunc 的返回值，并将 resolveContexts、resolveValues、progressContexts 和 progressValues 当做实参传递，因为在 updateFunc 的返回值方法中要操作这些变量
+         *      遍历完成之后直接返回 defered 对象中的 promise 对象，然后调用了 done 方法，为这个延迟对象成功状态的回调对象中添加了一个回调
+         *      在 1s 后，dfd1 的状态被指定为成功，此时会遍历调用成功状态回调对象中的所有回调，前三个已经很清楚了，主要来看第四个，也就是上面遍历过程中添加的回调
+         *          在这个回调中，this 是 dfd1 的 promise 对象，然后将调用 resolve 或者 resolveWith 方法时传递的参数（ 此例中是 1 ）保存在 resolveValues 中的第一个元素，因为此时调用的是 resolve 方法（ 即指定延迟对象状态是成功 ）所以此时的 values 就是 resolveValues，进入 70 行的 else if 中，对 remaining - 1，之后再判断 remaining 是否是 0（ 现在是 1 ），条件不满足，这个回调就结束了
+         *      在 2s 后，dfd2 的状态被指定为成功，和 dfd1 一样，我们只看在遍历过程中添加的回调，之前的已经清楚
+         *          在这个回调中，this 是 dfd2 的 promise 对象，然后将调用 resolve 或者 resolveWith 方法时传递的参数（ 此例中是 2 ）保存在 resolveValues 中的第二个元素，因为此时调用的是 resolve 方法（ 即指定延迟对象状态是成功 ）所以此时的 values 就是 resolveValues，进入 70 行的 else if中，对 remaining - 1，之后再判断 remaining 是否是 0（ 现在是 0 ），条件满足，将 when 方法中的 deferred 的状态指定为成功，并将每个回调的作用域指定为 resolveContexts，并且每个回调的参数是 resolveValues 数组
+         *      此时，resolveContexts 保存是 dfd1 的 promise 对象和 dfd2 的 promise 的数组，而 resolveValues 保存的是 1 和 2 的数组
+         */
+        $.when( dfd1, dfd2 )
+        .done(function ( value1, value2 ) {
+            console.log( '2s 后所有延迟对象都已成功' );
+            console.log( value1, value2 );  // 1 2
+            console.log( this );            // [ dfd1.promise(), dfd2.promise() ]
+        });
+
+    </script>
+
+</body>
+</html>
+            </div>
+        
+        
+        
+    </div>
+
+    
+        
+    
+
+</li>
+                
+                
+            </div>
+        </div>
+        
+        
+
+        <script src="/js/jquery-2.0.3.min.js"></script>
+        <script src="/js/jquery.ztree.core.min.js"></script>
+        <script src="/js/index.js"></script>
+        <script src="/js/prism.js"></script>
+
+    </div>
+</body>
+</html>

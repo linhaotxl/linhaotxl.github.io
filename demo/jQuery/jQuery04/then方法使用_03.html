@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>LinHao</title>
+    <link href="https://cdn.bootcss.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.bootcss.com/animate.css/3.5.0/animate.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="/css/index.css">
+    <link rel="stylesheet" href="/css/zTreeStyle.css">
+</head>
+<body>
+    
+
+    <div id="blog" class="PingFang_SC_Normal">
+        <div id="header">
+    <div class="header-container container">
+        <div class="collapse navbar-collapse row" id="bs-example-navbar-collapse-1">
+            <ul class="header-list nav navbar-nav col-md-6 col-sm-6 col-xs-6">
+                
+                    <li class="header-list-item"><a href="/">HOME</a></li>
+                
+                    <li class="header-list-item"><a href="/article">ARTICLE</a></li>
+                
+                    <li class="header-list-item"><a href="/about">ABOUT</a></li>
+                
+            </ul>
+            
+        </div>
+        
+        
+    </div>
+</div>
+        <div id="header_scroll" >
+    <div class="header_scroll_block"></div>
+</div>
+        
+        <div id="main" class="clear">
+            <div class="main-container container">
+                
+
+                
+
+    
+
+    <div id="title" class="title-post">
+        <h3 class="title-container">
+            <span class="title-text AGaramondPro_Italic_Bold">Straight Matter</span>
+        </h3>
+    </div>
+
+
+
+<li class="article-item">
+    <div class="article-container">
+        <img class="article-img img-responsive" src="" alt="">
+        <h3 class="article-title"></h3>
+        <div class="article-header">
+            <div class="article-info">
+                <i class="iconfont icon-xinxi"></i>
+                <span class="article-info-categories article-info-item">
+                    <span class="AGaramondPro_Bold article-info-title">Categories</span>
+                    
+                </span>
+                <span class="article-info-tags article-info-item">
+                    <span class="AGaramondPro_Bold tags-info-title">Tags</span>
+                    
+                </span>
+                <span class="article-info-item article-info-date AGaramondPro_Regular"><span>2018-05-01</span></span>
+                <span class="article-info-item article-info-portrait clear">
+                    <img src="https://awcdn1.ahmad.works/writing/wp-content/uploads/2015/05/Author.jpg" alt="">
+                    <span class="article-info-item article-info-username AGaramondPro_Bold">LinHao</span>
+                </span>
+                
+            </div>
+        </div>
+        
+            <div class="article-content article-text">
+                <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>then方法使用_03</title>
+</head>
+<body>
+    
+    <script src="../jquery-2.0.3.js"></script>
+
+    <script>
+
+        /**
+         *  获取第一个延迟对象，并在 1s 后将其状态指定为成功
+         */
+        function fetchPromise1 () {
+            const dfd1 = $.Deferred();
+
+            setTimeout(() => {
+                dfd1.resolve( 1 );
+            }, 1000);
+
+            return dfd1;
+        }
+
+        /**
+         *  获取第二个延迟对象，并在 2s 后将其状态指定为成功
+         */
+        function fetchPromise2 ( state ) {
+            const dfd2 = $.Deferred();
+
+            setTimeout(() => {
+                dfd2.resolve( 2 );
+            }, 2000);
+
+            return dfd2;
+        }
+
+        const dfd1 = fetchPromise1();
+        const dfd2 = fetchPromise2();
+    
+        /**
+         *  调用 dfd1 的 then 方法，此时就会向 dfd1 延迟对象的三种状态的回调对象中又分别添加了一个新的回调
+         *      其中，这个新的回调在成功状态里会调用 then 的第一个函数参数，在失败和进行状态里不会调用，因为调用 then 方法只传递了第一个参数
+         *      1s 后，将 dfd 的状态指定为成功，所以会遍历成功状态里的四个回调，主要看第四个
+         *          在第四个回调中，首先会调用 then 的第一个函数参数，并且该函数参数的返回的值是一个新的延迟对象（ dfd2 ），所以会进入 40 行的 if 中
+         *          向这个返回的延迟对象（ dfd2 ）的每个状态添加了一个新的回调，就是 then 返回的延迟对象的 resolve、reject 和 notify 方法
+         *          2s 后，将 dfd2 的状态指定为成功，就会遍历 dfd2 成功状态的四个回调（ 初始化时的三个 + then 的 if 中的一个 ），主要来看第四个回调
+         *              调用第四个回调时，其实就是将 then 返回的延迟对象的状态指定为成功（ 调用 resolve 方法 ）。此时，这 resolve 方法中的 this 就是 dfd2 的 promise 对象并且会收到参数 2
+         *                  在 resolve 方法中，再调用 resolveWith 方法，并将 dfd2.promise() 和 2 当做参数，所以，then 返回的延迟对象中，每个回调的作用域都是 dfd2 的 promise 对象，而且都会收到参数 2
+         */
+        const thenDfd = dfd1.then(function ( data ) {
+            console.log( data );
+            return dfd2;
+        });
+        thenDfd.done(function ( data ) {
+            console.log( this === dfd2.promise() );
+            console.log( data );
+        });
+
+    </script>
+
+</body>
+</html>
+            </div>
+        
+        
+        
+    </div>
+
+    
+        
+    
+
+</li>
+                
+                
+            </div>
+        </div>
+        
+        
+
+        <script src="/js/jquery-2.0.3.min.js"></script>
+        <script src="/js/jquery.ztree.core.min.js"></script>
+        <script src="/js/index.js"></script>
+        <script src="/js/prism.js"></script>
+
+    </div>
+</body>
+</html>

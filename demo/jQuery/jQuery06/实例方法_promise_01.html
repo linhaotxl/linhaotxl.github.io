@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>LinHao</title>
+    <link href="https://cdn.bootcss.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.bootcss.com/animate.css/3.5.0/animate.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="/css/index.css">
+    <link rel="stylesheet" href="/css/zTreeStyle.css">
+</head>
+<body>
+    
+
+    <div id="blog" class="PingFang_SC_Normal">
+        <div id="header">
+    <div class="header-container container">
+        <div class="collapse navbar-collapse row" id="bs-example-navbar-collapse-1">
+            <ul class="header-list nav navbar-nav col-md-6 col-sm-6 col-xs-6">
+                
+                    <li class="header-list-item"><a href="/">HOME</a></li>
+                
+                    <li class="header-list-item"><a href="/article">ARTICLE</a></li>
+                
+                    <li class="header-list-item"><a href="/about">ABOUT</a></li>
+                
+            </ul>
+            
+        </div>
+        
+        
+    </div>
+</div>
+        <div id="header_scroll" >
+    <div class="header_scroll_block"></div>
+</div>
+        
+        <div id="main" class="clear">
+            <div class="main-container container">
+                
+
+                
+
+    
+
+    <div id="title" class="title-post">
+        <h3 class="title-container">
+            <span class="title-text AGaramondPro_Italic_Bold">Straight Matter</span>
+        </h3>
+    </div>
+
+
+
+<li class="article-item">
+    <div class="article-container">
+        <img class="article-img img-responsive" src="" alt="">
+        <h3 class="article-title"></h3>
+        <div class="article-header">
+            <div class="article-info">
+                <i class="iconfont icon-xinxi"></i>
+                <span class="article-info-categories article-info-item">
+                    <span class="AGaramondPro_Bold article-info-title">Categories</span>
+                    
+                </span>
+                <span class="article-info-tags article-info-item">
+                    <span class="AGaramondPro_Bold tags-info-title">Tags</span>
+                    
+                </span>
+                <span class="article-info-item article-info-date AGaramondPro_Regular"><span>2018-05-12</span></span>
+                <span class="article-info-item article-info-portrait clear">
+                    <img src="https://awcdn1.ahmad.works/writing/wp-content/uploads/2015/05/Author.jpg" alt="">
+                    <span class="article-info-item article-info-username AGaramondPro_Bold">LinHao</span>
+                </span>
+                
+            </div>
+        </div>
+        
+            <div class="article-content article-text">
+                <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>实例方法_promise_01</title>
+</head>
+<body>
+    
+    <script src="../jquery-2.0.3.js"></script>
+
+    <div id="box"></div>
+    <script>
+        console.log( '---------- 示例一开始 ----------' );
+        
+        (function ( window, $ ) {
+
+            const $div = $( '#box' );
+
+            function cb1 ( next ) {
+                console.log( 'cb1 执行' );
+                next();
+            }
+
+            function cb2 ( next ) {
+                console.log( 'cb2 执行' );
+                next();
+            }
+
+            /**
+             *  执行完下面这行代码，此时会向 #box 的队列中添加 4 个函数，此时私有缓存的 cache 如下
+             *  {
+             *      0: {},
+             *      1: {
+             *          myqueue: [ 延迟 1s 执行 $.dequeue 的函数, cb1, 延迟 2s 执行 $.dequeue 的函数, cb2 ],
+             *          myqueueHooks: {
+             *              empty: jQuery.Callbacks( 'once memory' )
+             *          }
+             *      }
+             *  } 
+             */
+            $div.delay(1000, 'my').queue( 'my', cb1 ).delay(2000, 'my').queue( 'my', cb2 );
+
+            /**
+             *  此时，在调用 promise 方法中，因为当前 jQuery 对象只有一个 DOM 元素，所以 while 循环只遍历一遍
+             *      遍历过程中，获取到 #box 的 hooks 对象，将 count 设置为 2，并向 hooks 对象中的回调对象添加一个回调
+             *  遍历结束后，执行了一次内部的 resolve 方法
+             *      在 resolve 方法中，count 此时是 2，减 1 之后变为 1，不会进入 if 中
+             *  
+             *  最后返回一个新的延迟对象的 promise 对象，并调用 done 方法向其成功状态的回调中添加了一个回调 
+             */
+            $div.promise( 'my' ).done(function ( div ) {
+                console.log( '队列中的所有操作均已完成' );
+                console.log( this );        // 当前 jQuery 对象
+                console.log( div );         // 当前 jQuery 对象
+            });
+
+            /**
+             *  调用 dequeue 出队中，首先将队列中的第一个元素弹出（ 即延迟 1s 执行 $.deququ 的函数，以下简称 delay1 ）并执行
+             *      1s 后，再次执行 $.dequeue，将 cb1 弹出并执行，打印 “cb1 被执行” 后，再次调用 $.dequque 方法，将延迟 2s 执行 $.dequeue 的函数弹出（ 以下简称 delay2 ）并执行
+             *      2s 后，再次执行 $.dequeue，将 cb2 弹出并执行，打印 “cb2 被执行后”，再次调用 $.dequeue 方法，此时，队列的长度已经为 0，所以进入 dequeue 方法中第 72 行的 if 中，遍历执行 hooks 回调对象中的所有回调
+             *          此时，在 hooks 的回调对象中存在两个回调，一个是清除队列和 hooks 对象的回调，一个是在 promise 方法中添加的内部方法 resolve，在执行第二个回调的过程中（ 也就是 resolve 方法 ），此时 count 是 1，再减 1，即进入了 proimse 方法第 23 行的 if 中
+             *          将延迟对象（ 也就是 promise 方法返回的延迟对象 ）的状态指定为成功，会遍历成功状态中的所有回调（ 即用 done 方法添加的回调 ），所以打印 “队列中的所有操作均已完成”
+             */
+            $div.dequeue( 'my' );
+
+        })( window, jQuery );
+
+        console.log( '---------- 示例一结束 ----------' );
+    </script>
+
+</body>
+</html>
+            </div>
+        
+        
+        
+    </div>
+
+    
+        
+    
+
+</li>
+                
+                
+            </div>
+        </div>
+        
+        
+
+        <script src="/js/jquery-2.0.3.min.js"></script>
+        <script src="/js/jquery.ztree.core.min.js"></script>
+        <script src="/js/index.js"></script>
+        <script src="/js/prism.js"></script>
+
+    </div>
+</body>
+</html>

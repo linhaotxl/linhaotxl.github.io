@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>LinHao</title>
+    <link href="https://cdn.bootcss.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.bootcss.com/animate.css/3.5.0/animate.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="/css/index.css">
+    <link rel="stylesheet" href="/css/zTreeStyle.css">
+</head>
+<body>
+    
+
+    <div id="blog" class="PingFang_SC_Normal">
+        <div id="header">
+    <div class="header-container container">
+        <div class="collapse navbar-collapse row" id="bs-example-navbar-collapse-1">
+            <ul class="header-list nav navbar-nav col-md-6 col-sm-6 col-xs-6">
+                
+                    <li class="header-list-item"><a href="/">HOME</a></li>
+                
+                    <li class="header-list-item"><a href="/article">ARTICLE</a></li>
+                
+                    <li class="header-list-item"><a href="/about">ABOUT</a></li>
+                
+            </ul>
+            
+        </div>
+        
+        
+    </div>
+</div>
+        <div id="header_scroll" >
+    <div class="header_scroll_block"></div>
+</div>
+        
+        <div id="main" class="clear">
+            <div class="main-container container">
+                
+
+                
+
+    
+
+    <div id="title" class="title-post">
+        <h3 class="title-container">
+            <span class="title-text AGaramondPro_Italic_Bold">Straight Matter</span>
+        </h3>
+    </div>
+
+
+
+<li class="article-item">
+    <div class="article-container">
+        <img class="article-img img-responsive" src="" alt="">
+        <h3 class="article-title"></h3>
+        <div class="article-header">
+            <div class="article-info">
+                <i class="iconfont icon-xinxi"></i>
+                <span class="article-info-categories article-info-item">
+                    <span class="AGaramondPro_Bold article-info-title">Categories</span>
+                    
+                </span>
+                <span class="article-info-tags article-info-item">
+                    <span class="AGaramondPro_Bold tags-info-title">Tags</span>
+                    
+                </span>
+                <span class="article-info-item article-info-date AGaramondPro_Regular"><span>2018-05-11</span></span>
+                <span class="article-info-item article-info-portrait clear">
+                    <img src="https://awcdn1.ahmad.works/writing/wp-content/uploads/2015/05/Author.jpg" alt="">
+                    <span class="article-info-item article-info-username AGaramondPro_Bold">LinHao</span>
+                </span>
+                
+            </div>
+        </div>
+        
+            <div class="article-content article-text">
+                <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>工具方法_queue_02</title>
+</head>
+<body>
+    
+    <script src="../jquery-2.0.3.js"></script>
+
+    <!-- 自定义队列名 -->
+    <div class="box" id="box1"></div>
+    <div class="box" id="box2"></div>
+    <script>
+        console.log( '---------- 示例一开始 ----------' );
+
+        (function ( window, $ ) {
+
+            const $div = $( '.box' );
+
+            function cb1 ( next, callback ) {
+                console.log( 'cb1 被执行' );
+                console.log( this );
+                /**
+                *  步骤三：
+                *  此时，next 调用的就是 $.dequeue，并将 #box1 和 my 作为参数传递，所以，再一次调用 $.dequeue，此时将 #box1 队列中的最后一个元素 cb2 弹出，并执行 
+                */
+                next();
+            }
+
+            function cb2 ( next, callback ) {
+                console.log( 'cb2 被执行' );
+                console.log( this );
+                /**
+                *  步骤四：
+                *  此时，next 调用的还是 $.dequeue，参数还是 #box1 和 my
+                *  而在执行 $.dequeue 方法中，队列已经没有元素了（ startLength 是 0 ），所以 fn 变量就是 undefined
+                *  会进入 58 行的 if 中，清空 #box1 的队列已经 hooks 对象
+                */
+                next();
+            }
+
+            /**
+            *  过程一：
+            *  此时，setter 是 2，参数也是两个，所以直接到 return 中
+            *  因为提供了第二个参数，所以会遍历当前的 jQuery 对象
+            *      调用工具方法 queue，为每一个 DOM 元素的队列中添加 data 函数 
+            *      然后为每个 DOM 元素调用私有方法 _queueHooks，结果就是在每个 DOM 元素的私有缓存中添加一个属性，该属性的值是一个对象，其中有一个 empty 属性，其值是一个回调对象，并且此时这个回调对象中已经存在一个回调了
+            */
+            $div.queue( 'my', [ cb1, cb2 ] );
+
+            /**
+            *  执行完上面的代码时，私有缓存的 cache 如下
+            *  {
+            *      0: {},
+            *      1: {
+            *          myqueue: [ cb1 ],
+            *          myqueueHooks: {
+            *              empty: jQuery.Callbacks("once memory")
+            *          }
+            *      },
+            *      2: {
+            *          myqueue: [ cb1 ],
+            *          myqueueHooks: {
+            *              empty: jQuery.Callbacks("once memory")
+            *          }
+            *      }
+            *  } 
+            */
+
+            /**
+            *  步骤二：
+            *  在 dequeue 内部中，首先获取到 #box1 的队列（ [ cb1 ] ）并保存到 queue 变量中，然后将第一个元素弹出并将其引用保存在 fn 中（ 此时 fn 保存的就是 cb1 的引用 ）
+            *  然后调用私有方法 _queueHooks，因为此时当前 DOM 元素在私有缓存中已经存在对应的 queueHook 属性了，所以直接取到对应的对象（ 此例中就是 myqueueHooks 属性的对象 ）并将引用保存在 hooks 变量中
+            *  然后进入 45 行的 if 中，直接调用 fn 方法，并将其作用于修改为此时的 DOM 元素（ 即 #box1 ），然后会将 next 和 hooks 当做参数传递
+            *      此时的 next 是一个新的函数，其中再次调用 $.dequeue 进行出队操作，并将此时调用 $.dequeue 的参数一模一样的传递过去（ 此例中就是 #box1 和 'my' ）
+            */
+            $.dequeue( $div[0], 'my' );
+
+        })( window, jQuery );        
+
+        console.log( '---------- 示例一结束 ----------' );
+    </script>
+
+    <!-- 默认的队列名 -->
+    <div id="box3"></div>
+    <script>
+        console.log( '---------- 示例二开始 ----------' );
+    
+        (function ( window, $ ) {
+
+            const $div = $( '#box3' );
+
+            function cb3 () {
+                console.log( 'cb3 被执行' );
+            }
+
+            function cb4 () {
+                console.log( 'cb4 被执行' );
+            }
+
+            function cb5 () {
+                console.log( 'cb5 被执行' );
+            }
+
+            /**
+             *  此时，调用 queue 方法只传递了一个函数参数，所以先进入 25 行的 if 中，将函数的引用保存在 data 中，将 type 置为默认的 fx，并将 setter - 1
+             *  然后进入 return 中，遍历当前 jQuery 中的所有 DOM 元素，调用工具方法 $.queue 为每一个 DOM 元素添加默认名称的队列，且队列中有一个元素 cb
+             *  然后再调用工具方法 _queueHooks 为每一个 DOM 元素添加 hooks 对象
+             *  然后因为队列名称是默认值 fx 且队列中的第一个元素不是 inprogress，所以进入 66 行的 if 中，执行一次出队操作
+             *      在出队操作中，队列中的第一个元素是 cb3，所以进入 43 行的 if 中，且队列名称是默认的 fx，所以进入 51 行的 if 中，向此时的队列头部添加元素 inprogress
+             *      并且执行刚才出队的元素 fn，即 cb3 函数
+             */
+            $div.queue( [ cb3, cb4 ] );
+
+            /**
+             *  此时再执行实例方法 queue，就不会再自动出队了，因为此时队列中的第一个元素就是 inprogress，所以不会进入 66 行的 if 中
+             *  仅仅是将 cb5 添加到队列中
+             */
+            $div.queue( cb5 );
+
+            console.log( $.queue( $div[0] ) )
+
+            /**
+             *  此时，私有缓存 cache 如下
+             *  {
+             *      0: {},
+             *      1: {
+             *          fxqueue: [ inprogress, cb4, cb5 ],
+             *          fxqueueHooks: {
+             *              empty: jQuery.Callbacks( 'once memory' )
+             *          }
+             *      }
+             *  }
+             */
+
+            /**
+             *  此时调用实例方法 dequeue 进行出队时，还是会调用工具方法 $.dequeue
+             *      在工具方法中，首先将第一个元素弹出并保存在 fn 中（ 此时 fn 是字符串 inprogress ），所以会进入 35 行的 if 中
+             *          再将第一个元素弹出并保存在 fn 中（ 此时 fn 就是 cb4 ），然后将队列的长度 - 1（ 要保证 startLength d保存的是队列中全部是函数的长度，此时从 3 变为 2 ）
+             *      然后又会进入 51 行的 if 中，向队列的头部中又添加了字符串 inprogress，然后再执行 fn，即 cb4
+             */
+            $div.dequeue();
+
+            /**
+             *  此时，私有缓存 cache 如下
+             *  {
+             *      0: {},
+             *      1: {
+             *          fxqueue: [ inprogress, cb5 ],
+             *          fxqueueHooks: {
+             *              empty: jQuery.Callbacks( 'once memory' )
+             *          }
+             *      }
+             *  }
+             */
+
+        })( window, jQuery );
+    
+        console.log( '---------- 示例二结束 ----------' );
+    </script>
+
+</body>
+</html>
+            </div>
+        
+        
+        
+    </div>
+
+    
+        
+    
+
+</li>
+                
+                
+            </div>
+        </div>
+        
+        
+
+        <script src="/js/jquery-2.0.3.min.js"></script>
+        <script src="/js/jquery.ztree.core.min.js"></script>
+        <script src="/js/index.js"></script>
+        <script src="/js/prism.js"></script>
+
+    </div>
+</body>
+</html>

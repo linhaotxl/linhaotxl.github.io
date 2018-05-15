@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>LinHao</title>
+    <link href="https://cdn.bootcss.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.bootcss.com/animate.css/3.5.0/animate.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="/css/index.css">
+    <link rel="stylesheet" href="/css/zTreeStyle.css">
+</head>
+<body>
+    
+
+    <div id="blog" class="PingFang_SC_Normal">
+        <div id="header">
+    <div class="header-container container">
+        <div class="collapse navbar-collapse row" id="bs-example-navbar-collapse-1">
+            <ul class="header-list nav navbar-nav col-md-6 col-sm-6 col-xs-6">
+                
+                    <li class="header-list-item"><a href="/">HOME</a></li>
+                
+                    <li class="header-list-item"><a href="/article">ARTICLE</a></li>
+                
+                    <li class="header-list-item"><a href="/about">ABOUT</a></li>
+                
+            </ul>
+            
+        </div>
+        
+        
+    </div>
+</div>
+        <div id="header_scroll" >
+    <div class="header_scroll_block"></div>
+</div>
+        
+        <div id="main" class="clear">
+            <div class="main-container container">
+                
+
+                
+
+    
+
+    <div id="title" class="title-post">
+        <h3 class="title-container">
+            <span class="title-text AGaramondPro_Italic_Bold">Straight Matter</span>
+        </h3>
+    </div>
+
+
+
+<li class="article-item">
+    <div class="article-container">
+        <img class="article-img img-responsive" src="" alt="">
+        <h3 class="article-title"></h3>
+        <div class="article-header">
+            <div class="article-info">
+                <i class="iconfont icon-xinxi"></i>
+                <span class="article-info-categories article-info-item">
+                    <span class="AGaramondPro_Bold article-info-title">Categories</span>
+                    
+                </span>
+                <span class="article-info-tags article-info-item">
+                    <span class="AGaramondPro_Bold tags-info-title">Tags</span>
+                    
+                </span>
+                <span class="article-info-item article-info-date AGaramondPro_Regular"><span>2018-04-29</span></span>
+                <span class="article-info-item article-info-portrait clear">
+                    <img src="https://awcdn1.ahmad.works/writing/wp-content/uploads/2015/05/Author.jpg" alt="">
+                    <span class="article-info-item article-info-username AGaramondPro_Bold">LinHao</span>
+                </span>
+                
+            </div>
+        </div>
+        
+            <div class="article-content article-text">
+                <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>when基本使用_05</title>
+</head>
+<body>
+    
+    <script src="../jquery-2.0.3.js"></script>
+
+    <script>
+    
+        const dfd1 = $.Deferred();
+
+        /**
+         *  2.  1s 后，dfd1 的状态被指定为失败，此时，dfd1 失败状态的回调对象中存在四个回调（ 初始化时的三个 + when 方法中添加的一个 ），执行前三个回调不用说，主要看第四个回调
+         *          第四个回调是目标延迟对象的 reject 方法，也就是说，当执行第四个回调的时候，将目标延迟对象的状态指定为失败了，一旦将目标延迟对象的状态指定为失败，那么成功状态的回到就被禁用了。进行中状态的回调就被锁定了（ 因为此时进行状态的回调对象中，fired 的值为 false，所以结果还是将其禁用 ）
+         *          所以 1s 后，目标延迟对象被指定为失败，会执行目标延迟对象通过 fail 方法添加的回调，即 65 行打印 "失败"
+         */
+        setTimeout(() => {
+            dfd1.reject( 1 ); 
+            dfd1.notify( 2 );
+        }, 1000);
+
+        dfd1
+        .fail(() => {
+            console.log( 'dfd1 失败' );
+        })
+        .progress(() => {
+            console.log( 'dfd1 进行中' );
+        })
+        .done(() => {
+            console.log( 'dfd1 成功' );
+        });
+
+        const dfd2 = $.Deferred();
+
+        /**
+         *  3.  2s 后，因为此时目标延迟对象已经被指定为失败，所以其状态无法再改变，所以这句话起不到任何作用
+         *      但是 dfd2 的状态还是被指定为成功的，所以成功状态里的回调还是会执行，即 50 行会打印 dfd2 成功
+         */
+        setTimeout(() => {
+            dfd2.resolve( 2 ); 
+        }, 2000);
+
+        dfd2
+        .done(() => {
+            console.log( 'dfd2 成功' );
+        })
+        .fail(() => {
+            console.log( 'dfd2 失败' );
+        })
+        .progress(() => {
+            console.log( 'dfd2 进行中' );
+        });
+
+        /**
+         *  1.  此时，调用 when 方法传递了两个延迟对象作为参数，所以 length 和 remaining 都是 2，而 deferred 变量是一个新的延迟对象
+         *          然后进入 84 行的 if 中对每个参数进行遍历，因为每个参数都是延迟对象，所以向 dfd1 和 dfd2 的三种状态中又添加了一个新的回调
+         *      when 方法结束后，又向目标延迟对象的成功和失败状态的回调对象中添加了一个新的回调
+         */
+        $.when( dfd1, dfd2 )
+        .done(() =>  {
+            console.log( '成功' );
+        })
+        .fail(() =>  {
+            console.log( '失败' );
+        })
+        .progress(() => {
+            console.log( '进行中' );
+        });
+            
+    </script>
+
+</body>
+</html>
+            </div>
+        
+        
+        
+    </div>
+
+    
+        
+    
+
+</li>
+                
+                
+            </div>
+        </div>
+        
+        
+
+        <script src="/js/jquery-2.0.3.min.js"></script>
+        <script src="/js/jquery.ztree.core.min.js"></script>
+        <script src="/js/index.js"></script>
+        <script src="/js/prism.js"></script>
+
+    </div>
+</body>
+</html>

@@ -1,0 +1,718 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>LinHao</title>
+    <link href="https://cdn.bootcss.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.bootcss.com/animate.css/3.5.0/animate.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="/css/index.css">
+    <link rel="stylesheet" href="/css/zTreeStyle.css">
+</head>
+<body>
+    
+        <div id="sidebar_nav_mask" class="animated"></div>
+
+<div id="sidebar_nav" class="animated">
+    <div class="sidebar_nav_container">
+        <div class="nav_header">
+            <span class="nav_header_text AGaramondPro_Italic_Bold">Navigation</span>
+        </div>
+        <div class="nav_body">
+            <!-- <ul class="nav_lists">
+                <li class="list_item_copy list_item"></li>
+            </ul> -->
+            <div class="tree_nav clear">
+                <ul id="tree_nav" class="ztree"></ul>
+            </div>
+        </div>
+    </div>
+</div>
+    
+
+    <div id="blog" class="PingFang_SC_Normal">
+        <div id="header">
+    <div class="header-container container">
+        <div class="collapse navbar-collapse row" id="bs-example-navbar-collapse-1">
+            <ul class="header-list nav navbar-nav col-md-6 col-sm-6 col-xs-6">
+                
+                    <li class="header-list-item"><a href="/">HOME</a></li>
+                
+                    <li class="header-list-item"><a href="/article">ARTICLE</a></li>
+                
+                    <li class="header-list-item"><a href="/about">ABOUT</a></li>
+                
+            </ul>
+            
+        </div>
+        
+        
+            <div class="sidebar_nav_btn">
+                <i class="iconfont icon-menu2"></i>
+            </div>
+        
+    </div>
+</div>
+        <div id="header_scroll" >
+    <div class="header_scroll_block"></div>
+</div>
+        
+        <div id="main" class="clear">
+            <div class="main-container container">
+                
+
+                
+
+    
+
+    <div id="title" class="title-post">
+        <h3 class="title-container">
+            <span class="title-text AGaramondPro_Italic_Bold">Straight Matter</span>
+        </h3>
+    </div>
+
+
+
+<li class="article-item">
+    <div class="article-container">
+        <img class="article-img img-responsive" src="" alt="">
+        <h3 class="article-title">jQuery源码分析（七）—— 属性操作</h3>
+        <div class="article-header">
+            <div class="article-info">
+                <i class="iconfont icon-xinxi"></i>
+                <span class="article-info-categories article-info-item">
+                    <span class="AGaramondPro_Bold article-info-title">Categories</span>
+                    <a class="category-link" href="/categories/jQuery/">jQuery源码分析</a>
+                </span>
+                <span class="article-info-tags article-info-item">
+                    <span class="AGaramondPro_Bold tags-info-title">Tags</span>
+                    
+                </span>
+                <span class="article-info-item article-info-date AGaramondPro_Regular"><span>2018-05-14</span></span>
+                <span class="article-info-item article-info-portrait clear">
+                    <img src="https://awcdn1.ahmad.works/writing/wp-content/uploads/2015/05/Author.jpg" alt="">
+                    <span class="article-info-item article-info-username AGaramondPro_Bold">LinHao</span>
+                </span>
+                
+            </div>
+        </div>
+        
+            <div class="article-content article-text">
+                <h2 id="与-class-相关的操作"><a href="#与-class-相关的操作" class="headerlink" title="与 class 相关的操作"></a>与 class 相关的操作</h2><h3 id="jQuery-fn-addClass"><a href="#jQuery-fn-addClass" class="headerlink" title="jQuery.fn.addClass"></a>jQuery.fn.addClass</h3><p>这个方法可以向当前 <code>jQuery</code> 实例中的所有 DOM 元素添加指定的 class。其中，参数的类型有两种   </p>
+<ol>
+<li>字符串：可提供一个或多个 class（ 多个 class 用空格分开 ）</li>
+<li>函数：将这个函数的返回值作为 class 添加   </li>
+</ol>
+<pre class="line-numbers">
+<code class="language-javascript">
+addClass: function( value ) {
+    var classes, elem, cur, clazz, j,
+        i = 0,
+        len = this.length,
+        //  1.  判断参数是否是字符串，如果是的话，将参数保存在 proceed 变量中
+        proceed = typeof value === "string" && value;
+
+    /**
+     *  2.  判断参数是否是函数
+     */
+    if ( jQuery.isFunction( value ) ) {
+        /**
+         *  如果是函数的话，那么首先遍历当前 jQuery 中的所有 DOM 元素
+         *  遍历过程中，先调用参数函数，并将其作用域设置为当前的 DOM 元素，并传递当前 DOM 元素在 jQuery 实例中的索引和当前 DOM 元素的 class 属性为参数
+         *      然后将当前 DOM 元素转换为 jQuery 对象并调用 addClass 方法，将参数的返回值作为参数
+         */
+        return this.each(function( j ) {
+            jQuery( this ).addClass( value.call( this, j, this.className ) );
+        });
+    }
+
+    /**
+     *  3.  判断提供的字符串参数是否不为空
+     */
+    if ( proceed ) {
+        //  3.1 将字符串参数按照空格匹配，保存在一个数组中，并将数组的引用保存在 classes 中
+        classes = ( value || "" ).match( core_rnotwhite ) || [];
+
+        //  3.2 遍历当前 jQuery 对象中的 DOM 元素
+        for ( ; i < len; i++ ) {
+            elem = this[ i ];   
+            /**
+             *  判断当前遍历的是否是元素节点
+             *      如果是的话，再判断当前元素的 class 是否有内容
+             *          如果有，则将内容首尾加上空格，并将制表符、回车换行等替换为空格，将结果保存在 cur 中
+             *          如果没有，则直接将空格字符串赋给 cur
+             */
+            cur = elem.nodeType === 1 && ( elem.className 
+                ? ( " " + elem.className + " " ).replace( rclass, " " )
+                : " "
+            );
+
+            if ( cur ) {
+                /**
+                 *  遍历 classes 数组
+                 *  查看 cur 中是否有数组中的每个元素
+                 *      如果没有，则将当前元素 + 空格直接拼在 cur 字符串的后面
+                 */
+                j = 0;
+                while ( (clazz = classes[j++]) ) {
+                    if ( cur.indexOf( " " + clazz + " " ) < 0 ) {
+                        cur += clazz + " ";
+                    }
+                }
+                //     将 cur 去除首尾空格后的值，直接赋给当前 DOM 元素的 class
+                elem.className = jQuery.trim( cur );
+
+            }
+        }
+    }
+
+    //  4.  返回当前 jQuery 实例，以供链式调用
+    return this;  
+}
+</code>
+</pre>   
+
+<h4 id="示例一：提供字符串参数"><a href="#示例一：提供字符串参数" class="headerlink" title="示例一：提供字符串参数"></a>示例一：提供字符串参数</h4><pre>
+<code class="language-markup">
+&lt;div id="box1" class="box_1"&gt;&lt;/div&gt;
+&lt;div id="box2" class="box_1"&gt;&lt;/div&gt;
+</code>
+</pre>  
+
+<pre>
+<code class="language-javascript">  
+const $divs = $( '.box_1' );
+/**
+ *  此时，提供的字符串参数非空，所以进入 26 行的 if 中，并将参数按照空格匹配，所以 classes 就是 [ "test1", "test2" ]，然后遍历当前的 jQuery 对象中所有的 DOM 元素，将当前 DOM 元素的 class 属性值赋给 cur（ 分别是 "box_1" 和 "box_2" ），然后在每一次遍历过程中，循环 classes 数组
+ *  如果在 cur 中不存在 classes 中的每个元素，那么就将这个元素加入到 cur 中
+ *  最后，将 cur 的值去除首尾空格后重新设置为当前 DOM 元素的 class 属性
+ */
+$divs.addClass( 'test1 test2' );
+</code>
+</pre>  
+
+<p>结果如下  </p>
+<pre>
+<code class="language-markup">
+&lt;div id="box1" class="box_1 test1 test2"&gt;&lt;/div&gt;
+&lt;div id="box2" class="box_1 test1 test2"&gt;&lt;/div&gt;
+</code>
+</pre>  
+
+<h4 id="示例二：提供函数参数"><a href="#示例二：提供函数参数" class="headerlink" title="示例二：提供函数参数"></a>示例二：提供函数参数</h4><pre>
+<code class="language-markup">
+&lt;div class="box_2" id="box3"&gt;&lt;/div&gt;
+&lt;div class="box_2" id="box4"&gt;&lt;/div&gt;
+&lt;div class="box_2" id="box5"&gt;&lt;/div&gt;
+</code>
+</pre>  
+
+<pre>
+<code class="language-javascript"> 
+const $divs = $( '.box_2' );
+let i = 0;
+/**
+ *  此时，addClass 的参数是函数，所以进入 12 行的 if 中，遍历每一个 DOM 元素，然后调用这个函数参数
+ *      此时这个函数参数中的作用域就是当前遍历的 DOM 元素（ 此例中分别是 #box3， #box4， #box4 ），并且接受两个参数，第一个参数是当前 DOM 元素的索引（ 此例中分别是0，1，2 ），第二个参数是当前 DOM 元素的 class 属性值（ 此例中分别是 box_2，box_2，box_2 ）
+ *  然后将当前 DOM 元素转换为 jQuery 元素，再将这个函数的返回值作为 addClass 函数的参数，给当前 DOM 元素设置 class
+ */
+$divs.addClass(function ( index, className ) {
+    i++;
+    return 'add_' + i;
+});
+</code>
+</pre>  
+
+<p>结果如下  </p>
+<pre>
+<code class="language-markup">
+&lt;div class="box_2 add_1" id="box3"&gt;&lt;/div&gt;
+&lt;div class="box_2 add_2" id="box4"&gt;&lt;/div&gt;
+&lt;div class="box_2 add_3" id="box5"&gt;&lt;/div&gt;
+</code>
+</pre>  
+
+<h3 id="jQuery-fn-removeClass"><a href="#jQuery-fn-removeClass" class="headerlink" title="jQuery.fn.removeClass"></a>jQuery.fn.removeClass</h3><p>该方法用于删除当前 jQuery 示例中所有 DOM 元素指定的 class。其中，该方法的参数类型可以有三种   </p>
+<ol>
+<li>字符串：可提供一个或多个 class（ 多个 class 用空格分开 ）  </li>
+<li>函数：将这个函数的返回值作为要删除的 class</li>
+<li>Undefined：删除所有的 class   </li>
+</ol>
+<pre class="line-numbers">
+<code class="language-javascript">
+removeClass: function( value ) {
+    var classes, elem, cur, clazz, j,
+        i = 0,
+        len = this.length,
+        /**
+         *  1.  判断是否传递了参数
+         *      如果没传递，那么 proceed 就是 true
+         *      如果传递了，再判断参数是否是字符串，如果是字符串，那么 proceed 就是参数字符串
+         */
+        proceed = arguments.length === 0 || typeof value === "string" && value;
+
+    /**
+     *  2.  判断参数是否是函数
+     */
+    if ( jQuery.isFunction( value ) ) {
+        return this.each(function( j ) {
+            jQuery( this ).removeClass( value.call( this, j, this.className ) );
+        });
+    }
+
+    /**
+     *  3.  判断 proceed 是否存在
+     *      只有两种情况会进入 if
+     *          第一：传入的是非空字符串
+     *          第二：没有传递任何参数
+     */
+    if ( proceed ) {
+        //  将字符串参数按照空格分隔，并存在数组 classes 中
+        classes = ( value || "" ).match( core_rnotwhite ) || [];
+
+        //  遍历当前 jQuery 中的 DOM 元素
+        for ( ; i < len; i++ ) {
+            elem = this[ i ];
+
+            /**
+             *  判断当前遍历的是否是元素节点
+             *      如果是的话，再判断当前元素的 class 是否有内容
+             *          如果有，则将内容首尾加上空格，并将制表符、回车换行等替换为空格，将结果保存在 cur 中
+             *          如果没有，则直接将空格字符串赋给 cur
+             */
+            cur = elem.nodeType === 1 && ( elem.className ?
+                ( " " + elem.className + " " ).replace( rclass, " " ) :
+                ""
+            );
+
+            if ( cur ) {
+                /**
+                 *  遍历 classes 数组
+                 *  查看 cur 中是否有数组中的每个元素
+                 *      如果有，则将这个元素从 cur 字符串中删除
+                 */
+                j = 0;
+                while ( (clazz = classes[j++]) ) {
+                    while ( cur.indexOf( " " + clazz + " " ) >= 0 ) {
+                        cur = cur.replace( " " + clazz + " ", " " );
+                    }
+                }
+
+                /**
+                 *  判断是否提供了字符串参数
+                 *      如果有，则将 cur 去除首尾空格后的值赋给当前 DOM 的 class 属性
+                 *      如果没有，则将空字符串赋给当前 DOM 的 class 属性
+                 */
+                elem.className = value ? jQuery.trim( cur ) : "";
+            }
+        }
+    }
+
+    //  4.  返回当前 jQuery 对象，以供链式调用
+    return this;
+}
+</code>
+</pre>     
+
+<h4 id="示例一：提供字符串参数-1"><a href="#示例一：提供字符串参数-1" class="headerlink" title="示例一：提供字符串参数"></a>示例一：提供字符串参数</h4><pre>
+<code class="language-markup">
+&lt;div class="box test1 test2" id="box1"&gt;&lt;/div&gt;
+&lt;div class="box test1 test2" id="box2"&gt;&lt;/div&gt;
+</code>
+</pre>  
+
+<pre>
+<code class="language-javascript">
+const $divs = $( '.box' );
+
+/**
+ *  此时，调用 removeClass 时，传递的是字符串参数， 所以进入 28 行的 if 中，并将参数按照空格匹配，并将匹配的结果数组保存在 classes 中（ 此时 classes 就是 [ "test1", "test2" ] ）
+ *  然后会遍历当前 jQuery 元素中的 DOM 元素，将当前 DOM 元素的 class 赋给 cur 变量（ cur 两次都是 "box test1 test2" ），然后循环 classes 数组，如果 cur 中存在 classes 中的每个元素，那么就将其替换为空字符串
+ *  最后，将 cur 的值赋给当前 DOM 的 class 属性
+ */
+$divs.removeClass( 'test1 test2' );
+</code>
+</pre>  
+
+<p>结果如下  </p>
+<pre>
+<code class="language-markup">
+&lt;div class="box" id="box1"&gt;&lt;/div&gt;
+&lt;div class="box" id="box2"&gt;&lt;/div&gt;
+</code>
+</pre>  
+
+<h4 id="示例二：传递函数参数"><a href="#示例二：传递函数参数" class="headerlink" title="示例二：传递函数参数"></a>示例二：传递函数参数</h4><pre>
+<code class="language-markup">
+&lt;div class="box_2" id="box3"&gt;&lt;/div&gt;
+&lt;div class="box_2" id="box4"&gt;&lt;/div&gt;
+</code>
+</pre>  
+
+<pre>
+<code class="language-javascript">
+const $divs = $( '.box_2' );
+
+// 添加 class
+$divs.addClass(function ( index ) {
+    return 'add_' + (index+1);
+});
+
+/**
+ *  此时，调用 removeClass 时，传递的是函数参数，所以进入 16 行的 if 中，遍历当前所有的 DOM 元素，然后调用参数方法，并将该方法的作用域设置为当前的 DOM 元素，并传递两个参数
+ *      第一个参数是当前 DOM 元素在当前 jQuery 实例中的索引（ 此例中分别是 0、1 ）
+ *      第二个参数是当前 DOM 元素的 class 值（ 此例中是 "box_2 add_1" 和 "box_2 add_2" ）
+ *      然后将当前的 DOM 元素转换为 jQuery 对象，并调用 removeClass 方法，再将函数的返回值作为参数传递
+ */
+$divs.removeClass(function ( index, className ) {
+    return 'add_' + (index+1);
+});
+</code>
+</pre>  
+
+<p>结果如下  </p>
+<pre>
+<code class="language-markup">
+&lt;div class="box_2" id="box3"&gt;&lt;/div&gt;
+&lt;div class="box_2" id="box4"&gt;&lt;/div&gt;
+</code>
+</pre>      
+
+<h4 id="示例三：不传递任何参数"><a href="#示例三：不传递任何参数" class="headerlink" title="示例三：不传递任何参数"></a>示例三：不传递任何参数</h4><p>当不传递任何参数的时候，会将当前 jQuery 实例中所有 DOM 元素的 class 清空   </p>
+<pre>
+<code class="language-markup">
+&lt;div class="test1 test2 test3" id="box6"&gt;&lt;/div&gt;
+&lt;div class="test1 test2 test3" id="box7"&gt;&lt;/div&gt;
+</code>
+</pre>  
+
+<pre class="line-numbers">
+<code class="language-javascript">
+const $divs = $( '.test3' );
+
+/**
+ *  此时，调用 removeClass 时，没有传递任何参数，所以 proceed 变量为 true，classes 变量就是一个空数组
+ *  然后遍历当前 jQuery 中的 DOM 元素（ 此例中就是 #box6 和 #box7 ）
+ *      此时将每个 DOM 远元素的 class 属性首尾加上空格，并将其中中制表符、回车符、换行符替换为空格字符串，并将结果保存在 cur 中（ 只要 DOM 元素本身存在 class，那么 cur 就会有值 ）
+ *      最后直接到 65 行的代码中，因为没有提供参数，所以 value 是 undefined，直接将当前 DOM 元素的 class 设置为空
+ */
+$divs.removeClass();
+</code>
+</pre>  
+
+<p>结果如下  </p>
+<pre>
+<code class="language-markup">
+&lt;div class id="box6"&gt;&lt;/div&gt;
+&lt;div class id="box7"&gt;&lt;/div&gt;
+</code>
+</pre> 
+
+<h3 id="jQuery-fn-hasClass"><a href="#jQuery-fn-hasClass" class="headerlink" title="jQuery.fn.hasClass"></a>jQuery.fn.hasClass</h3><p>该方法用于检测指定的 <code>class</code> 是否存在于当前 <code>jQuery</code> 实例中的 DOM 元素   </p>
+<pre class="line-numbers">
+<code class="language-javascript">
+hasClass: function( selector ) {
+    //  1.  将参数首尾加上空格并保存在 className 变量中
+    var className = " " + selector + " ",
+        i = 0,
+        l = this.length;
+    /**
+     *  2.  遍历当前 jQuery 实例中的 DOM 元素
+     *      如果当前遍历的是元素节点，那么获取其 class 属性并在首尾加上空格，然后将其中的制表符、回车符、换行符等都替换为空格
+     *      然后再从替换的结果查找是否存在 className 值
+     *          如果存在，直接返回 true
+     *          如果不存在，则进行下一次的遍历
+     */
+    for ( ; i < l; i++ ) {
+        if ( this[i].nodeType === 1 && (" " + this[i].className + " ").replace(rclass, " ").indexOf( className ) >= 0 ) {
+            return true;
+        }
+    }
+
+    //  3.  如果都没有，那么就返回 false
+    return false;
+}
+</code>
+</pre>
+
+<h3 id="jQuery-fn-toggleClass"><a href="#jQuery-fn-toggleClass" class="headerlink" title="jQuery.fn.toggleClass"></a>jQuery.fn.toggleClass</h3><p>该方法用于切换 <code>class</code>，也就是说，如果有，删除，没有则添加。还可以传递不同的参数被当做 <code>addClass</code> 和 <code>removeClass</code> 来使用   </p>
+<pre class="line-numbers">
+<code class="language-javascript">
+toggleClass: function( value, stateVal ) {
+    var type = typeof value;
+
+    /**
+     *  1.  判断第二个参数是否是布尔值并且第一个参数是否是字符串，满足进入 if
+     *          if 中会判断这个布尔值是 true 还是 false
+     *          如果是 true，那么直接调用 addClass
+     *          如果是 false，那么直接调用 removeClass
+     */
+    if ( typeof stateVal === "boolean" && type === "string" ) {
+        return stateVal ? this.addClass( value ) : this.removeClass( value );
+    }
+
+    /**
+     *  2.  判断第一个参数是否是函数
+     */
+    if ( jQuery.isFunction( value ) ) {
+        return this.each(function( i ) {
+            jQuery( this ).toggleClass( value.call(this, i, this.className, stateVal), stateVal );
+        });
+    }
+
+    /**
+     *  3.  处理以上情形之外的情况
+     *      遍历当前 jQuery 对象中的所有 DOM 元素
+     */
+    return this.each(function() {
+        /**
+         *  3.1 处理第一个参数为字符串的情况
+         */
+        if ( type === "string" ) {
+            var className,
+                i = 0,
+                //  3.1.1 将当前 DOM 元素转换为 jQuery 对象
+                self = jQuery( this ),
+                //  3.1.2 将字符串参数按照空格匹配，并将结果存在 classNames 数组中
+                classNames = value.match( core_rnotwhite ) || [];
+
+            /**
+             *  3.1.3 循环 classNames 数组
+             *      判断 classNsmes 数组中当前元素是否存在于当前 DOM 元素的 class 中
+             *          如果存在，就将其删除
+             *          如果不存在，就将其添加
+             */
+            while ( (className = classNames[ i++ ]) ) {
+                // check each className given, space separated list
+                if ( self.hasClass( className ) ) {
+                    self.removeClass( className );
+                } else {
+                    self.addClass( className );
+                }
+            }
+
+        } 
+        /**
+         *  3.2 处理没有传递任何参数或者第一个参数为布尔值的情况
+         */
+        else if ( type === core_strundefined || type === "boolean" ) {
+            if ( this.className ) {
+                // store className if set
+                data_priv.set( this, "__className__", this.className );
+            }
+
+            // If the element has a class name or if we're passed "false",
+            // then remove the whole classname (if there was one, the above saved it).
+            // Otherwise bring back whatever was previously saved (if anything),
+            // falling back to the empty string if nothing was stored.
+            this.className = this.className || value === false
+                ? "" 
+                : data_priv.get( this, "__className__" ) || "";
+        }
+    });
+}
+</code>
+</pre>  
+
+<h4 id="示例一：传递一个字符串参数"><a href="#示例一：传递一个字符串参数" class="headerlink" title="示例一：传递一个字符串参数"></a>示例一：传递一个字符串参数</h4><pre>
+<code class="language-markup">
+&lt;button class="btn_01"&gt;切换&lt;/button&gt;
+&lt;div id="box_01"&gt;&lt;/div&gt;
+</code>
+</pre>  
+
+<pre class="line-numbers">
+<code class="language-javascript">
+const $div = $( '#box_01' );
+const $button = $( '.btn_01' );
+$button.on( 'click', function () {
+    /**
+     *  此时，调用 toggleClass 方法时，只传递了一个字符串参数，所以直接进入 return 中，遍历当前的 jQuery 对象
+     *  因为第一个参数是字符串，所以进入 32 行的 if 中
+     *      在 if 中，将字符串参数按照空格匹配，并将结果数组保存在 classNames 中（ 此例中就是 [ "test_box" ] ）
+     *      然后循环 classNames 中的所有元素，判断当前元素是否在当前 DOM 元素的 class 中
+     *          如果有，则将当前元素从当前 DOM 的 class 中删除
+     *          如果没有，则将当前元素添加到当前 DOM 的 class 中
+     *  所以，点击按钮奇数此的时候，会向 #box_01 中添加 test_box 的 class，点击偶数此的时候，会向 #box_01 中删除 test_box 的 class
+     */
+    $div.toggleClass( 'test_box' );
+});
+</code>
+</pre>  
+
+<h4 id="示例一：传递一个字符串参数-一个布尔值参数"><a href="#示例一：传递一个字符串参数-一个布尔值参数" class="headerlink" title="示例一：传递一个字符串参数 + 一个布尔值参数"></a>示例一：传递一个字符串参数 + 一个布尔值参数</h4><p>当第一个参数为字符串，第二个参数为布尔值的时候，此时就不再是原有的 “切换” 意义了，而是 “强制” 的意义了。<br>当布尔值为 true 时，代表的就是添加，不管现在有没有相同的 class 都会添加<br>当布尔值为 false 时，代表的就是删除，不管现在有没有相同的 class 都会删除   </p>
+<pre>
+<code class="language-markup">
+&lt;button class="btn_add"&gt;添加&lt;/button&gt;
+&lt;button class="btn_remove"&gt;删除&lt;/button&gt;
+&lt;div id="box_02"&gt;&lt;/div&gt;
+</code>
+</pre>  
+
+<pre class="line-numbers">
+<code class="language-javascript">
+const $div = $( '#box_02' );
+const $buttonAdd = $( '.btn_add' );
+const $buttonRemove = $( '.btn_remove' );
+
+/**
+ *  此时调用 toggleClass 方法，传递了一个字符串和布尔值（ true ），所以会进入 11 行的 if 中
+ *      在 if 中，直接调用 addClass，并将第一个参数作为 addClass 的实参
+ *  所以，不管怎么点击 “添加” 按钮，都是向 #box_02 中添加 test_box 的 class
+ */
+$buttonAdd.on( 'click', function () {
+    $div.toggleClass( 'test_box', true );
+});
+
+/**
+ *  此时调用 toggleClass 方法，传递了一个字符串和布尔值（ false ），所以会进入 11 行的 if 中
+ *      在 if 中，直接调用 removeClass，并将第一个参数作为 removeClass 的实参
+ *  所以，不管怎么点击 “删除” 按钮，都是从 #box_02 中删除 test_box 的 class
+ */
+$buttonRemove.on( 'click', function () {
+    $div.toggleClass( 'test_box', false );
+});
+</code>
+</pre>  
+
+<h4 id="示例三：不传递任何参数-1"><a href="#示例三：不传递任何参数-1" class="headerlink" title="示例三：不传递任何参数"></a>示例三：不传递任何参数</h4><pre>
+<code class="language-markup">
+&lt;div id="box_03" class="test1 test2 test3"&gt;&lt;/div&gt;
+&lt;button class="btn_03"&gt;点击&lt;/button&gt;
+</code>
+</pre>  
+
+<pre>
+<code class="language-javascript">
+const $div = $( '#box_03' );
+const $button = $( '.btn_03' );
+
+$button.on( 'click', function () {
+    /**
+     *  此时调用 toggleClass 方法没有传递任何参数，所以会进入 59 行的 else if 中
+     *  当第一次（ 奇数次都一样 ）点击按钮时，当前 DOM 是存在 class 的，所以进入 60 行的 if 中，在私有缓存中为当前 DOM 设置一个键值对，属性为 __className__，值为 DOM 的 class 值
+     *      然后因为当前 DOM 存在 class，所以在三目中将当前 DOM 的 class 置为空字符串
+     *  当第二次（ 偶数次都一样 ）点击按钮时，当前 DOM 是不存在 class 的，然后判断提供的参数是否是 false，此例中不是（ 没有任何参数 ）
+     *      所以会从私有缓存中取出当前 DOM 元素中以 __className__ 为属性的值（ 此例中是 "test1 test2 test3" ），将该值赋给当前 DOM 的 class 属性，所以当前 DOM class 又恢复为之前的值了
+     */
+    $div.toggleClass();
+});
+</code>
+</pre>  
+
+<h4 id="示例四：传递一个布尔值"><a href="#示例四：传递一个布尔值" class="headerlink" title="示例四：传递一个布尔值"></a>示例四：传递一个布尔值</h4><pre>
+<code class="language-markup">
+&lt;div id="box_04" class="test1 test2 test3"&gt;&lt;/div&gt;
+&lt;button class="btn_clear"&gt;清除&lt;/button&gt;
+&lt;button class="btn_reset"&gt;恢复&lt;/button&gt;
+</code>
+</pre>  
+
+<pre>
+<code class="language-javascript">
+const $div = $( '#box_04' );
+const $buttonClear = $( '.btn_clear' );
+const $buttonReset = $( '.btn_reset' );
+
+/**
+ *  点击清除按钮时，调用 toggleClass 方法并且传递 false 作为实参，直接进入 59 行的 else if 中
+ *      因为此时当前 DOM 存在 class，所以会进入 60 行的 if 中，将当前 DOM 的 class 保存在私有缓存中
+ *      然后，因为此时当前 DOM 存在 class，所以将当前 DOM 的 class 清空
+ *  当再次点击清除按钮时，因为此时当前 DOM 的 class 为空，所以不会进入 60 行的 if 中，而此时传递的参数也是 false，所以还是会将当前 DOM 的 class 设置为空
+ */
+$buttonClear.on( 'click', function () {
+    $div.toggleClass( false );
+});
+
+/**
+ *  点击恢复按钮时（ 基数次 ），调用 toggleClass 方法并且传递 true 作为实参，直接进入 59 行的 else if 中
+ *      因为此时当前 DOM 存在 class，所以会进入 60 行的 if 中，将当前 DOM 的 class 保存在私有缓存中
+ *      然后，因为此时当前 DOM 存在 class，所以将当前 DOM 的 class 清空
+ *  当再次点击恢复按钮时（ 偶数次 ），因为此时当前 DOM 的 class 为空，所以不会进入 60 行的 if 中，而此时传递的参数是 true，所以会将当前 DOM 在私有缓存中，以 __className__ 为属性的值赋给当前 DOM 的 class（ 当前 DOM 的 class 又恢复为 "test1 test2 test3" ）
+ *      此时和不穿任何参数时的情形一模一样
+ */
+$buttonReset.on( 'click', function () {
+    $div.toggleClass( true );
+});
+</code>
+</pre>  
+
+<h4 id="示例四：传递一个函数"><a href="#示例四：传递一个函数" class="headerlink" title="示例四：传递一个函数"></a>示例四：传递一个函数</h4><pre>
+<code class="language-markup">
+&lt;div id="box_05" class="test1 test2 test3"&gt;&lt;/div&gt;
+&lt;button class="btn_05"&gt;切换&lt;/button&gt;
+</code>
+</pre>  
+
+<pre class="line-numbers">
+<code class="language-javascript">
+const $div = $( '#box_05' );
+const $button = $( '.btn_05' );
+
+/**
+ *  和 addClass 和 removeClass 一样，该回调的作用域被设置为 jQuery 实例中的每个 DOM 元素
+ *  并且接受三个参数
+ *  @param  { Number }              index       当前 DOM 元素在 jQuery 实例中的索引
+ *  @param  { String }              className   当前 DOM 元素的 class 属性值
+ *  @param  { Boolean | Undefiend } stateVal    调用 toggleClass 时传递的第二个参数
+ */
+function cb ( index, className, stateVal ) {
+    return 'box_' + index;
+}
+
+$button.on( 'click', function () {
+    /**
+     *  此时调用 toggleClass 时传递的是一个函数，所以直接进入 18 行的 if 中
+     *  遍历当前 jQuery 实例中的所有 DOM 元素，没遍历一次执行一次该函数，然后通过当前 DOM 再次调用 toggleClass，并将该函数的返回值作为参数
+     *  所以该函数的返回值可以是 toggleClass 函数的参数类型中的任意一种
+     */
+    $div.toggleClass( cb );
+});
+</code>
+</pre>
+
+            </div>
+        
+        
+        
+    </div>
+
+    
+        
+    <div id="post-nav" class="row">
+        
+        <div class="nav-prev col-md-4 col-sm-4 col-xs-6">
+            
+        </div>
+
+        <div class="nav-next col-md-4 col-md-offset-4 col-sm-4 col-sm-offset-4 col-xs-6">
+            
+                <a href="/jQuery/jQuery06.html" class="nav-next-link nav-link ellipsis">
+                    jQuery源码分析（六）—— 队列操作
+                </a>
+                <i class="iconfont icon-qianjin"></i>
+            
+        </div>
+        
+    </div>
+
+    
+
+</li>
+                
+                
+            </div>
+        </div>
+        
+        
+
+        <script src="/js/jquery-2.0.3.min.js"></script>
+        <script src="/js/jquery.ztree.core.min.js"></script>
+        <script src="/js/index.js"></script>
+        <script src="/js/prism.js"></script>
+
+    </div>
+</body>
+</html>

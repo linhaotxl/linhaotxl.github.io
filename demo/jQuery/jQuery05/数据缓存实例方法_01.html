@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>LinHao</title>
+    <link href="https://cdn.bootcss.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.bootcss.com/animate.css/3.5.0/animate.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="/css/index.css">
+    <link rel="stylesheet" href="/css/zTreeStyle.css">
+</head>
+<body>
+    
+
+    <div id="blog" class="PingFang_SC_Normal">
+        <div id="header">
+    <div class="header-container container">
+        <div class="collapse navbar-collapse row" id="bs-example-navbar-collapse-1">
+            <ul class="header-list nav navbar-nav col-md-6 col-sm-6 col-xs-6">
+                
+                    <li class="header-list-item"><a href="/">HOME</a></li>
+                
+                    <li class="header-list-item"><a href="/article">ARTICLE</a></li>
+                
+                    <li class="header-list-item"><a href="/about">ABOUT</a></li>
+                
+            </ul>
+            
+        </div>
+        
+        
+    </div>
+</div>
+        <div id="header_scroll" >
+    <div class="header_scroll_block"></div>
+</div>
+        
+        <div id="main" class="clear">
+            <div class="main-container container">
+                
+
+                
+
+    
+
+    <div id="title" class="title-post">
+        <h3 class="title-container">
+            <span class="title-text AGaramondPro_Italic_Bold">Straight Matter</span>
+        </h3>
+    </div>
+
+
+
+<li class="article-item">
+    <div class="article-container">
+        <img class="article-img img-responsive" src="" alt="">
+        <h3 class="article-title"></h3>
+        <div class="article-header">
+            <div class="article-info">
+                <i class="iconfont icon-xinxi"></i>
+                <span class="article-info-categories article-info-item">
+                    <span class="AGaramondPro_Bold article-info-title">Categories</span>
+                    
+                </span>
+                <span class="article-info-tags article-info-item">
+                    <span class="AGaramondPro_Bold tags-info-title">Tags</span>
+                    
+                </span>
+                <span class="article-info-item article-info-date AGaramondPro_Regular"><span>2018-05-08</span></span>
+                <span class="article-info-item article-info-portrait clear">
+                    <img src="https://awcdn1.ahmad.works/writing/wp-content/uploads/2015/05/Author.jpg" alt="">
+                    <span class="article-info-item article-info-username AGaramondPro_Bold">LinHao</span>
+                </span>
+                
+            </div>
+        </div>
+        
+            <div class="article-content article-text">
+                <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>数据缓存实例方法_01</title>
+</head>
+<body>
+    <div id="box"></div>
+    
+    <script src="../jquery-2.0.3.js"></script>
+
+    <script>
+        console.log( '---------- 示例一 开始 ----------' );
+    
+        const $div = $( '#box' );
+
+        /**
+         *  假设此时公用缓存对象 data_user 的 expando 属性为 jQuery203070126265190928350.046724943387240536
+         *  此时，调用 data 方法时，因为没有传任何的参数，所以会进入 13 行的 if 中；然后调用公用缓存对象的 get 方法
+         *      在 get 方法中，又会调用公用缓存对象的 key 方法（ 并将 #div 作为参数传递 ）
+         *          在 key 方法中，因为参数（ #div ）满足条件，所以 11 行的 if 不会进入；然后会从 #div 中获取以公用缓存对象的 expando 为属性的值（ 此时是 undefined ），所以就进入 25 行的 if 中
+         *              首先保存此时静态属性 uid（ 此时为1 ）到 unlock 中，然后对其 + 1；然后为 #div 添加一个属性，属性名为公用缓存对象的 expando，值为 unlock 的值
+         *              相当于为 #div 添加一个属性，即 jQuery203070126265190928350.046724943387240536 = "1"
+         *              然后，因为此时在公用缓存 cache 中不存在 #div 的对象，所以会进入 49 行的 if 中，为 #div 在公用缓存中创建一个属于自己的空对象（ 属性名为 unlock，属性值是空对象 ）
+         *              此时，公用缓存的 cache 就是如下的形式
+         *              {
+         *                  0: {},
+         *                  1: {}
+         *              }
+         *              最后返回 unlock 的值（ 1 ）
+         *      在 get 方法中，调用 key 方法的结果是 1；然后会从公用缓存 cache 中获取以 1 为属性的值（ 空对象 ），获取到之后，因为调用 get 方法值传递了一个参数，所以直接将获取到的结果返回
+         *  在 data 方法中，调用 get 的就是就是一个空对象，最后返回这个空对象（ 因为此处不涉及自定义属性，所以先不用看 24 行的 if ） 
+         */ 
+        const emptyData = $div.data();  // 空对象
+
+        console.log( '---------- 示例一 结束 ----------' );
+    </script>
+
+    <div id="box2" data-custom-index="1"></div>
+    <script>
+        console.log( '---------- 示例二 开始 ----------' );
+
+            (function () {
+
+                const $div2 = $( '#box2' );
+
+                /**
+                 *  和示例一完全相同，相同的就不再说了，直接从 data 方法中调用完 get 方法开始，此时 data 变量还是一个空对象
+                 *  此时会先调用私有缓存对象的 get 方法，并将 #div2 当做参数（ 结果就是在私有缓存 cache 中，为 #div2 创建一个空的对象，然后从这个空对象中查找是否存在 hasDataAttrs 属性，当然是没有 ），进入 if
+                 *      获取 #div2 的所有属性的集合（ { 0: id, 1: data-custom-index } ），然后开始遍历这个集合
+                 *          遍历过程中，会判断每一个属性名是否带有 data-（ 此例中只有 data-custom-index 符合，以此为例说明 ）
+                 *          进入 38 行的 if 中，首先将 data- 之后的部分截取，并当做 $.camelCase 的参数，该参数会将参数转换为驼峰的写法，调用完成之后，就是 customIndex，然后会调用内部的 dataAttr 方法，分别传入 #div2、customIndex、undefined（ 因为此时在公用缓存 cache 中，#div2 对应的对象中并没有 customIndex 属性，所以是 undefiend ）
+                 *              在 dataAttr 方法中，会进入 15 行的 if 中，首先将 customIndex 转换为 data-custom-index，然后通过 getAttribute 方法获取 $div2 中该属性的值（ 是 1 ）并保存到 data 中，然后对齐进行类型的转换（ 因为此时是纯数字字符串，所以将其转换为数值 1 并保存在 data 中 ），然后调用公用缓存对象的 set 方法，将 customIndex 和 1 保存在 #div2 对应的对象中
+                 *      循环遍历完集合后，会调用私有缓存对象的 set 方法，为 #div2 对应的对象中，添加一个 hasDataAttrs 属性，且其值为 true，防止下一次调用 data 方法时又进入 24 行的 if 中
+                 */
+                const data = $div2.data();  // { customIndex: 1 }
+
+            })( window, jQuery );
+
+        console.log( '---------- 示例二 结束 ----------' );
+    </script>
+
+    <div id="box3"></div>
+    <script>
+        console.log( '---------- 示例三 开始 ----------' );
+    
+        (function ( window, $ ) {
+
+            const $div = $( '#box3' );
+
+            /**
+             *  调用 data 方法时，提供了一个参数且为对象，所以会进入 63 行的 if 中
+             *      此时，会遍历当前的 jQuery 对象中的每个 DOM 元素（ 此例中只有一个，就是 #div3 ），然后调用公用缓存对象的 set 方法，将每个 DOM 元素和 data 方法的对象参数作为 set 的参数
+             *          在 set 方法中，首先会调用 key 方法，结果就是在公用缓存的 cache 中为每一个 DOM 元素创建一个空对象，并获取这个空对象在 cache 中的索引，将索引保存在 unlock 变量中，将这个空对象的引用保存在 cache 变量中
+             *          调用完 key 方法之后，会判断参数的类型，因为此时参数是一个对象，所以进入 26 行的 else 中，然后将 set 方法的对象参数中的每个属性（ 此例中是 name 和 age ）添加到 cache 变量中
+             *      所以，循环调用完 set 方法后，公用缓存的 cache 就是如下的形式
+             *      {
+             *          0: {},
+             *          1: {
+             *              name: "IconMan"
+             *              age: 25
+             *          }
+             *      }
+             */ 
+            $div.data({
+                name: 'IconMan',
+                age: 25
+            });
+
+            const data = $div.data();  // { name: "IconMan", age: 25 }
+
+        })( window, jQuery );
+    
+        console.log( '---------- 示例三 结束 ----------' );
+    </script>
+
+    <div id="box4" data-custom-index="1"></div>
+    <script>
+        console.log( '---------- 示例四 开始 ----------' );
+    
+        (function ( window, $ ) {
+
+            const $div = $( '#box4' );
+            $div.data({
+                'customName': 'Nicholas',
+                'custom-age': 30
+            });
+
+            /**
+             *  此时，调用 data 提供的参数是一个字符串，所以会直接到 72 行的 return，并调用 $.access，然后会调用 access 中的函数参数
+             *      在这个函数参数中，如果当前 jQuery 对象至少存在一个 DOM 元素并且 data 方法只提供了一个字符串参数，那么就会进入 81 行的 if 中
+             *          在 if 中，会调用公用缓存对象的 get 方法，获取第一个 DOM 元素在公用缓存 cache 中的对象，再从中获取以 data 参数为属性的值，如果获取到了，直接返回；如果没有，再次进行一次获取，只不过这次将 data 参数的驼峰写法作为参数，获取到了直接返回
+             */
+            const data       = $div.data();                  // { customName: "Nicholas", custom-age: 30, customIndex: 1 }
+            const dataName1  = $div.data( 'custom-name' );   // Nicholas 通过 4.2.2 获取
+            const dataName2  = $div.data( 'customName' );    // Nicholas 通过 4.2.1 获取
+            const dataAge    = $div.data( 'custom-age' );    // 30       通过 4.2.1 获取
+            const dataIndex  = $div.data( 'custom-index' );  // 1        通过 4.2.2 获取
+            const dataIndex2 = $div.data( 'customIndex' );   // 1        通过 4.2.1 获取
+
+        })( window, jQuery );
+    
+        console.log( '---------- 示例四 结束 ----------' );
+    </script>
+
+    <div id="box5" data-my-name="123"></div>
+    <script>
+        console.log( '---------- 示例五 开始 ----------' );
+
+        (function ( window, $ ) {
+
+            const $div = $( '#box5' );
+            const data1 = $div.data();  // { myName: 123 }
+            
+            /**
+             *  此时，因为 data 方法提供了两个参数且都为字符串，所以直接进入 72 行的 return 中，调用 $.access，然后调用参数函数
+             *      在参数函数中，因为 data 方法提供了两个参数，所以不会进入 81 行的 if 中，直接到 125 行的遍历中，遍历当前 jQuery 对象中的每个 DOM 元素
+             *          首先获取当前 DOM 元素在公用缓存中的对象，然后从中获取以 data 第一个参数驼峰写法为属性的值（ 此例中是获取 myName 的值，即 123 ），然后为当前 DOM 元素在公用缓存中设置一个键值对（ 属性为 data 第一个参数的驼峰写法，值为第二个参数 ）
+             *          然后会进入 140 的 if 中，为当前 DOM 元素在公用缓存中设置一个以第一个参数为属性，第二个参数为值的键值对
+             *  此时，公用缓存的 cache 就是如下的形式
+             *  {
+             *      0: {},
+             *      1: {
+             *          myName: "IconMan",
+             *          my-name: "IconMan"
+             *      }
+             *  }
+             */
+            $div.data( 'my-name', 'IconMan' );
+            const data = $div.data();   // { myName: "IconMan", my-name: "IconMan" }
+
+        })( window, jQuery );
+
+        console.log( '---------- 示例五 结束 ----------' );
+    </script>
+
+    <div id="box6"></div>
+    <script>
+        console.log( '---------- 示例六 开始 ----------' );
+    
+        (function ( window, $ ) {
+
+            const $div6 = $( '#box6' );
+
+            $div6.data({
+                myName: 'IconMan',
+                age: 25
+            });
+
+            $div6.removeData( 'my-name age' );
+
+            console.log( $div6.data() );
+
+        })( window, jQuery );
+
+        console.log( '---------- 示例六 结束 ----------' );
+    </script>
+
+</body>
+</html>
+            </div>
+        
+        
+        
+    </div>
+
+    
+        
+    
+
+</li>
+                
+                
+            </div>
+        </div>
+        
+        
+
+        <script src="/js/jquery-2.0.3.min.js"></script>
+        <script src="/js/jquery.ztree.core.min.js"></script>
+        <script src="/js/index.js"></script>
+        <script src="/js/prism.js"></script>
+
+    </div>
+</body>
+</html>

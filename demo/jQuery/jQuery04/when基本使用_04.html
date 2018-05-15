@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>LinHao</title>
+    <link href="https://cdn.bootcss.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.bootcss.com/animate.css/3.5.0/animate.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="/css/index.css">
+    <link rel="stylesheet" href="/css/zTreeStyle.css">
+</head>
+<body>
+    
+
+    <div id="blog" class="PingFang_SC_Normal">
+        <div id="header">
+    <div class="header-container container">
+        <div class="collapse navbar-collapse row" id="bs-example-navbar-collapse-1">
+            <ul class="header-list nav navbar-nav col-md-6 col-sm-6 col-xs-6">
+                
+                    <li class="header-list-item"><a href="/">HOME</a></li>
+                
+                    <li class="header-list-item"><a href="/article">ARTICLE</a></li>
+                
+                    <li class="header-list-item"><a href="/about">ABOUT</a></li>
+                
+            </ul>
+            
+        </div>
+        
+        
+    </div>
+</div>
+        <div id="header_scroll" >
+    <div class="header_scroll_block"></div>
+</div>
+        
+        <div id="main" class="clear">
+            <div class="main-container container">
+                
+
+                
+
+    
+
+    <div id="title" class="title-post">
+        <h3 class="title-container">
+            <span class="title-text AGaramondPro_Italic_Bold">Straight Matter</span>
+        </h3>
+    </div>
+
+
+
+<li class="article-item">
+    <div class="article-container">
+        <img class="article-img img-responsive" src="" alt="">
+        <h3 class="article-title"></h3>
+        <div class="article-header">
+            <div class="article-info">
+                <i class="iconfont icon-xinxi"></i>
+                <span class="article-info-categories article-info-item">
+                    <span class="AGaramondPro_Bold article-info-title">Categories</span>
+                    
+                </span>
+                <span class="article-info-tags article-info-item">
+                    <span class="AGaramondPro_Bold tags-info-title">Tags</span>
+                    
+                </span>
+                <span class="article-info-item article-info-date AGaramondPro_Regular"><span>2018-04-28</span></span>
+                <span class="article-info-item article-info-portrait clear">
+                    <img src="https://awcdn1.ahmad.works/writing/wp-content/uploads/2015/05/Author.jpg" alt="">
+                    <span class="article-info-item article-info-username AGaramondPro_Bold">LinHao</span>
+                </span>
+                
+            </div>
+        </div>
+        
+            <div class="article-content article-text">
+                <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>when基本使用_04</title>
+</head>
+<body>
+
+    <script src="../jquery-2.0.3.js"></script>
+    
+    <script>
+        
+        const dfd1 = $.Deferred();
+
+        /**
+         *  2.  1s 后，调用 notify 将 dfd1 的状态指定为进行中，此时，dfd1 进行状态的回调对象中只有一个回调（ 就是 when 方法中添加的回调 ）
+         *          执行该回调中，progressContexts 是 [ dfd1.promise(), undefined ]，而 progressValues 是 [ 1, undefiend ]，然后判断 values 是否等于 progressValues，因为现在是调用 notify 方法，所以条件成立
+         *          将目标对象的状态指定为进行中，并将进行中的每个回调的 this 设置为 progressContexts 对象，而每个回调接受的参数就是 progressValues 数组
+         *      而在此调用 notify 方法和上面一样，只不过此时会将 progressValues[0] 改变为 2，之后再次将目标延迟对象的状态指定为进行中，再一次遍历进行中的所有回调
+         *      最后调用一次 resolve 方法，遍历 dfd1 成功状态中的所有回调（ 此时有4个回调 ），当遍历到底 4 个的时候
+         *          将 resolveContexts 设置为 [ dfd1.promise(), undefined ]，再将 resolveValues[0] 设置为 'OK1'，之后进行判断，因为调用 resolve 方法，所以条件不满足，进入 else if 中，将 remaining - 1，调用结束
+         */
+        setTimeout(() => {
+            dfd1.notify( 1 );       
+            dfd1.notify( 2 );
+            dfd1.resolve( 'OK1' );
+        }, 1000);
+
+        const dfd2 = $.Deferred();
+
+        /**
+         *  2.  2s 后，调用 notify 将 dfd2 的状态指定为进行中，此时，dfd2 进行状态的回调对象中只有一个回调（ 就是 when 方法中添加的回调 ）
+         *          执行该回调中，progressContexts 是 [ dfd1.promise(), dfd2.promise() ]，而 progressValues 是 [ 1, 3 ]，然后判断 values 是否等于 progressValues，因为现在是调用 notify 方法，所以条件成立
+         *          将目标对象的状态指定为进行中，并将进行中的每个回调的 this 设置为 progressContexts 对象，而每个回调接受的参数就是 progressValues 数组
+         *      而在此调用 notify 方法和上面一样，只不过此时会将 progressValues[1] 改变为 4，之后再次将目标延迟对象的状态指定为进行中，再一次遍历进行中的所有回调
+         *      最后调用一次 resolve 方法，遍历 dfd2 成功状态中的所有回调（ 此时有4个回调 ），当遍历到底 4 个的时候
+         *          将 resolveContexts 设置Wie [ dfd1.promise(), dfd2.promise() ]，再将 resolveValues[1] 设置为 'OK2'，之后进行判断，因为调用 resolve 方法，所以条件不满足，进入 else if 中，将 remaining - 1，此时 remaining 为 0，条件成立，将目标延迟对象的状态指定为成功，并将目标延迟对象的成功状态里的所有回调的作用域设置为 resolveContexts，并且每个回调方法都会接受 resolveValues 作为参数
+         */
+        setTimeout(() => {
+            dfd2.notify( 3 );
+            dfd2.notify( 4 );
+            dfd2.resolve( 'OK2' );
+        }, 2000);
+
+        /**
+         *  1.  调用 when 方法和上一个示例一样，唯一不同的是，现在向目标延迟对象的成功状态回调对象和进行状态回调对象里都添加了一个新的回调
+         *      要注意的是，when 方法调用完后，dfd1 和 dfd2 的每个状态的回调对象中又新增了一个回调 
+         */
+        $.when( dfd1, dfd2 )
+        .done(function () {
+            console.log( '成功' );
+            console.log( arguments );
+        })
+        .progress(function () {
+            console.log( '进行中' );
+            console.log( this );
+            console.log( arguments );
+        });
+
+    </script>
+
+</body>
+</html>
+            </div>
+        
+        
+        
+    </div>
+
+    
+        
+    
+
+</li>
+                
+                
+            </div>
+        </div>
+        
+        
+
+        <script src="/js/jquery-2.0.3.min.js"></script>
+        <script src="/js/jquery.ztree.core.min.js"></script>
+        <script src="/js/index.js"></script>
+        <script src="/js/prism.js"></script>
+
+    </div>
+</body>
+</html>

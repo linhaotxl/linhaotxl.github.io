@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>LinHao</title>
+    <link href="https://cdn.bootcss.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.bootcss.com/animate.css/3.5.0/animate.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="/css/index.css">
+    <link rel="stylesheet" href="/css/zTreeStyle.css">
+</head>
+<body>
+    
+
+    <div id="blog" class="PingFang_SC_Normal">
+        <div id="header">
+    <div class="header-container container">
+        <div class="collapse navbar-collapse row" id="bs-example-navbar-collapse-1">
+            <ul class="header-list nav navbar-nav col-md-6 col-sm-6 col-xs-6">
+                
+                    <li class="header-list-item"><a href="/">HOME</a></li>
+                
+                    <li class="header-list-item"><a href="/article">ARTICLE</a></li>
+                
+                    <li class="header-list-item"><a href="/about">ABOUT</a></li>
+                
+            </ul>
+            
+        </div>
+        
+        
+    </div>
+</div>
+        <div id="header_scroll" >
+    <div class="header_scroll_block"></div>
+</div>
+        
+        <div id="main" class="clear">
+            <div class="main-container container">
+                
+
+                
+
+    
+
+    <div id="title" class="title-post">
+        <h3 class="title-container">
+            <span class="title-text AGaramondPro_Italic_Bold">Straight Matter</span>
+        </h3>
+    </div>
+
+
+
+<li class="article-item">
+    <div class="article-container">
+        <img class="article-img img-responsive" src="" alt="">
+        <h3 class="article-title"></h3>
+        <div class="article-header">
+            <div class="article-info">
+                <i class="iconfont icon-xinxi"></i>
+                <span class="article-info-categories article-info-item">
+                    <span class="AGaramondPro_Bold article-info-title">Categories</span>
+                    
+                </span>
+                <span class="article-info-tags article-info-item">
+                    <span class="AGaramondPro_Bold tags-info-title">Tags</span>
+                    
+                </span>
+                <span class="article-info-item article-info-date AGaramondPro_Regular"><span>2018-04-28</span></span>
+                <span class="article-info-item article-info-portrait clear">
+                    <img src="https://awcdn1.ahmad.works/writing/wp-content/uploads/2015/05/Author.jpg" alt="">
+                    <span class="article-info-item article-info-username AGaramondPro_Bold">LinHao</span>
+                </span>
+                
+            </div>
+        </div>
+        
+            <div class="article-content article-text">
+                <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>when 基本使用_01</title>
+</head>
+<body>
+    
+    <script src="../jquery-2.0.3.js"></script>
+
+    <script>
+        console.log( '---------- 示例一开始 ----------' );
+        
+        /**
+         *  此时，因为没有传任何对象，所以 remaining 和 length 都是 0，deferred 是一个新的 延迟对象，会进入 40 行的 if 中，
+         *      将延迟对象的状态指定为成功，遍历调用其回调对象的所有回调（ 此时成功状态的回调对象依旧是那三个回调 ），并没有新添加的回调
+         *  然后调用 done 方法向成功状态的回调对象中添加回调，因为成功状态的回调对象提供了 memory 参数，所以新添加的回调会被立即执行 
+         */
+        $.when()
+        .done(() => {
+            console.log( '已完成' );
+        });
+
+        // Result:
+        // 立即打印: 已完成
+
+        console.log( '---------- 示例一结束 ----------' );
+    </script>
+
+    <script>
+        console.log( '---------- 示例二开始 ----------' );
+        
+        /**
+         *  此时，因为传递了一个参数（ 且该参数是非延迟对象 ），所以 remaining 是 0 且 length 是 1，deferred 是一个新的 延迟对象，会进入 40 行的 if 中，
+         *      将延迟对象的状态指定为成功，遍历调用其回调对象的所有回调（ 此时成功状态的回调对象依旧是那三个回调 ），并没有新添加的回调
+         *  然后调用 done 方法向成功状态的回调对象中添加回调，因为成功状态的回调对象提供了 memory 参数，所以新添加的回调会被立即执行 
+         */
+        $.when( 1 )
+        .done(() => {
+            console.log( '已完成' );
+        });
+
+        // Result:
+        // 立即打印: 已完成
+
+        console.log( '---------- 示例二结束 ----------' );
+    </script>
+
+    <script>
+        console.log( '---------- 示例三开始 ----------' );
+        
+        /**
+         *  此时，因为传递了两个参数（ 且参数都是非延迟对象 ），所以 remaining 是 2 且 length 是 2，deferred 是一个新的 延迟对象，会进入 30 行的 if 中，
+         *      此时遍历每个参数，因为此例中所有的参数都不是延迟对象，所以每遍历一次，就将 remaining - 1，遍历结束后，remaining 的值为 0，会进入 40 行的 if 中，
+         *      将延迟对象的状态指定为成功，遍历调用其回调对象的所有回调（ 此时成功状态的回调对象依旧是那三个回调 ），并没有新添加的回调
+         *  然后调用 done 方法向成功状态的回调对象中添加回调，因为成功状态的回调对象提供了 memory 参数，所以新添加的回调会被立即执行 
+         */
+        $.when( 1, 2 )
+        .done(() => {
+            console.log( '已完成' );
+        });
+
+        // Result:
+        // 立即打印: 已完成
+
+        console.log( '---------- 示例三结束 ----------' );
+    </script>
+
+</body>
+</html>
+            </div>
+        
+        
+        
+    </div>
+
+    
+        
+    
+
+</li>
+                
+                
+            </div>
+        </div>
+        
+        
+
+        <script src="/js/jquery-2.0.3.min.js"></script>
+        <script src="/js/jquery.ztree.core.min.js"></script>
+        <script src="/js/index.js"></script>
+        <script src="/js/prism.js"></script>
+
+    </div>
+</body>
+</html>

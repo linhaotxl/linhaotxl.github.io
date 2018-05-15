@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>LinHao</title>
+    <link href="https://cdn.bootcss.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.bootcss.com/animate.css/3.5.0/animate.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="/css/index.css">
+    <link rel="stylesheet" href="/css/zTreeStyle.css">
+</head>
+<body>
+    
+
+    <div id="blog" class="PingFang_SC_Normal">
+        <div id="header">
+    <div class="header-container container">
+        <div class="collapse navbar-collapse row" id="bs-example-navbar-collapse-1">
+            <ul class="header-list nav navbar-nav col-md-6 col-sm-6 col-xs-6">
+                
+                    <li class="header-list-item"><a href="/">HOME</a></li>
+                
+                    <li class="header-list-item"><a href="/article">ARTICLE</a></li>
+                
+                    <li class="header-list-item"><a href="/about">ABOUT</a></li>
+                
+            </ul>
+            
+        </div>
+        
+        
+    </div>
+</div>
+        <div id="header_scroll" >
+    <div class="header_scroll_block"></div>
+</div>
+        
+        <div id="main" class="clear">
+            <div class="main-container container">
+                
+
+                
+
+    
+
+    <div id="title" class="title-post">
+        <h3 class="title-container">
+            <span class="title-text AGaramondPro_Italic_Bold">Straight Matter</span>
+        </h3>
+    </div>
+
+
+
+<li class="article-item">
+    <div class="article-container">
+        <img class="article-img img-responsive" src="" alt="">
+        <h3 class="article-title"></h3>
+        <div class="article-header">
+            <div class="article-info">
+                <i class="iconfont icon-xinxi"></i>
+                <span class="article-info-categories article-info-item">
+                    <span class="AGaramondPro_Bold article-info-title">Categories</span>
+                    
+                </span>
+                <span class="article-info-tags article-info-item">
+                    <span class="AGaramondPro_Bold tags-info-title">Tags</span>
+                    
+                </span>
+                <span class="article-info-item article-info-date AGaramondPro_Regular"><span>2018-05-15</span></span>
+                <span class="article-info-item article-info-portrait clear">
+                    <img src="https://awcdn1.ahmad.works/writing/wp-content/uploads/2015/05/Author.jpg" alt="">
+                    <span class="article-info-item article-info-username AGaramondPro_Bold">LinHao</span>
+                </span>
+                
+            </div>
+        </div>
+        
+            <div class="article-content article-text">
+                <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>03_toggleClass</title>
+</head>
+<body>
+
+    <script src="../jquery-2.0.3.js"></script>
+    
+    <button class="btn_01">切换</button>
+    <div id="box_01"></div>
+    <script>
+        console.log( '示例一：第一个参数为字符串，且不传递第二个参数' );
+        
+        (function ( window ) {
+
+            const $div = $( '#box_01' );
+            const $button = $( '.btn_01' );
+            $button.on( 'click', function () {
+                /**
+                 *  此时，调用 toggleClass 方法时，只传递了一个字符串参数，所以直接进入 return 中，遍历当前的 jQuery 对象
+                 *  因为第一个参数是字符串，所以进入 32 行的 if 中
+                 *      在 if 中，将字符串参数按照空格匹配，并将结果数组保存在 classNames 中（ 此例中就是 [ "test_box" ] ）
+                 *      然后循环 classNames 中的所有元素，判断当前元素是否在当前 DOM 元素的 class 中
+                 *          如果有，则将当前元素从当前 DOM 的 class 中删除
+                 *          如果没有，则将当前元素添加到当前 DOM 的 class 中
+                 *  所以，点击按钮奇数此的时候，会向 #box_01 中添加 test_box 的 class，点击偶数此的时候，会向 #box_01 中删除 test_box 的 class
+                 */
+                $div.toggleClass( 'test_box' );
+            });
+
+        })( window );
+
+    </script>
+
+    <button class="btn_add">添加</button>
+    <button class="btn_remove">删除</button>
+    <div id="box_02"></div>
+    <script>
+        console.log( '示例一：第一个参数为字符串，第二个参数为布尔值' );
+        
+        (function ( window ) {
+
+            const $div = $( '#box_02' );
+            const $buttonAdd = $( '.btn_add' );
+            const $buttonRemove = $( '.btn_remove' );
+
+            /**
+             *  此时调用 toggleClass 方法，传递了一个字符串和布尔值（ true ），所以会进入 11 行的 if 中
+             *      在 if 中，直接调用 addClass，并将第一个参数作为 addClass 的实参
+             *  所以，不管怎么点击 “添加” 按钮，都是向 #box_02 中添加 test_box 的 class
+             */
+            $buttonAdd.on( 'click', function () {
+                $div.toggleClass( 'test_box', true );
+            });
+
+            /**
+             *  此时调用 toggleClass 方法，传递了一个字符串和布尔值（ false ），所以会进入 11 行的 if 中
+             *      在 if 中，直接调用 removeClass，并将第一个参数作为 removeClass 的实参
+             *  所以，不管怎么点击 “删除” 按钮，都是从 #box_02 中删除 test_box 的 class
+             */
+            $buttonRemove.on( 'click', function () {
+                $div.toggleClass( 'test_box', false );
+            });
+
+        })( window );
+
+    </script>  
+
+    <br>
+
+    <div id="box_03" class="test1 test2 test3"></div>
+    <button class="btn_03">点击</button>
+    <script>
+        console.log( '示例三：不传递任何参数' );
+        
+        (function ( window ) {
+
+            const $div = $( '#box_03' );
+            const $button = $( '.btn_03' );
+
+            $button.on( 'click', function () {
+                /**
+                 *  此时调用 toggleClass 方法没有传递任何参数，所以会进入 59 行的 else if 中
+                 *  当第一次（ 奇数次都一样 ）点击按钮时，当前 DOM 是存在 class 的，所以进入 60 行的 if 中，在私有缓存中为当前 DOM 设置一个键值对，属性为 __className__，值为 DOM 的 class 值
+                 *      然后因为当前 DOM 存在 class，所以在三目中将当前 DOM 的 class 置为空字符串
+                 *  当第二次（ 偶数次都一样 ）点击按钮时，当前 DOM 是不存在 class 的，然后判断提供的参数是否是 false，此例中不是（ 没有任何参数 ）
+                 *      所以会从私有缓存中取出当前 DOM 元素中以 __className__ 为属性的值（ 此例中是 "test1 test2 test3" ），将该值赋给当前 DOM 的 class 属性，所以当前 DOM class 又恢复为之前的值了
+                 */
+                $div.toggleClass();
+            });
+
+        })( window );
+
+    </script>
+
+    <br>
+
+    <div id="box_04" class="test1 test2 test3"></div>
+    <button class="btn_clear">清除</button>
+    <button class="btn_reset">恢复</button>
+    <script>
+        console.log( '示例三：传递一个布尔值' );
+        
+        (function ( window ) {
+
+            const $div = $( '#box_04' );
+            const $buttonClear = $( '.btn_clear' );
+            const $buttonReset = $( '.btn_reset' );
+
+            /**
+             *  点击清除按钮时，调用 toggleClass 方法并且传递 false 作为实参，直接进入 59 行的 else if 中
+             *      因为此时当前 DOM 存在 class，所以会进入 60 行的 if 中，将当前 DOM 的 class 保存在私有缓存中
+             *      然后，因为此时当前 DOM 存在 class，所以将当前 DOM 的 class 清空
+             *  当再次点击清除按钮时，因为此时当前 DOM 的 class 为空，所以不会进入 60 行的 if 中，而此时传递的参数也是 false，所以还是会将当前 DOM 的 class 设置为空
+             */
+            $buttonClear.on( 'click', function () {
+                $div.toggleClass( false );
+            });
+
+            /**
+             *  点击恢复按钮时（ 基数次 ），调用 toggleClass 方法并且传递 true 作为实参，直接进入 59 行的 else if 中
+             *      因为此时当前 DOM 存在 class，所以会进入 60 行的 if 中，将当前 DOM 的 class 保存在私有缓存中
+             *      然后，因为此时当前 DOM 存在 class，所以将当前 DOM 的 class 清空
+             *  当再次点击恢复按钮时（ 偶数次 ），因为此时当前 DOM 的 class 为空，所以不会进入 60 行的 if 中，而此时传递的参数是 true，所以会将当前 DOM 在私有缓存中，以 __className__ 为属性的值赋给当前 DOM 的 class（ 当前 DOM 的 class 又恢复为 "test1 test2 test3" ）
+             *      此时和不穿任何参数时的情形一模一样
+             */
+            $buttonReset.on( 'click', function () {
+                $div.toggleClass( true );
+            });
+
+        })( window );
+
+    </script>
+
+    <div id="box_05" class="test1 test2 test3"></div>
+    <button class="btn_05">切换</button>
+    <script>
+        console.log( '示例三：传递一个函数' );
+        
+        (function ( window ) {
+
+            const $div = $( '#box_05' );
+            const $button = $( '.btn_05' );
+
+            /**
+             *  和 addClass 和 removeClass 一样，该回调的作用域被设置为 jQuery 实例中的每个 DOM 元素
+             *  并且接受三个参数
+             *  @param  { Number }              index       当前 DOM 元素在 jQuery 实例中的索引
+             *  @param  { String }              className   当前 DOM 元素的 class 属性值
+             *  @param  { Boolean | Undefiend } stateVal    调用 toggleClass 时传递的第二个参数
+             */
+            function cb ( index, className, stateVal ) {
+                return 'box_' + index;
+            }
+
+            $button.on( 'click', function () {
+                /**
+                 *  此时调用 toggleClass 时传递的是一个函数，所以直接进入 18 行的 if 中
+                 *  遍历当前 jQuery 实例中的所有 DOM 元素，没遍历一次执行一次该函数，然后通过当前 DOM 再次调用 toggleClass，并将该函数的返回值作为参数
+                 *  所以该函数的返回值可以是 toggleClass 函数的参数类型中的任意一种
+                 */
+                $div.toggleClass( cb );
+            });
+
+        })( window );
+
+    </script>
+
+</body>
+</html>
+            </div>
+        
+        
+        
+    </div>
+
+    
+        
+    
+
+</li>
+                
+                
+            </div>
+        </div>
+        
+        
+
+        <script src="/js/jquery-2.0.3.min.js"></script>
+        <script src="/js/jquery.ztree.core.min.js"></script>
+        <script src="/js/index.js"></script>
+        <script src="/js/prism.js"></script>
+
+    </div>
+</body>
+</html>

@@ -41,29 +41,34 @@
             <div class="main-container container">
                 
 
-                <div id="posts">
-    <ul>
-        
-            
                 
+
+    
+
+    <div id="title" class="title-post">
+        <h3 class="title-container">
+            <span class="title-text AGaramondPro_Italic_Bold">Straight Matter</span>
+        </h3>
+    </div>
+
 
 
 <li class="article-item">
     <div class="article-container">
-        <img class="article-img img-responsive" src="https://awcdn1.ahmad.works/writing/wp-content/uploads/2015/05/cheerful-loving-couple-bakers-drinking-coffee-PCAVA6B-2.jpg" alt="">
-        <h3 class="article-title">jQuery01</h3>
+        <img class="article-img img-responsive" src="" alt="">
+        <h3 class="article-title"></h3>
         <div class="article-header">
             <div class="article-info">
                 <i class="iconfont icon-xinxi"></i>
                 <span class="article-info-categories article-info-item">
                     <span class="AGaramondPro_Bold article-info-title">Categories</span>
-                    <a class="category-link" href="/categories/jQuery/">jQuery源码分析</a>
+                    
                 </span>
                 <span class="article-info-tags article-info-item">
                     <span class="AGaramondPro_Bold tags-info-title">Tags</span>
-                    <a class="tag-link" href="/tags/标签1/">标签1</a>
+                    
                 </span>
-                <span class="article-info-item article-info-date AGaramondPro_Regular"><span>2018-02-23</span></span>
+                <span class="article-info-item article-info-date AGaramondPro_Regular"><span>2018-05-14</span></span>
                 <span class="article-info-item article-info-portrait clear">
                     <img src="https://awcdn1.ahmad.works/writing/wp-content/uploads/2015/05/Author.jpg" alt="">
                     <span class="article-info-item article-info-username AGaramondPro_Bold">LinHao</span>
@@ -72,29 +77,74 @@
             </div>
         </div>
         
-            <div class="article-excerpt article-text">
-                
+            <div class="article-content article-text">
+                <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>01_addClass</title>
+</head>
+<body>
+    
+    <script src="../jquery-2.0.3.js"></script>
+
+    <div id="box1" class="box_1"></div>
+    <div id="box2" class="box_1"></div>
+    <script>
+        console.log( '---------- 示例一开始 ----------' );
+    
+        (function ( window, $ ) {
+
+            // const $div1 = $( '#box1' );
+            // $div1.addClass( 'box box1' );
+
+            const $divs = $( '.box_1' );
+            $divs.addClass( 'test1 test2' )
+
+        })( window, jQuery ); 
+
+        console.log( '---------- 示例一结束 ----------' );
+    </script>
+
+    <br>
+
+    <div class="box_2" id="box3"></div>
+    <div class="box_2" id="box4"></div>
+    <div class="box_2" id="box5"></div>
+    <script>
+        console.log( '---------- 示例二开始 ----------' );
+    
+        (function ( window, $ ) {
+
+            let i = 0;
+            const $divs = $( '.box_2' );
+            $divs.addClass(function () {
+                console.log( this )
+                console.log( arguments )
+                i++;
+                return 'add_' + i;
+            });
+
+        })( window, jQuery );
+
+        console.log( '---------- 示例二结束 ----------' );
+    </script>
+
+</body>
+</html>
             </div>
         
         
-        
-            <div class="article-readall">
-                <a href="/jQuery/article-title.html" class="article-readall-btn">
-                    <span class="article-readall-text">阅读全文</span>
-                    <span class="article-readall-mark"><i class="iconfont icon-yuedu"></i></span>
-                </a>
-            </div>
         
     </div>
 
     
+        
+    
 
 </li>
-            
-        
-    </ul>
-</div>
-
                 
                 
             </div>

@@ -41,29 +41,34 @@
             <div class="main-container container">
                 
 
-                <div id="posts">
-    <ul>
-        
-            
                 
+
+    
+
+    <div id="title" class="title-post">
+        <h3 class="title-container">
+            <span class="title-text AGaramondPro_Italic_Bold">Straight Matter</span>
+        </h3>
+    </div>
+
 
 
 <li class="article-item">
     <div class="article-container">
         <img class="article-img img-responsive" src="" alt="">
-        <h3 class="article-title">jQuery源码分析（四）—— 延迟对象</h3>
+        <h3 class="article-title"></h3>
         <div class="article-header">
             <div class="article-info">
                 <i class="iconfont icon-xinxi"></i>
                 <span class="article-info-categories article-info-item">
                     <span class="AGaramondPro_Bold article-info-title">Categories</span>
-                    <a class="category-link" href="/categories/jQuery/">jQuery源码分析</a>
+                    
                 </span>
                 <span class="article-info-tags article-info-item">
                     <span class="AGaramondPro_Bold tags-info-title">Tags</span>
                     
                 </span>
-                <span class="article-info-item article-info-date AGaramondPro_Regular"><span>2018-04-26</span></span>
+                <span class="article-info-item article-info-date AGaramondPro_Regular"><span>2018-05-01</span></span>
                 <span class="article-info-item article-info-portrait clear">
                     <img src="https://awcdn1.ahmad.works/writing/wp-content/uploads/2015/05/Author.jpg" alt="">
                     <span class="article-info-item article-info-username AGaramondPro_Bold">LinHao</span>
@@ -72,77 +77,61 @@
             </div>
         </div>
         
-            <div class="article-excerpt article-text">
-                
+            <div class="article-content article-text">
+                <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>then方法使用_02</title>
+</head>
+<body>
+    
+    <script src="../jquery-2.0.3.js"></script>
+
+    <script>
+    
+    const dfd = $.Deferred();
+
+    setTimeout(() => {
+        dfd.resolve( 1, 2 );
+    }, 2000);
+
+    /**
+     *  在执行 then 方法中，又向 dfd 延迟对象的三种状态的回调对象中又分别添加了一个新的回调
+     *      其中，这个新的回调在成功状态里会调用 then 的第一个函数参数，在失败和进行状态里不会调用，因为调用 then 方法只传递了第一个参数
+     *      2s 后，将 dfd 的状态指定为成功，所以会遍历成功状态里的四个回调，主要看第四个
+     *          在第四个回调中，首先会调用 then 的第一个函数参数，并且该函数参数的返回的值是一个字符串（ 1-2 ），所以会进入 45 行的 else 中，将 then 返回的延迟对象的状态也指定为成功
+     *          并且，将 then 返回的延迟对象成功状态里的每个回调的作用域设置为了 then 返回的延迟对象的 promise 对象，然后将 then 方法中第一个参数的返回值放进数组中，传递给每个回调
+     */
+    const thenDfd = dfd.then(
+        function ( value1, value2 ) {
+            console.log( 'then 成功' );
+            console.log( value1, value2 );  // 1 2
+            return value1 + '-' + value2;
+        }
+    );
+    thenDfd.done(function ( data ) {
+        console.log( this === thenDfd );    // true
+        console.log( data );                // 1-2
+    });
+
+    </script>
+
+</body>
+</html>
             </div>
         
         
-        
-            <div class="article-readall">
-                <a href="/jQuery/jQuery04.html" class="article-readall-btn">
-                    <span class="article-readall-text">阅读全文</span>
-                    <span class="article-readall-mark"><i class="iconfont icon-yuedu"></i></span>
-                </a>
-            </div>
         
     </div>
 
     
-
-</li>
-            
         
-            
-                
-
-
-<li class="article-item">
-    <div class="article-container">
-        <img class="article-img img-responsive" src="" alt="">
-        <h3 class="article-title">jQuery源码分析（三）—— 回调对象</h3>
-        <div class="article-header">
-            <div class="article-info">
-                <i class="iconfont icon-xinxi"></i>
-                <span class="article-info-categories article-info-item">
-                    <span class="AGaramondPro_Bold article-info-title">Categories</span>
-                    <a class="category-link" href="/categories/jQuery/">jQuery源码分析</a>
-                </span>
-                <span class="article-info-tags article-info-item">
-                    <span class="AGaramondPro_Bold tags-info-title">Tags</span>
-                    
-                </span>
-                <span class="article-info-item article-info-date AGaramondPro_Regular"><span>2018-04-12</span></span>
-                <span class="article-info-item article-info-portrait clear">
-                    <img src="https://awcdn1.ahmad.works/writing/wp-content/uploads/2015/05/Author.jpg" alt="">
-                    <span class="article-info-item article-info-username AGaramondPro_Bold">LinHao</span>
-                </span>
-                
-            </div>
-        </div>
-        
-            <div class="article-excerpt article-text">
-                
-            </div>
-        
-        
-        
-            <div class="article-readall">
-                <a href="/jQuery/jQuery03.html" class="article-readall-btn">
-                    <span class="article-readall-text">阅读全文</span>
-                    <span class="article-readall-mark"><i class="iconfont icon-yuedu"></i></span>
-                </a>
-            </div>
-        
-    </div>
-
     
 
 </li>
-            
-        
-    </ul>
-</div>
-
                 
                 
             </div>

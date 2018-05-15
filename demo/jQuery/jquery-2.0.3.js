@@ -3072,7 +3072,7 @@ function select( selector, context, results, seed ) {
 // Sort stability
 support.sortStable = expando.split("").sort( sortOrder ).join("") === expando;
 
-// Support: Chrome<14 0="" 1="" 2="" 4="" 25="" always="" assume="" duplicates="" if="" they="" aren't="" passed="" to="" the="" comparison="" function="" support.detectduplicates="hasDuplicate;" initialize="" against="" default document="" setdocument();="" support:="" webkit<537.32="" -="" safari="" 6.0.3="" chrome="" (fixed="" in="" 27)="" detached="" nodes="" confoundingly="" follow="" *each="" other*="" support.sortdetached="assert(function(" div1="" )="" {="" should="" return="" 1,="" but="" returns="" (following)="" div1.comparedocumentposition(="" document.createelement("div")="" &="" 1;="" });="" ie<8="" prevent="" attribute="" property="" "interpolation"="" http:="" msdn.microsoft.com="" en-us="" library="" ms536429%28vs.85%29.aspx="" (="" !assert(function(="" div="" div.innerhtml="<a href='#'></a>" ;="" div.firstchild.getattribute("href")="==" "#"="" })="" addhandle(="" "type|href|height|width",="" function(="" elem,="" name,="" isxml="" !isxml="" elem.getattribute(="" name.tolowercase()="==" "type"="" ?="" :="" );="" }="" ie<9="" use="" defaultvalue="" place="" of="" getattribute("value")="" !support.attributes="" ||="" div.firstchild.setattribute(="" "value",="" ""="" div.firstchild.getattribute(="" "value"="" "";="" &&="" elem.nodename.tolowercase()="==" "input"="" elem.defaultvalue;="" getattributenode="" fetch="" booleans="" when="" getattribute="" lies="" div.getattribute("disabled")="=" null;="" booleans,="" var="" val;="" (val="elem.getAttributeNode(" name="" ))="" val.specified="" val.value="" elem[="" ]="==" true="" jquery.find="Sizzle;" jquery.expr="Sizzle.selectors;" jquery.expr[":"]="jQuery.expr.pseudos;" jquery.unique="Sizzle.uniqueSort;" jquery.text="Sizzle.getText;" jquery.isxmldoc="Sizzle.isXML;" jquery.contains="Sizzle.contains;" })(="" window="" string="" object="" options="" format="" cache="" 保存="" $.callbacks="" 中参数的缓存="" optionscache="{};" convert="" string-formatted="" into="" object-formatted="" ones="" and="" store="" **="" *="" 创建参数="" json="" 对象="" @param="" callback="" 的参数对象，例如="" 'once="" memory'="" @return="" 创建的="" 如果="" 是="" 的话，那么返回的="" 对象就是="" once:="" true,="" memory:="" createoptions(="" 1.="" 创建一个以="" 为键的属性，并赋值空对象="" 2.="" 通过="" core_rnotwhite="" 正则将="" 中除空格以外的其他字符进行匹配，并遍历这个数组="" 将第一步中的空对象遍历设置正则匹配后的值，设置为="" jquery.each(="" options.match(="" [],="" _,="" flag="" object[="" object;="" create="" a="" list="" using="" following="" parameters:="" options:="" an="" optional="" space-separated="" that="" will="" change="" how="" behaves="" or="" more="" traditional="" option="" by="" act="" like="" event="" can="" be="" "fired"="" multiple times.="" possible="" ensure="" only="" fired="" once="" (like="" deferred)="" keep="" track="" previous="" values="" call="" any="" added="" after="" has="" been="" right="" away="" with="" latest="" "memorized"="" unique:="" (no="" duplicate="" list)="" stoponfalse:="" interrupt="" callings="" false="" jquery.callbacks="function(" from="" needed="" (we="" check="" first)="" 先检查="" 是否是字符串="" 如果是的话，先从缓存中读取数据，如果缓存没有，则调用="" createoptions="" 方法先在缓存中创建数据="" 如果不是的话，即没有传参数，直接返回一个空的="" "string"="" optionscache[="" jquery.extend(="" {},="" last="" fire="" value="" (for="" non-forgettable="" lists)="" memory,="" 是否执行过="" 队列中所有回调的标识；最开始为="" undefined，只有执行了一次="" 后，该值为被置为="" fired,="" 队列中的所有回调正在被执行时的标识="" firing,="" first="" (used="" internally="" add="" firewith)="" firingstart,="" end="" loop firing="" firinglength,="" index="" currently="" (modified="" remove="" needed)="" firingindex,="" 保存回调的队列="" 中传递了="" 参数，那么该值就是="" false；如果没有提供="" once，那么该是就是空数组="" stack="!options.once" 执行所有的回调="" array="" 包括调用="" 时的作用域以及参数两个元素="" data="" console.log(="" 1.1="" 判断="" 时是否提供了="" memory="" 参数，如果提供了，那么="" 就是合并后的数组；如果没提供，就是="" data;="" 1.2="" 将="" 置为="" true，代表已经触发过="" 方法了，如果没有调用过="" 方法，那么该值就是="" undefined="" 1.3="" 遍历="" 队列的循环变量，先判断="" firingstart="" 是否存在有效值，如果有的话，就代表此时是在有="" 参数的情况下，通过="" 方法来执行回调，而不是通过外部的="" 方法；="" firingindex="firingStart" 0;="" 1.4="" 恢复="" 1.5="" 保存当前队列的长度="" firinglength="list.length;" 1.6="" true，代表正在进行遍历触发每个回调="" 1.7="" 遍历每一个回调并触发="" 调用队列中的每一个回调，并修改每个回调中的="" this，就是当前调用="" 方法的接受者；再将调用="" 时传递的参数当做实参传递给每一个回调="" cb="$.Callbacks();" cb.add(="" func1="" cb.fire('hello',="" 'world');="" 此时，func1="" 中的="" this="" 就指向的是="" 方法的接受者，即="" cb；func1="" 接受两个参数，分别是="" 'hello'="" 和="" 'world'="" 再判断每个回调的返回值是否是="" false，如果是="" 的话，再判断="" 中是否传递了="" stoponfalse="" 如果传递了，那么直接退出循环，不再继续执行之后的回调="" for="" <="" firinglength;="" firingindex++="" list[="" ].apply(="" data[="" ],="" options.stoponfalse="" further="" calls="" break;="" 1.8="" false，代表已经结束了所有回调的触发="" 1.9="" 是否存在="" 1.9.1="" 是否存在，只要不提供="" 就存在="" 1.9.1.1="" 中是否含有元素="" stack.length="" 如果能进入到这个="" 就说明在某一个回调中调用="" 方法="" 此时，stack="" 中存储的是在回调中调用="" 传递的参数以及调用者组成的数组="" 此时，在通过内部方法="" 来遍历当前的合并数组，以此用当前合并的数组来执行="" 队列中的每个方法="" fire(="" stack.shift()="" 1.9.2="" 如果不存在="" stack（="" 提供了="" 参数="" ）并且提供了="" 参数，就意味着只有第一次的="" 是有效的，并且之后的="" 也有效="" 那么在执行="" 方法是，就会进入这个="" if，此时将="" 队列清空，所以之后的="" 方法就不会有效了，遍历的只是一个空数组="" else="" 1.9.3="" 如果提供了="" 但是不提供="" memory，那么就意味着只有第一次的="" 是有效的="" 此时就会进入这个="" if，调用="" disable="" 方法，禁止当前回调队列，禁止会将回调队列="" 设置为="" self.disable();="" },="" actual="" callbacks="" self="{" 添加一个回调到队列中="" add:="" function()="" 先判断队列是否存在，如果存在进入="" 获取当前队列的长度="" start="list.length;" $.each="" 方法，遍历每一个参数="" 如果当前是一个函数的话，首先判断此时在="" unique="" 如果没有传递，则直接将当前的函数="" push="" 到队列中="" 如果传递了，再判断当前队列里是否已经存在该函数了，如果存在，则不再进行="" push；如果不存在，则进行="" 如果当前参数不是一个函数，可能会是一个数组="" 类数组，此时再递归调用="" 方法，并将该数组作为参数传递="" 的参数可能有以下几种="" add(="" func1,="" [="" (function="" args="" args,="" arg="" type="jQuery.type(" "function"="" !options.unique="" !self.has(="" list.push(="" arg.length="" !="=" console.log('000')="" arguments="" 判断当前是否正在调用="" 队列中的所有回调（="" 如果正在调用回调，那么="" 就是="" ）="" 能加进入到这个="" 就说明，在="" 中的回调，执行了="" 方法，此时，因为正在遍历="" 队列，所以="" 此时，修改="" 的值为最新的长度，这样，就能在外层的遍历="" 队列中，使得多循环一次，来执行最新加到队列中的方法="" 如果当前没有调用回调，就判断="" 在第一次执行="" 方法时，该值是="" undefined，所以不会进入="" 在执行了一次="" 方法之后，如果在="" 参数，那么="" 变量就被置为合并后的数组；否则就是="" 如果能进入这个="" if，就代表此时已经提供了="" 参数，并且在调用了="" 之后又调用了="" 此时，记录下当前队列的长度="" length，以确保在遍历队列的时候，只执行当前操作的函数，而不再执行之前的那些函数="" 并且调用="" 内部方法，并将合并后的数组当做实参传递，以此进行当前="" 操作针对的函数进行以此调用="" this;="" 移除指定的回调="" remove:="" 队列是否存在="" arguments,="" 1.1.1="" 查找当前的参数是否在="" 队列中，如果存在，进入="" while="" index;="" while(="" arg,="" list,=""> -1 ) {
+// Support: Chrome<14 0="" 1="" 2="" 4="" 25="" always="" assume="" duplicates="" if="" they="" aren't="" passed="" to="" the="" comparison="" function="" support.detectduplicates="hasDuplicate;" initialize="" against="" default document="" setdocument();="" support:="" webkit<537.32="" -="" safari="" 6.0.3="" chrome="" (fixed="" in="" 27)="" detached="" nodes="" confoundingly="" follow="" *each="" other*="" support.sortdetached="assert(function(" div1="" )="" {="" should="" return="" 1,="" but="" returns="" (following)="" div1.comparedocumentposition(="" document.createelement("div")="" &="" 1;="" });="" ie<8="" prevent="" attribute="" property="" "interpolation"="" http:="" msdn.microsoft.com="" en-us="" library="" ms536429%28vs.85%29.aspx="" (="" !assert(function(="" div="" div.innerhtml="<a href='#'></a>" ;="" div.firstchild.getattribute("href")="==" "#"="" })="" addhandle(="" "type|href|height|width",="" function(="" elem,="" name,="" isxml="" !isxml="" elem.getattribute(="" name.tolowercase()="==" "type"="" ?="" :="" );="" }="" ie<9="" use="" defaultvalue="" place="" of="" getattribute("value")="" !support.attributes="" ||="" div.firstchild.setattribute(="" "value",="" ""="" div.firstchild.getattribute(="" "value"="" "";="" &&="" elem.nodename.tolowercase()="==" "input"="" elem.defaultvalue;="" getattributenode="" fetch="" booleans="" when="" getattribute="" lies="" div.getattribute("disabled")="=" null;="" booleans,="" var="" val;="" (val="elem.getAttributeNode(" name="" ))="" val.specified="" val.value="" elem[="" ]="==" true="" jquery.find="Sizzle;" jquery.expr="Sizzle.selectors;" jquery.expr[":"]="jQuery.expr.pseudos;" jquery.unique="Sizzle.uniqueSort;" jquery.text="Sizzle.getText;" jquery.isxmldoc="Sizzle.isXML;" jquery.contains="Sizzle.contains;" })(="" window="" string="" object="" options="" format="" cache="" 保存="" $.callbacks="" 中参数的缓存="" optionscache="{};" convert="" string-formatted="" into="" object-formatted="" ones="" and="" store="" **="" *="" 创建参数="" json="" 对象="" @param="" callback="" 的参数对象，例如="" 'once="" memory'="" @return="" 创建的="" 如果="" 是="" 的话，那么返回的="" 对象就是="" once:="" true,="" memory:="" createoptions(="" 1.="" 创建一个以="" 为键的属性，并赋值空对象="" 2.="" 通过="" core_rnotwhite="" 正则将="" 中除空格以外的其他字符进行匹配，并遍历这个数组="" 将第一步中的空对象遍历设置正则匹配后的值，设置为="" jquery.each(="" options.match(="" [],="" _,="" flag="" object[="" object;="" create="" a="" list="" using="" following="" parameters:="" options:="" an="" optional="" space-separated="" that="" will="" change="" how="" behaves="" or="" more="" traditional="" option="" by="" act="" like="" event="" can="" be="" "fired"="" multiple times.="" possible="" ensure="" only="" fired="" once="" (like="" deferred)="" keep="" track="" previous="" values="" call="" any="" added="" after="" has="" been="" right="" away="" with="" latest="" "memorized"="" unique:="" (no="" duplicate="" list)="" stoponfalse:="" interrupt="" callings="" false="" jquery.callbacks="function(" from="" needed="" (we="" check="" first)="" 先检查="" 是否是字符串="" 如果是的话，先从缓存中读取数据，如果缓存没有，则调用="" createoptions="" 方法先在缓存中创建数据="" 如果不是的话，即没有传参数，直接返回一个空的="" "string"="" optionscache[="" jquery.extend(="" {},="" last="" fire="" value="" (for="" non-forgettable="" lists)="" memory,="" 是否执行过="" 队列中所有回调的标识；最开始为="" undefined，只有执行了一次="" 后，该值为被置为="" fired,="" 队列中的所有回调正在被执行时的标识="" firing,="" first="" (used="" internally="" add="" firewith)="" firingstart,="" end="" loop firing="" firinglength,="" index="" currently="" (modified="" remove="" needed)="" firingindex,="" 保存回调的队列="" 中传递了="" 参数，那么该值就是="" false；如果没有提供="" once，那么该是就是空数组="" stack="!options.once" 执行所有的回调="" array="" 包括调用="" 时的作用域以及参数两个元素="" data="" 1.1="" 判断="" 时是否提供了="" memory="" 参数，如果提供了，那么="" 就是合并后的数组；如果没提供，就是="" data;="" 1.2="" 将="" 置为="" true，代表已经触发过="" 方法了，如果没有调用过="" 方法，那么该值就是="" undefined="" 1.3="" 遍历="" 队列的循环变量，先判断="" firingstart="" 是否存在有效值，如果有的话，就代表此时是在有="" 参数的情况下，通过="" 方法来执行回调，而不是通过外部的="" 方法；="" firingindex="firingStart" 0;="" 1.4="" 恢复="" 1.5="" 保存当前队列的长度="" firinglength="list.length;" 1.6="" true，代表正在进行遍历触发每个回调="" 1.7="" 遍历每一个回调并触发="" 调用队列中的每一个回调，并修改每个回调中的="" this，就是当前调用="" 方法的接受者；再将调用="" 时传递的参数当做实参传递给每一个回调="" cb="$.Callbacks();" cb.add(="" func1="" cb.fire('hello',="" 'world');="" 此时，func1="" 中的="" this="" 就指向的是="" 方法的接受者，即="" cb；func1="" 接受两个参数，分别是="" 'hello'="" 和="" 'world'="" 再判断每个回调的返回值是否是="" false，如果是="" 的话，再判断="" 中是否传递了="" stoponfalse="" 如果传递了，那么直接退出循环，不再继续执行之后的回调="" for="" <="" firinglength;="" firingindex++="" list[="" ].apply(="" data[="" ],="" options.stoponfalse="" further="" calls="" break;="" 1.8="" false，代表已经结束了所有回调的触发="" 1.9="" 是否存在="" 1.9.1="" 是否存在，只要不提供="" 就存在="" 1.9.1.1="" 中是否含有元素="" stack.length="" 如果能进入到这个="" 就说明在某一个回调中调用="" 方法="" 此时，stack="" 中存储的是在回调中调用="" 传递的参数以及调用者组成的数组="" 此时，在通过内部方法="" 来遍历当前的合并数组，以此用当前合并的数组来执行="" 队列中的每个方法="" fire(="" stack.shift()="" 1.9.2="" 如果不存在="" stack（="" 提供了="" 参数="" ）并且提供了="" 参数，就意味着只有第一次的="" 是有效的，并且之后的="" 也有效="" 那么在执行="" 方法是，就会进入这个="" if，此时将="" 队列清空，所以之后的="" 方法就不会有效了，遍历的只是一个空数组="" else="" 1.9.3="" 如果提供了="" 但是不提供="" memory，那么就意味着只有第一次的="" 是有效的="" 此时就会进入这个="" if，调用="" disable="" 方法，禁止当前回调队列，禁止会将回调队列="" 设置为="" self.disable();="" },="" actual="" callbacks="" self="{" 添加一个回调到队列中="" add:="" function()="" 先判断队列是否存在，如果存在进入="" 获取当前队列的长度="" start="list.length;" $.each="" 方法，遍历每一个参数="" 如果当前是一个函数的话，首先判断此时在="" unique="" 如果没有传递，则直接将当前的函数="" push="" 到队列中="" 如果传递了，再判断当前队列里是否已经存在该函数了，如果存在，则不再进行="" push；如果不存在，则进行="" 如果当前参数不是一个函数，可能会是一个数组="" 类数组，此时再递归调用="" 方法，并将该数组作为参数传递="" 的参数可能有以下几种="" add(="" func1,="" [="" (function="" args="" args,="" arg="" type="jQuery.type(" "function"="" !options.unique="" !self.has(="" list.push(="" arg.length="" !="=" console.log('000')="" arguments="" 判断当前是否正在调用="" 队列中的所有回调（="" 如果正在调用回调，那么="" 就是="" ）="" 能加进入到这个="" 就说明，在="" 中的回调，执行了="" 方法，此时，因为正在遍历="" 队列，所以="" 此时，修改="" 的值为最新的长度，这样，就能在外层的遍历="" 队列中，使得多循环一次，来执行最新加到队列中的方法="" 如果当前没有调用回调，就判断="" 在第一次执行="" 方法时，该值是="" undefined，所以不会进入="" 在执行了一次="" 方法之后，如果在="" 参数，那么="" 变量就被置为合并后的数组；否则就是="" 如果能进入这个="" if，就代表此时已经提供了="" 参数，并且在调用了="" 之后又调用了="" 此时，记录下当前队列的长度="" length，以确保在遍历队列的时候，只执行当前操作的函数，而不再执行之前的那些函数="" 并且调用="" 内部方法，并将合并后的数组当做实参传递，以此进行当前="" 操作针对的函数进行以此调用="" this;="" 移除指定的回调="" remove:="" 队列是否存在="" arguments,="" 1.1.1="" 查找当前的参数是否在="" 队列中，如果存在，进入="" while="" index;="" while(="" arg,="" list,=""> -1 ) {
 							// 1.1.1.1 从 list 队列中移除该回调
 							list.splice( index, 1 );
 							// Handle firing indexes
@@ -3086,6 +3086,7 @@ support.sortStable = expando.split("").sort( sortOrder ).join("") === expando;
 
 			list: function () {
 				console.log( list );
+				return list;
 			},
 
 			/**
@@ -3121,6 +3122,7 @@ support.sortStable = expando.split("").sort( sortOrder ).join("") === expando;
 			lock: function() {
 				stack = undefined;
 				if ( !memory ) {
+					// console.log( '锁定 - 禁用' );
 					self.disable();
 				}
 				return this;
@@ -3136,6 +3138,7 @@ support.sortStable = expando.split("").sort( sortOrder ).join("") === expando;
 			 * 	@return 					返回 self
 			 */
 			fireWith: function( context, args ) {
+				// console.log( args )
 				/**
 				 * 	1.	判断 list 是否存在
 				 * 		如果存在，再判断 fired 的值，如果是第一次执行 fire 方法的话，那么 fired 就是 undefined，!fired 就是 true，直接进入 if
@@ -3235,15 +3238,23 @@ jQuery.extend({
 				},
 				then: function( /* fnDone, fnFail, fnProgress */ ) {
 					var fns = arguments;
-					console.log( deferred )
+					/**
+					 * 	then 方法会返回一个新的延迟对象，并在调用 $.Deferred 方法的时候传递了一个函数作为参数，该函数的参数（ newDefer ）就是即将返回的这个新的延迟对象
+					 * 		这个函数中，遍历了 tuples 数组（ 三次 ），每次遍历，首先判断 then 的参数是否是函数，如果是的话，将其引用保存在 fn 变量中
+					 * 		注意，40 行的 deferred 对象就是 then 的调用者（ 先称其为 dfd 变量 ），所以，接下来调用了 dfd 的 done、fail 和 progress 方法，分别向 dfd 的三个状态的回调对象添加了一个新的回调
+					 * 			这个新的回调中只有一点不一样，剩余的都一样；不一样的是，每次调用的 fn 方法不同
+					 * 				如果将 dfd 的状态指定为成功，那么就会执行 then 方法的第一个函数参数
+         			 *              如果将 dfd 的状态指定为失败，那么就会执行 then 方法的第二个函数参数
+         			 *              如果将 dfd 的状态指定为进行中，那么就会执行 then 方法的第三个函数参数
+					  * 		然后会判断 fn 的返回值
+					  * 			如果是一个延迟对象，
+					  * 			如果不是延迟对象，就将 then 方法返回的延迟对象的状态指定为和 dfd 一样，主要是用过 action 这个变量来调用 resolveWith、rejectWith 或者 notifyWith 方法的
+					 */
 					return jQuery.Deferred(function( newDefer ) {
 						jQuery.each( tuples, function( i, tuple ) {
-							var action = tuple[ 0 ],
+							var action = tuple[ 0 ],	
 								fn = jQuery.isFunction( fns[ i ] ) && fns[ i ];
-							// deferred[ done | fail | progress ] for forwarding actions to newDefer
-							/**
-							 *  这里的 deferred 对象指的是调用 then 方法的 deferred 对象
-							 */
+							
 							deferred[ tuple[1] ](function() {
 								var returned = fn && fn.apply( this, arguments );
 								if ( returned && jQuery.isFunction( returned.promise ) ) {
@@ -3331,6 +3342,10 @@ jQuery.extend({
 
 			// 	1.5	将 deferred 下面的 resolveWith、rejectWith、notifyWith 三个属性存储为回调队列 fireWith 的引用
 			deferred[ tuple[0] + "With" ] = list.fireWith;
+
+			deferred[ tuple[0] + 'Callbacks' ] = function () {
+				return tuple[2];
+			}
 		});
 
 		/**
@@ -3358,8 +3373,8 @@ jQuery.extend({
 			length = resolveValues.length,					// 保存数组的长度
 
 			/**
-			 * 	保存未完成的延迟对象的个数
-			 * 		只要参数的个数不为 1，那么此时未完成的个数就是参数的个数
+			 * 	保存未完成的延迟对象的个数到 remaining 变量中
+			 * 		如果参数的个数不为 1，那么此时未完成的个数就是参数的个数
 			 * 		如果参数的个数为 1，那么就要判断这个参数是否是延迟对象（ 通过是否有 promise 方法来判断 ）
 			 * 			如果是，那未完成的个数就是 1
 			 * 			如果不是，那未完成的个数就是 0
@@ -3369,7 +3384,7 @@ jQuery.extend({
 				: 0,
 			/**
 			 * 	保存延迟对象
-			 * 		如果未完成的延迟对象个数是 1，那么就直接保存参数（ 参数就是延迟对象 ）的引用
+			 * 		如果未完成的延迟对象个数是 1，那么就直接保存该延迟对象的引用
 			 * 		如果未完成的延迟对象个数不是 1，那么就新创建一个延迟对象
 			 */
 			deferred = remaining === 1 
@@ -3378,9 +3393,14 @@ jQuery.extend({
 
 			// Update function for both resolve and progress values
 			/**
-			 * 	@param { Number }	i 			$.when 方法中参数的索引
-			 * 	@param { Array }	contexts	作用域的集合
-			 * 	@param { Array }	values		参数的集合
+			 *  3.  定义 updateFunc 函数，如果参数中存在两个以上的延迟对象，就会将这个函数的返回值添加到参数中的延迟对象的回调对象里  
+			 *  这个函数的功能主要由三个
+			 *      修改作用域的集合（ resolveContexts 或者 progressContexts ）
+			 *      修改参数的集合（ resolveValues 或者 progressValues ）
+			 *      判断
+			 *  @param { Number }   i           $.when 方法中参数的索引
+			 *  @param { Array }    contexts    作用域的集合
+			 *  @param { Array }    values      参数的集合
 			 */
 			updateFunc = function( i, contexts, values ) {
 				return function( value ) {
@@ -3425,7 +3445,7 @@ jQuery.extend({
 			progressValues, progressContexts, resolveContexts;
 
 		/**
-		 * 	处理多个延迟对象参数的情况（ 两个以上延迟对象 ）
+		 * 	处理两个以上参数的情况（ 包括两个 ）
 		 */
 		if ( length > 1 ) {
 			// 用当前参数的个数实例化数组
@@ -3456,10 +3476,10 @@ jQuery.extend({
 		}
 		
 		/**
-		 * 	如果未完成延迟对象为 0 了，那么就调用 deferred 的 resolveWith（ 就是 Callbacks 的 fireWith ）
-		 * 	即延迟对象的状态是 resolved
+		 * 	如果未完成延迟对象为 0 了，那么就调用 deferred 的 resolveWith，将延迟对象的状态指定为成功
 		 */
 		if ( !remaining ) {
+			console.log( resolveValues )
 			deferred.resolveWith( resolveContexts, resolveValues );
 		}
 
@@ -3735,7 +3755,7 @@ Data.prototype = {
 			unlock = owner[ this.expando ];	
 
 		/**
-		 * 	2.	如果 DOM 元素在 cache 中不存在索引值，那么久为其创建一个
+		 * 	2.	如果 DOM 元素在 cache 中不存在索引值，那么就为其创建一个
 		 */
 		if ( !unlock ) {
 			// 2.1	将当前的 uid 设置为当前 DOM 的索引，然后对其加 1
@@ -3834,26 +3854,31 @@ Data.prototype = {
 	},
 
 	/**
-	 * 	@param 	{ Element }	owner	操作的 DOM
-	 * 	@param 	{ String }	key		
+	 * 	将 set 和 get 方法结合的方法
+	 * 	@param  { Element }    owner	操作的 DOM
+	 * 	@param  { String }     key		
+	 * 	@param  { Any }        key	
 	 */
 	access: function( owner, key, value ) {
 		var stored;
 		/**
-		 * 	此时有两种情况
-		 * 		1.	没有提供 key 参数
-		 * 			此时只提供了一个 DOM 元素的参数，所以此时就是获取 DOM 元素在 cache 中的整个 json 对象
-		 * 		2.	提供了 key 参数并且是一个字符串，而且没有提供 data 参数
-		 * 			此时也是获取，只不过获取的是 DOM 元素在 cache 中的 json 对象中的以 key 为键的值
+		 *  1.  判断是否是取值的情况
+		 * 			如果没有提供 key 值
+		 * 			如果提供了一个字符串的 key 值并且没有提供 value
 		 */
 		if ( key === undefined || ((key && typeof key === "string") && value === undefined) ) {
-			// 获取 DOM 在公共 cache 中的 json 对象，或者是以 key 为键的值
+			/**
+			 * 	1.1 调用 get 方法，获取 owner 在 cache 中以 key 为属性的值
+			 * 		如果提供了 key 值，那么就是以 key 为属性的值
+			 * 		如果没提供 key 值，那么就是 owner 在 cache 中对应的对象
+			 */
 			stored = this.get( owner, key );
 
-			/**
-			 * 	如果在上一步获取到了 DOM 对应的数据，那么直接返回
-			 * 	如果得到的是 undefined（ 只有在获取以 key 为键的值时才有可能得到 undefined ）
-			 * 		那么就将 key 转换为 驼峰写法，再进行一次获取，并将该次获取的返回值作为结果
+			/**	
+			 * 	1.2 判断 get 的返回值是否是 undefied
+			 * 		只有一种情况可能是 undefined，就是提供了 key 值，但是 owner 在 cache 中的对象并没有以 key 为属性的值，此时就会得到 undefined
+			 * 		此时就会将 key 转换为驼峰写法，然后再一次调用 get 方法，然后返回 get 的返回值
+			 * 			如果在 cache 中存在属性 firstName，那么传递 first-name 也可以获得该值
 			 */
 			return stored !== undefined 
 				? stored 
@@ -3861,15 +3886,19 @@ Data.prototype = {
 		}
 
 		/**
-		 * 	如果不是获取值的情况，那么就是设置数据的情况了；此时也有两种情况
-		 * 		key 为 String，value 存在
-		 * 		key 为 Object
-		 * 	通过 set 方法对 DOM 在 cache 中进行数据的设置
+		 * 	2.  如果不是获取值的情况，那么就是设置数据的情况了
+		 *		此时也有两种情况
+		 * 			key 为 String，value 存在
+		 * 			key 为 Object，value 不存在
+		 * 		通过 set 方法对 owner 在 cache 中进行数据的设置
 		 */
 		this.set( owner, key, value );
 
-		// Since the "set" path can have two possible entry points
-		// return the expected data based on which path was taken[*]
+		/**
+		 * 	3.  根据是否提供了 value 参数来确定返回值
+		 * 			如果提供了 value 参数，那么就返回 value
+		 * 			如果没提供 calue 参数，那么就返回 key 值
+		 */
 		return value !== undefined ? value : key;
 	},
 
@@ -3880,13 +3909,14 @@ Data.prototype = {
 	 */
 	remove: function( owner, key ) {
 		var i, name, camel,
-			unlock = this.key( owner ),		// 获取当前操作的 DOM 元素在 cache 中的索引
-			cache = this.cache[ unlock ];	// 获取当期操作的 DOM 元素在 cache 中的 json 对象
+			//  1.  通过 key 方法获取 owner 在 cache 中的索引
+			unlock = this.key( owner ),		
+			//  2.  获取 owner 在 cache 中以索引为属性的对象
+			cache = this.cache[ unlock ];	
 
 		/**
-		 * 	移除属性分为两种情况
-		 * 	情况一：没有提供具体移除的属性键 key
-		 * 			此时，就会将 DOM 元素在 cache 中的 json 置空，即删除 cache 中的所有数据
+		 * 	3.  判断是否提供了 key 参数
+		 * 		如果没提供，那么直接将 owner 在 cache 中以索引为属性的对象清空
 		 */
 		if ( key === undefined ) {
 			this.cache[ unlock ] = {};
@@ -3898,22 +3928,26 @@ Data.prototype = {
 		 * 
 		 * 			name 最终被置为一个数组，其中存储的是每一个要删除的键
 		 */
+		/**
+		 *  4.  如果提供了 key 参数，此时会判断 key 的类型
+		 */
 		else {
 			/**
-			 * 	在提供的属性 key 中，可以是一个数组，其中每个元素是要删除的键名
-			 * 	首先判断是否是数组（ jQuery.isArray 就是 Array.isArray ）
-			 * 		如果是的话，那么将数组中的所有元素转换为驼峰的写法，再拼接到原数组的后面
+			 * 	4.1 如果 key 是一个数组，其中的每个元素都是要删除的属性名
+			 * 			首先将 key 中的所有元素转换成驼峰的写法，然后将转换后的元素拼接到原数组的后面，最终将结果保存在 name 变量中
 			 */
 			if ( jQuery.isArray( key ) ) {
 				name = key.concat( key.map( jQuery.camelCase ) );
 			} 
 			/**
-			 * 	如果提供的 key 不是数组，那么就是字符串
-			 * 	首先将字符串转换为驼峰写法，然后判断原始的 key 是否在 DOM 的 cache 中
-			 * 		如果存在的话，则新创建一个数组，里面分别存放 key 的原始值和驼峰写法两个值
-			 * 		如果不存在的话，那么判断驼峰写法是否存在于 cache 中
-			 * 			如果存在，那么新创建一个数组，将驼峰写法的值放进数组中
-			 * 			如果不存在，就将驼峰写法去除空格后添加到新数组中
+			 * 	4.2 如果提供的 key 不是数组，那么就是字符串
+			 * 		首先将字符串 key 转换为驼峰写法并保存在 camel 中
+			 * 			然后判断未转换前的 key 是否在 cache 中
+			 * 				如果存在的话，则新创建一个数组并保存在 name 中，里面分别存储未转换和转换后的两个值
+			 * 				如果不存在的话，那么判断驼峰写法是否存在于 cache 中
+			 * 					如果存在，那么新创建一个数组并保存在 name 中，将转换后的值放进数组中
+			 * 					如果不存在，那么就用 core_rnotwhite 正则（ 非空格外的任何字符 ）将 name 匹配到的内容保存在一个新的数组中，然后将其引用赋给 name 变量
+			 * 						例如：'name age' 会被匹配为 [ 'name', 'age' ]
 			 */
 			else {
 				camel = jQuery.camelCase( key );
@@ -3928,7 +3962,8 @@ Data.prototype = {
 			}
 
 			/**
-			 * 	遍历上述操作后的结果数组，删除 cache 中以数组中的每个元素为 键 的属性
+			 * 	4.3 遍历上述操作后的结果数组 name
+			 * 		使用 delete 操作符删除 cache 中以数组中的每个元素为键的属性
 			 */
 			i = name.length;
 			while ( i-- ) {
@@ -3944,11 +3979,11 @@ Data.prototype = {
 	 */
 	hasData: function( owner ) {
 		/**
-		 * 	首先获取到当前 DOM 元素中以 expando 为键的值，即 DOM 元素在 cache 中的索引值
-		 * 	再在 cache 中获取以该所引值为键的值，如果里面没有任何数据，就是一个空的 json 对象
-		 * 	最后通过 isEmptyObject 方法来判断获取到的对象是否是一个空的对象
-		 * 		如果是一个空对象，那代表 DOM 在 cache 中的 json 对象就是一个空对象，没有任何数据，返回 false
-		 * 		如果不是一个空对象，那代表 DOM 在 cache 中的 json 对象是含有数据的 json 对象，返回 true
+		 * 	首先获取到 owner 中以 expando 为键的值（ 这个值就是 owner 在缓存 cache 中的索引 ）
+		 * 	再在 cache 中获取以该索引为属性的对象
+		 * 		如果此时 owner 在缓存 cache 中存在对应的对象，那么就将这个对象传入 $.isEmptyObject 中
+		 * 		如果不存在这个对象，则代表此时没有执行过 Data.prototype.key 方法，所以在缓存 cache 中根本不存在以索引值为属性的对象，此时得到的就是 undefined，所以将一个空对象传入 $.isEmptyObject 中
+		 * 	最后通过 $.isEmptyObject 来判断结果是否存在数据
 		 */
 		return !jQuery.isEmptyObject(
 			this.cache[ owner[ this.expando ] ] || {}
@@ -3956,7 +3991,7 @@ Data.prototype = {
 	},
 
 	/**
-	 * 	删除指定 DOM 元素在 cache 中的 json 对象
+	 * 	删除指定 DOM 元素在 cache 中的对象（ 直接删除该属性 ）
 	 * 	@param 	{ Element }	owner	操作的 DOM 元素
 	 */
 	discard: function( owner ) {
@@ -3972,6 +4007,10 @@ Data.prototype = {
 		return owner 
 			? this.cache[ this.key( owner ) ]
 			: this.cache;
+	},
+
+	expando: function () {
+		console.log( this.expando );
 	}
 };
 
@@ -4014,31 +4053,35 @@ jQuery.fn.extend({
 	 */
 	data: function( key, value ) {
 		var attrs, name,
-			elem = this[ 0 ],	// 获取当前 jQ 对象中的第一个 DOM 元素，如果在一个 jQ 对象中有多个 DOM 元素，那么使用 data 方法获取值时，只会返回第一个 DOM 元素的值
+			//  1.  获取当前 jQ 对象中的第一个 DOM 元素，如果在一个 jQ 对象中有多个 DOM 元素，那么使用 data 方法获取值时，只会返回第一个 DOM 元素的值
+			elem = this[ 0 ],
 			i = 0,
 			data = null;
 
 		/**
-		 * 	处理 DOM 在 cache 中所有的数据 的情况	
-		 * 	获取 DOM 在 cache 中的 json 对象，其中包括 H5 自定义属性
+		 * 	2.  判断有没有提供参数
+		 * 			如果没有提供任何参数，那么就会获取当前 jQuery 实例第一个 DOM 元素在 cache 中的对象
 		 */
 		if ( key === undefined ) {
-			// 	1. 	判断当前 jQ 对象是否存在 DOM 元素，排除不存在 DOM 元素的情况
+			//  2.1 判断当前 jQ 对象是否存在 DOM 元素，如果不存在，则直接返回 null
 			if ( this.length ) {
-				// 	1.1	获取公用缓存中 elem 对应的 json 对象
+				// 	2.1.1 从公用缓存中获取 elem 元素的缓存对象
 				data = data_user.get( elem );
 				/**
-				 * 	1.2	设置 H5 自定义的属性，例如 data-custom-index
-				 * 		首先 elem 必须是一个元素，其次，在私有的 cache 中，如果 elem 不存在 hasDataAttrs 属性，进入 if
+				 * 	2.1.2 设置 HTML5 自定义的属性，例如 data-custom-index
+				 * 		  首先 elem 必须是一个元素
+				 * 		  其次，在私有缓存中，如果 elem 不存在 hasDataAttrs 属性，进入 if
 				 */
 				if ( elem.nodeType === 1 && !data_priv.get( elem, "hasDataAttrs" ) ) {
-					// 	1.2.1	获取 DOM 元素所有属性节点的集合，包括 H5 自定义的属性
+					// 	2.1.2.1	获取 elem 元素所有属性节点的集合（ 该集合是一个类数组，包括 HTML5 自定义的属性 ）并将其引用保存在 attrs 变量中
 					attrs = elem.attributes;
 					/**
-					 * 	1.2.2	遍历属性节点的集合
-					 * 			获取到每一个属性节点的属性名，判断属性名中是否存在 data-，即是否是自定义属性
-					 * 				如果是的话，那么将 data- 之后的内容转换为驼峰写法，例如 data-custom-index 会转换为 customIndex；然后通过 dataAttr 方法为 DOM 元素设置自定义属性，即向公用 cache 中设置 DOM 的数据
-					 * 				如果不是的话，那么进行下一次的遍历循环
+					 * 	2.1.2.2	
+					 * 	遍历 attrs 变量（ 其中每个元素都是一个属性节点，获取该属性的名称可以用 name 属性获得，获取该属性的值可以用 value 获得 ）
+					 *  	获取到每一个属性节点的属性名，判断属性名中是否存在 data-，即是否是自定义属性
+					 *			如果是的话，那么将 data- 之后的内容转换为驼峰写法，例如 data-custom-index 会转换为 customIndex
+					 *				然后通过 dataAttr 方法为 elem 元素在公用缓存中设置自定义属性以及其值
+					 *			如果不是的话，那么进行下一次的遍历循环
 					 */
 					for ( ; i < attrs.length; i++ ) {
 						name = attrs[ i ].name;
@@ -4049,22 +4092,24 @@ jQuery.fn.extend({
 						}
 					}
 					/**
-					 * 	1.2.3	在私有 cache 中，为 DOM 元素设置 hasDataAttr 属性为 true
-					 * 			这样，当第二次之后使用 data 方法获取 DOM 的数据时，就不会再进入这个 if 了
-					 * 			这个 if 的作用只是获取到 DOM 的自定义属性，并设置到 cache 中，所以只会设置一次
+					 * 	2.1.2.2
+					 * 		在私有缓存中，为 elem 元素设置 hasDataAttr 属性为 true
+					 *			这样，当第二次之后使用 data 方法获取 DOM 的数据时，就不会再进入这个 if 了
+					 *			这个 if 的作用只是获取到 elem 的自定义属性，并设置到公用 cache 中，所以只会设置一次
 					 */
 					data_priv.set( elem, "hasDataAttrs", true );
 				}
 			}
 
-			//	2.	退出函数，返回 DOM 在公用 cache 中的 json 对象，包括自定义的属性
+			/**
+			 * 	2.2 返回 data 变量（ elem 在公用缓存中的对象 ）
+			 */
 			return data;
 		}
 
 		/**
-		 * 	处理设置多个值的情况
-		 * 	此时 key 就是一个 json 对象
-		 * 	遍历调用者 jQ 对象，为每一个公用 cache 中的 DOM 对象设置 key 中的 键 和 值
+		 * 	3.  处理 key 是一个对象的时候（ 也就是设置多个值 ）
+		 * 		调用 each 方法，为当前 jQuery 实例中的每一个 DOM 元素在公用缓存中设置 key 中所有的键值对
 		 */
 		if ( typeof key === "object" ) {
 			return this.each(function() {
@@ -4073,28 +4118,22 @@ jQuery.fn.extend({
 		}
 
 		/**
-		 * 	处理设置一个值的情况
-		 * 	此时 key 就是字符串，即 data 方法的第一个参数
-		 * 	value 就是 data 方法的第二个参数
+		 * 	4.  处理一个值的情况（ key 是键，value 是值 ）
 		 */
 		return jQuery.access( this, function( value ) {
 			var data,
-				camelKey = jQuery.camelCase( key );		// 获取 key 的驼峰写法
+				//  4.1. 将 key 转换为驼峰写法并保存在 camelKey 中
+				camelKey = jQuery.camelCase( key );
 
-			// The calling jQuery object (element matches) is not empty
-			// (and therefore has an element appears at this[ 0 ]) and the
-			// `value` parameter was not undefined. An empty jQuery object
-			// will result in `undefined` for elem = this[ 0 ] which will
-			// throw an exception if an attempt to read a data cache is made.
 			/**
-			 * 	获取 DOM 在 cache 中以 key 为键的值 的情况
-			 * 	判断 elem 存在（ 即 jQ 对象至少含有一个 DOM 元素 ）以及 value 是 undefined（ 即 data 方法只有一个参数，即获取 ）
+			 * 	4.2 如果 data 方法中只提供了一个参数（ 即 value 是 undefined ），并且当前 jQuery 实例中至少存在一个 DOM 元素
+			 * 		那么就会获取这个 DOM 元素在公用缓存中的对象以 key 为键的值
 			 */
 			if ( elem && value === undefined ) {
 				/**
-				 * 	获取 elem 元素在 cache 中以 key 为键的值
-				 * 		如果该值存在，那么直接退出返回该值
-				 * 		如果不存在，再进行下一步处理
+				 * 	4.2.1 获取 elem 元素在公用缓存中以 key 为键的值
+				 * 		  如果该值存在，那么直接退出函数返回该值
+				 * 		  如果不存在，再进行下一步处理
 				 */
 				data = data_user.get( elem, key );
 				if ( data !== undefined ) {
@@ -4102,54 +4141,49 @@ jQuery.fn.extend({
 				}
 
 				/**
-				 * 	如果以 key 值获取不到 DOM 在 cache 中的值，那么就通过驼峰写法来获取
-				 * 		如果该值存在，那么直接退出返回该值
-				 * 		如果该值不存在，那么再进行下一步处理
+				 * 	4.2.2 获取 elem 元素在公用缓存中以 key 的驼峰写法为键的值
+				 * 		  如果该值存在，那么直接退出返回该值
+				 * 		  如果该值不存在，那么再进行下一步处理
 				 */
 				data = data_user.get( elem, camelKey );
 				if ( data !== undefined ) {
 					return data;
 				}
 
-				// Attempt to "discover" the data in
-				// HTML5 custom data-* attrs
+				/**
+				 * 	4.2.3 获取 elem 元素在公用缓存中以 data- + key 为键的值	
+				 * 	      如果该值存在，那么直接退出返回该值
+				 * 		  如果该值不存在，那么再进行下一步处理
+				 */
 				data = dataAttr( elem, camelKey, undefined );
 				if ( data !== undefined ) {
 					return data;
 				}
 
 				/**
-				 * 	如果经过上述的步骤都没有获取到，那么就说明不存在
+				 *  4.2.4 如果经过上述的步骤都没有获取到，那么就说明不存在，返回 undefined
 				 */
 				return ;
 			}
 
 			/**
-			 * 	设置值的情况
-			 * 	遍历当前 jQ 对象中的每个 DOM 元素
+			 * 	4.3 设置一个值的情况
+			 * 	    通过 each 方法遍历当前 jQuery 对象中的每个 DOM 元素
 			 */
 			this.each(function() {
 				/**
-				 * 	1.	获取当前 DOM 元素在 cache 中的 json 对象，然后从该 json 对象中获取以 camelKey 为键的值的引用
+				 * 	4.3.1 获取当前 DOM 在公有缓存中，以 camelKey 为键的值
 				 */
 				var data = data_user.get( this, camelKey );
-				// console.log( data_user.get( this ) );
-				// console.log( data )
 
-				// For HTML5 data-* attribute interop, we have to
-				// store property names with dashes in a camelCase form.
-				// This might not apply to all properties...*
 				/**
-				 * 	2.	为当前 DOM 元素在 cache 中设置 以 camelKey 为键，value 为值
-				 * 		例如，如果 key 是 custom-index 的话，那么在 cache 中存储的就是驼峰写法 customIndex
+				 * 	4.3.2 在公有缓存中为当前 DOM 元素设置以 camelKey 为属性，value 为值的数据
 				 */
 				data_user.set( this, camelKey, value );
 
-				// *... In the case of properties that might _actually_
-				// have dashes, we need to also store a copy of that
-				// unchanged property.
 				/**
-				 * 	如果设置的 key 中存在 -，并且在 cache 中已经存在了以 key 的驼峰写法为键的值，那么就会在 cache 中添加一个以 key 为键的属性，属性值同样还是 value
+				 * 	如果 key 中存在 -，并且当前 DOM 元素在公有缓存中存在以 camelKey 为属性的值
+				 * 	那么就会在公有缓存中为当前 DOM 元素添加一个以 key 为属性，value 为值的数据
 				 */
 				if ( key.indexOf("-") !== -1 && data !== undefined ) {
 					data_user.set( this, key, value );
@@ -4169,23 +4203,33 @@ jQuery.fn.extend({
 	},
 	getCache: function () {
 		return data_user.getCache();
+	},
+
+	expando: function () {
+		console.log( data_user )
 	}
 });
 
 /**
  * 	在缓存对象中设置 HTML5 的自定义属性
- * 	@param 	{ Element }	elem 	设置的 DOM 元素
+ * 	@param 	{ Element }	elem 	操作的 DOM 元素
  * 	@param 	{ String }	key 	自定义属性 data- 之后的值（ 该值已经转换为了驼峰写法 ），例如 data-custom-index 就是 customIndex
- * 	@param 	{ Object }	data 	DOM 在 cache 中 json 对象以 key 为键的值，如果是第一次设置，那么该值为 undefined
- * 	@return 					设置成功后的 data
+ * 	@param 	{ String }	data 	elem 在 cache 中的对象以 key 为属性的值；如果是第一次设置，那么该值为 undefined
+ * 	@return { Any }             设置成功后的 data
  */
 function dataAttr( elem, key, data ) {
 	var name;
-	// 	1.	如果在 cache 中不存在 以 key 为键的值，如果是第一次的话，那么该值就是 undeinfed，进入 if
+	/**
+	 * 	1.  判断 data 是否是 undefined，也就是在 cache 中是否存在以 key 为属性的值
+	 * 		如果不存在且 elem 是元素，进入 if
+	 */
 	if ( data === undefined && elem.nodeType === 1 ) {
-		// 	1.1	将 key 的驼峰写法转换为 - 的写法，例如 key 是 customIndex 的话，就会转换为 data-custom-index
+		/**
+		 * 	1.1 将 key 的驼峰写法转换为 - 的写法，然后将 key 中的大写字母全部转换为小写字母，最后用 data- 拼接转换后的结果到 name 中
+		 * 		$1 代表的是 rmultiDash 正则中第一个子项（ 第一个用 () 括起来的内容 ）
+		 */
 		name = "data-" + key.replace( rmultiDash, "-$1" ).toLowerCase();
-		// 	1.2	通过原生的 getAttribute 方法来获取 DOM 元素中自定义属性的值
+		// 	1.2	通过原生的 getAttribute 方法来获取 elem 元素中以 name 为属性的值，将结果保存在 data 中
 		data = elem.getAttribute( name );
 		/**
 		 * 	1.3	根据不同的值，来进行不同的处理
@@ -4203,53 +4247,68 @@ function dataAttr( elem, key, data ) {
 					data === "false" ? false :
 					data === "null" ? null :
 					/**
-					 * 	之所以要将 data 先转换为数值，再转换为字符串，是因为确保原始的 data 是一个纯的字符串数字
-					 * 	如果是又有字符、又有数字，那么 +data 得到 NaN，再转换为字符串 NaN，与原始的 data 就不相等了
+					 * 	之所以要将 data 先转换为数值（ 用 + 号 ），再转换为字符串（ 拼接空字符串 ），是因为确保原始的 data 是一个纯的字符串数字
+					 * 		如果是一个纯数字字符串，那么得到的结果就是该数值
+					 * 		如果不是（ 又有字符、又有数字 ），那么 +data 得到 NaN，再转换为字符串 NaN，与原始的 data 就不相等了，就不会得到该数值，进入下一个判断
 					 */
 					+data + "" === data ? +data :
-					// 如果 data 是一个 json 数据，则将其转换为 js 的对象
+					/**
+					 * 	利用 rbrace 正则判断 data 是否是 json 字符串
+					 * 		如果是的话，通过 JSON.parse 将其装换为 js 的对象/数组
+					 */
 					rbrace.test( data ) ? JSON.parse( data ) :
-					// 如果不满足以上所有的条件，那么直接以原始的数据进行设置
+					// 如果不满足以上所有的条件，那么直接获取原始的数据
 					data;
 			} catch( e ) {}
 
-			// 将 key（ 自定义属性对应的驼峰写法 ） 对应的 data 设置给公用 cache 里的 elem 元素对应的 json 对象
+			/**
+			 * 	调用公用缓存对象的 set 方法，为 elem 在公用缓存中设置以 key 为属性，data 为其值的缓存
+			 */
 			data_user.set( elem, key, data );
 		} else {
 			data = undefined;
 		}
 	}
+
+	/**
+	 * 	2.  返回 data
+	 */
 	return data;
 }
 
 jQuery.extend({
 	/**
 	 * 	入队操作
-	 * 	@param	{ Element }		elem	操作的 DOM
-	 * 	@param	{ String }		type	队列的名字
-	 * 	@param	{ Function }	data	存储在队列中的数据，必须是 Function
-	 * 	@return							DOM 以 type 为键的队列
+	 * 	@param  { Element }		elem	操作的 DOM 元素
+	 * 	@param  { String }		type	队列的名字
+	 * 	@param  { Function }	data	存储在队列中的数据，必须是 Function
+	 * 	@return { Array }				DOM 以 type 为键的队列
 	 */
 	queue: function( elem, type, data ) {
 		var queue;
 
 		// 如果提供了 elem 参数，进入 if
+		/**
+		 * 	1.  判断是否提供了可操作的 DOM 元素
+		 */
 		if ( elem ) {
 			/**
-			 * 	如果提供了队列的名字，那么将其后面拼接上 queue 作为该 DOM 元素队列的名字
-			 * 	如果没有提供队列的名字，那么将 fx 后面拼接上 queue 作为该 DOM 元素队列的名字
-			 * 	然后再私有的 cache 中获该 DOM 元素的 json 对象中，以上一步得到的队列名字为键的值
+			 * 	1.1 如果提供了队列的名字，那么将其后面拼接上 queue 作为该 DOM 元素队列的名字
+			 * 		如果没有提供队列的名字，那么将使用默认的 fx 后面拼接上 queue 作为该 DOM 元素队列的名字
+			 * 		然后获取私有缓存中，该 DOM 元素的对象中以队列的名字（ 上一步得到 ）为属性的值
 			 */
 			type = ( type || "fx" ) + "queue";
 			queue = data_priv.get( elem, type );
 
 			/**
-			 * 	如果提供了队列中的数据，那么就判断上一步得到的 queue 是否存在
-			 * 		如果是第一次执行该方法，肯定不存在，所以直接进入 if
-			 * 			在 if 中，在 DOM 元素对应的 json 对象中，将以 type 为键的值设置为一个新的数组，在这个数组中包含了所有的 Function
-			 * 		如果是第二次之后执行该方法，那么就会判断 data 是否是一个数组/类数组，如果是的话，就进入 if，将原来以 type 为键的数组替换为新的数组
-			 * 		如果是第二次之后执行该方法，并且 data 不是数组/类数组，那么久进入 else，直接将当前的 data（ Function 实例 ）push 到当前以 type 为键的数组中
-			 * 	如果没通过队列中的数据，那么就直接返回 DOM 在 cache 中的 json 对象以 type 为键的队列
+			 * 	1.2 判断是否提供了队列中的数据参数
+			 * 			如果提供了队列中的数据，那么就判断上一步得到的 queue 是否存在
+			 * 				如果是第一次执行该方法，肯定不存在（ 此时是 undefined ），所以直接进入 if
+			 * 					在 if 中，在私有缓存中为该 DOM 元素设置一个新的键值对，其中属性是队列的名字，值是一个数组，其中包含我们传递的数据
+			 * 				如果是第二次之后执行该方法，那么 queue 就是存在的，此时就会判断 data 是否是一个数组，如果是的话，就进入 if
+			 * 					在 if 中，在私有缓存中为该 DOM 元素设置一个新的键值对，替换原来的数据
+			 * 				如果是第二次之后执行该方法，并且提供的数据参数不是数组，那么就进入 else
+			 * 					在 else 中，直接将当前的数据参数（ 函数 ）push 到 queue 中（ 此时 queue 就是该 DOM 元素在私有缓存中，以队列名称为属性的值，该是是一个数组，其中的元素是函数 ）
 			 */
 			if ( data ) {
 				if ( !queue || jQuery.isArray( data ) ) {
@@ -4259,7 +4318,9 @@ jQuery.extend({
 				}
 			}
 
-			//	返回 DOM 以 type 为键的数组
+			/**
+			 * 	1.3 返回该 DOM 元素在私有缓存中以 队列名称（ type ）为属性的值
+			 */
 			return queue || [];
 		}
 	},
@@ -4270,18 +4331,24 @@ jQuery.extend({
 	 * 	@param	{ String }	type	队列名称
 	 */
 	dequeue: function( elem, type ) {
-		// 	1.	如果提供了队列名称，那么就是用提供的队列名称；否则就是用默认的队列名 fx
+		/**
+		 * 	1.  判断是否提供了队列名称
+		 * 		如果提供了，将其保存在 type 变量中
+		 * 		如果没提供，则保存默认的 fx
+		 */
 		type = type || "fx";
 
 		/**
-		 * 	2.	获取 DOM 元素的队列
-		 * 		保存队列的长度
-		 * 		将队列中的第一个元素弹出，并保存期引用
+		 * 	2.  通过 $.queue 方法获取 elem 元素在私有缓存中以 type 为属性的值，该值是一个数组，其中保存的是 elem 这个元素所对应队列中的所有操作（ 函数 ）
 		 */
 		var queue = jQuery.queue( elem, type ),
+			// 3.  保存队列的长度
 			startLength = queue.length,
+			// 4.  将队列中第一个元素弹出，并保存其引用到 fn
 			fn = queue.shift(),
+			// 5.  调用 _queueHooks 方法，并将返回值保存在 hooks 中
 			hooks = jQuery._queueHooks( elem, type ),
+			// 6.  定义 next 方法，其中会调用 $.dequeue 进行出队操作 
 			next = function() {
 				jQuery.dequeue( elem, type );
 			};
@@ -4302,9 +4369,18 @@ jQuery.extend({
 
 			// clear up the last queue stop function
 			delete hooks.stop;
+
+			/**
+			 * 	调用出队的元素，并将其作用域设置为当前 DOM 元素，然后将 next 和 hooks 作为参数
+			 */
 			fn.call( elem, next, hooks );
 		}
 
+		/**
+		 * 	如果此时队列中没有任何元素，并且 hooks 也存在，那么就调用其中的回调对象的 fire 方法
+		 * 	执行其中所有的回调（ 此时只有一个回调，就是在第一次执行 $._queueHooks 时添加的回调 ）
+		 * 		会将该 DOM 元素的队列清空
+		 */
 		if ( !startLength && hooks ) {
 			hooks.empty.fire();
 		}
@@ -4313,6 +4389,7 @@ jQuery.extend({
 	// not intended for public consumption - generates a queueHooks object, or returns the current one
 	/**
 	 * 	私有方法
+	 * 	
 	 */
 	_queueHooks: function( elem, type ) {
 		/**
@@ -4337,22 +4414,22 @@ jQuery.fn.extend({
 	 */
 	queue: function( type, data ) {
 		/**
-		 * 	用于判断当前操作是 setter 还是 getter
-		 * 	如果是 getter 的话，那么返回的是当前 jQ 对象的第一个 DOM 元素的队列
-		 * 	初始为 2
+		 * 	1.  定义 setter 变量且初始化为 2
+		 * 		这个变量可以用于区分当前是 getter 还是 setter
+		 * 			如果是 getter，则直接返回当前 jQuery 实例的第一个 DOM 元素的队列
+		 * 			如果是 setter，则会为当前 jQuery 实例中的每个 DOM 元素的队列中添加指定的操作（ 方法 ）
 		 * 
-		 * 	之后会用参数的个数来与之比较
-		 * 		如果参数的个数小于其值，那么就是 getter，直接返回 DOM 的队列，例如 $(document).queue( 'q1' )
-		 * 		如果参数的个数不小于其值，那么就是 setter， 此时对当前 jQ 对象的所有 DOM 设置，例如 $(document).queue( 'q1', func )
+		 * 		之后会用 queue 的参数个数来与 setter 变量比较
+		 * 			如果参数的个数小于其值，那么就是 getter
+		 * 			如果参数的个数不小于其值，那么就是 setter
 		 */
 		var setter = 2;
 
 		/**
-		 * 	如果 type 的值不是 Stirng 的话，那么就说明不是 getter，而是 setter
-		 * 	但是 type 又不是一个 String，所以只能是 Function，例如 $(document).queue( func ) 这种情况
-		 * 	此时，就是向默认 fx 的队列中进行入队操作
-		 * 	将 data 保存为该 Function，type 置为默认的队列名 fx，并将 setter - 1
-		 * 	只有类似于 $(document).queue( func ) 或者 $(document).queue() 这种情况会进入 if
+		 * 	2.  处理第一个参数不是字符串的情况
+		 * 		此时就是直接传递的队列中的操作，而队列的名称则使用默认名称 fx
+		 * 		并且此时是 setter 操作而非 getter 
+		 * 			将操作保存的 data 变量中，并将队列名称 type 设置为默认的 fx，再将 setter - 1
 		 */
 		if ( typeof type !== "string" ) {
 			data = type;
@@ -4361,23 +4438,28 @@ jQuery.fn.extend({
 		}
 
 		/**
-		 * 	用参数的个数与 setter 变量进行比较
-		 * 		如果参数的个数小于其值，那么就是 getter，直接返回当前 jQ 对象的第一个 DOM 以 type 为名名称的队列
-		 * 		如果参数的个数不小于其值，那么就是 setter
-		 * 	只有类似于 $(document).queue( 'q1' ) 这种情况才会进入 if
+		 * 	3.  用参数的个数与 setter 变量进行比较
+		 * 		如果参数的个数小于 setter，那么就是 getter
+		 * 			通过 $.queue 方法获取到当前 jQuery 实例的第一个 DOM 元素，以 type 为队列名称的队列（ 即私有缓存中的数据 ）
+		 * 		如果参数的个数不小于其值，那么就是 setter，不会进入 if
 		 */
 		if ( arguments.length < setter ) {
 			return jQuery.queue( this[0], type );
 		}
 
 		/**
-		 * 	如果不是 getter，就是 setter；
-		 * 		如果 data 存在，那么遍历当前 jQ 对象
+		 * 	4.  如果不是 getter，就是 setter
+		 * 		如果 data 不存在，直接返回 jQuery.fn
+		 * 		如果 data 存在，那么会遍历当前 jQuery 对象
 		 * 			首先通过工具方法 queue 将 data 入对到当前 DOM 以 type 为名的队列中，并保存其队列的引用
 		 */
 		return data === undefined ?
 			this :
 			this.each(function() {
+				/**
+				 * 	4.1 通过 $.queue 会每一个 DOM 元素设置名称为 type 的队列，并将数据 data 放入队列中
+				 * 		并将每个 DOM 元素的队列保存在 queue 变量中
+				 */
 				var queue = jQuery.queue( this, type, data );
 
 				// ensure a hooks for this queue
@@ -4388,6 +4470,7 @@ jQuery.fn.extend({
 				}
 			});
 	},
+	
 	dequeue: function( type ) {
 		return this.each(function() {
 			jQuery.dequeue( this, type );
@@ -4395,10 +4478,23 @@ jQuery.fn.extend({
 	},
 	// Based off of the plugin by Clint Helfers, with permission.
 	// http://blindsignals.com/index.php/2009/07/jquery-delay/
+	/**
+	 * 	@param  { Number | String }    time    延迟的描述，可以是数值指定（ 单位为毫秒 ），也可以是字符串的 slow、fast、_default
+	 * 	@param  { String }    		   typr    队列的名称
+	 */
 	delay: function( time, type ) {
+		/**
+		 * 	1.  判断 jQuery.fx 是否存在
+		 * 			如果存在的话，将从 jQuery.fx.speeds 对象中获取以 time 为属性的值，将结果保存在 time 变量中；如果从对象中取出的是 undefined，那么 time 值不变
+		 * 			如果不存在的话，time 值不变
+		 */
 		time = jQuery.fx ? jQuery.fx.speeds[ time ] || time : time;
 		type = type || "fx";
 
+		/**
+		 * 	2.  调用实例方法 queue，为当前 jQuery 实例中的所有 DOM 元素中，以 type 为名的队列中添加一个方法
+		 * 			该方法内部会开启一个延迟器，延迟 time 秒后，执行 next 方法，此时 next 方法调用其实是 $.dequeue，并将当前的 DOM 元素
+		 */
 		return this.queue( type, function( next, hooks ) {
 			var timeout = setTimeout( next, time );
 			hooks.stop = function() {
@@ -4406,43 +4502,71 @@ jQuery.fn.extend({
 			};
 		});
 	},
+
 	clearQueue: function( type ) {
 		return this.queue( type || "fx", [] );
 	},
+
 	// Get a promise resolved when queues of a certain type
 	// are emptied (fx is the type by default)
 	promise: function( type, obj ) {
 		var tmp,
+			//  1.  保存队列中的元素，默认为 1
 			count = 1,
+			//  2.  定义延迟对象
 			defer = jQuery.Deferred(),
+			//  3.  保存当前 jQuery 实例的引用到 elements 变量
 			elements = this,
+			// 	4.  保存当前 jQuery 实例中的 DOM 元素的个数
 			i = this.length,
+			/**
+			 * 	5.  定义 resolve 函数
+			 * 		其中首先对 count - 1，然后判断其是否是 0，只有当 0 才意味者队列中的所有元素都已经执行完
+			 * 		此时将延迟对象的状态指定为成功，并将成功回调的作用域和参数都设置为当前 jQuery 对象
+			 */
 			resolve = function() {
 				if ( !( --count ) ) {
 					defer.resolveWith( elements, [ elements ] );
 				}
 			};
 
+		/**
+		 * 	6.  判断是否提供了队列的名称
+		 * 		如果没提供，那么第一个参数就不是字符串，此时将第一个参数保存到 obj 中，并将 type 置为 undefined，方便下面将其设置默认值 fx
+		 */
 		if ( typeof type !== "string" ) {
 			obj = type;
 			type = undefined;
 		}
+
+		//  7.  如果 type 不存在，则将其设置为默认值 fx
 		type = type || "fx";
 
+		/**
+		 * 	8.  遍历当前 jQuery 对象中的所有 DOM 元素
+		 */
 		while( i-- ) {
+			/**
+			 * 	8.1 获取当前 DOM 元素的 hooks 对象，并判断其是否存在，因为只要存在 hooks 对象，那么队列也就一定存在
+			 * 		只要 hooks 对象存在，就将 count + 1 并向 hooks 对象中的回调对象添加一个回调，即 resolve 函数
+			 */
 			tmp = data_priv.get( elements[ i ], type + "queueHooks" );
 			if ( tmp && tmp.empty ) {
 				count++;
 				tmp.empty.add( resolve );
 			}
 		}
+
+		//  9.  执行 resolve 方法，以为 count 默认为 1，如果所有 DOM 元素都不存在队列和 hooks 对象，那么就会直接将延迟对象的状态指定为成功
 		resolve();
+
+		//  10. 返回延迟对象的 promise 对象
 		return defer.promise( obj );
 	}
 });
 
 var nodeHook, boolHook,
-	rclass = /[\t\r\n\f]/g,
+	rclass = /[\t\r\n\f]/g,	 // 匹配制表符、回车、换行、换页
 	rreturn = /\r/g,
 	rfocusable = /^(?:input|select|textarea|button)$/i;
 
@@ -4471,38 +4595,63 @@ jQuery.fn.extend({
 		var classes, elem, cur, clazz, j,
 			i = 0,
 			len = this.length,
+			//  1.  判断参数是否是字符串，如果是的话，将参数保存在 proceed 变量中
 			proceed = typeof value === "string" && value;
 
+		/**
+		 * 	2.  判断参数是否是函数
+		 */
 		if ( jQuery.isFunction( value ) ) {
+			/**
+			 * 	如果是函数的话，那么首先遍历当前 jQuery 中的所有 DOM 元素
+			 * 	遍历过程中，先调用参数函数，并将其作用域设置为当前的 DOM 元素，并传递当前 DOM 元素在 jQuery 实例中的索引和当前 DOM 元素的 class 属性为参数
+			 * 		然后将当前 DOM 元素转换为 jQuery 对象并调用 addClass 方法，将参数的返回值作为参数
+			 */
 			return this.each(function( j ) {
 				jQuery( this ).addClass( value.call( this, j, this.className ) );
 			});
 		}
 
+		/**
+		 * 	3.  判断提供的字符串参数是否不为空
+		 */
 		if ( proceed ) {
-			// The disjunction here is for better compressibility (see removeClass)
+			//  3.1 将字符串参数按照空格匹配，保存在一个数组中，并将数组的引用保存在 classes 中
 			classes = ( value || "" ).match( core_rnotwhite ) || [];
 
+			//  3.2 遍历当前 jQuery 对象中的 DOM 元素
 			for ( ; i < len; i++ ) {
-				elem = this[ i ];
-				cur = elem.nodeType === 1 && ( elem.className ?
-					( " " + elem.className + " " ).replace( rclass, " " ) :
-					" "
+				elem = this[ i ];   
+				/**
+				 * 	判断当前遍历的是否是元素节点
+				 * 		如果是的话，再判断当前元素的 class 是否有内容
+				 * 			如果有，则将内容首尾加上空格，并将制表符、回车换行等替换为空格，将结果保存在 cur 中
+				 * 			如果没有，则直接将空格字符串赋给 cur
+				 */
+				cur = elem.nodeType === 1 && ( elem.className 
+					? ( " " + elem.className + " " ).replace( rclass, " " )
+					: " "
 				);
 
 				if ( cur ) {
+					/**
+					 * 	遍历 classes 数组
+					 * 	查看 cur 中是否有数组中的每个元素
+					 * 		如果没有，则将当前元素 + 空格直接拼在 cur 字符串的后面
+					 */
 					j = 0;
 					while ( (clazz = classes[j++]) ) {
 						if ( cur.indexOf( " " + clazz + " " ) < 0 ) {
 							cur += clazz + " ";
 						}
 					}
+					// 	将 cur 去除首尾空格后的值，直接赋给当前 DOM 元素的 class
 					elem.className = jQuery.trim( cur );
 
 				}
 			}
 		}
-
+		// 返回当前 jQuery 实例，以供链式调用
 		return this;
 	},
 
@@ -4510,61 +4659,119 @@ jQuery.fn.extend({
 		var classes, elem, cur, clazz, j,
 			i = 0,
 			len = this.length,
+			/**
+			 * 	1.  判断是否传递了参数
+			 * 		如果没传递，那么 proceed 就是 true
+			 * 		如果传递了，再判断参数是否是字符串，如果是字符串，那么 proceed 就是参数字符串
+			 */
 			proceed = arguments.length === 0 || typeof value === "string" && value;
 
+		/**
+		 * 	2.  判断参数是否是函数
+		 */
 		if ( jQuery.isFunction( value ) ) {
 			return this.each(function( j ) {
 				jQuery( this ).removeClass( value.call( this, j, this.className ) );
 			});
 		}
+
+		/**
+		 * 	3.  判断 proceed 是否存在
+		 * 		只有两种情况会进入 if
+		 * 			第一：传入的是非空字符串
+		 * 			第二：没有传递任何参数
+		 */
 		if ( proceed ) {
+			//  将字符串参数按照空格分隔，并存在数组 classes 中
 			classes = ( value || "" ).match( core_rnotwhite ) || [];
 
+			//  遍历当前 jQuery 中的 DOM 元素
 			for ( ; i < len; i++ ) {
 				elem = this[ i ];
-				// This expression is here for better compressibility (see addClass)
+
+				/**
+				 * 	判断当前遍历的是否是元素节点
+				 * 		如果是的话，再判断当前元素的 class 是否有内容
+				 * 			如果有，则将内容首尾加上空格，并将制表符、回车换行等替换为空格，将结果保存在 cur 中
+				 * 			如果没有，则直接将空格字符串赋给 cur
+				 */
 				cur = elem.nodeType === 1 && ( elem.className ?
 					( " " + elem.className + " " ).replace( rclass, " " ) :
 					""
 				);
 
 				if ( cur ) {
+					/**
+					 * 	遍历 classes 数组
+					 * 	查看 cur 中是否有数组中的每个元素
+					 * 		如果有，则将这个元素从 cur 字符串中删除
+					 */
 					j = 0;
 					while ( (clazz = classes[j++]) ) {
-						// Remove *all* instances
 						while ( cur.indexOf( " " + clazz + " " ) >= 0 ) {
 							cur = cur.replace( " " + clazz + " ", " " );
 						}
 					}
+
+					/**
+					 * 	判断是否提供了字符串参数
+					 * 		如果有，则将 cur 去除首尾空格后的值赋给当前 DOM 的 class 属性
+					 * 		如果没有，则将空字符串赋给当前 DOM 的 class 属性
+					 */
 					elem.className = value ? jQuery.trim( cur ) : "";
 				}
 			}
 		}
 
+		//  4.  返回当前 jQuery 对象，以供链式调用
 		return this;
 	},
 
 	toggleClass: function( value, stateVal ) {
 		var type = typeof value;
 
+		/**
+		 * 	1.  判断第二个参数是否是布尔值并且第一个参数是否是字符串，满足进入 if
+		 * 			if 中会判断这个布尔值是 true 还是 false
+		 * 			如果是 true，那么直接调用 addClass
+		 * 			如果是 false，那么直接调用 removeClass
+		 */
 		if ( typeof stateVal === "boolean" && type === "string" ) {
 			return stateVal ? this.addClass( value ) : this.removeClass( value );
 		}
 
+		/**
+		 * 	2.  判断第一个参数是否是函数
+		 */
 		if ( jQuery.isFunction( value ) ) {
 			return this.each(function( i ) {
 				jQuery( this ).toggleClass( value.call(this, i, this.className, stateVal), stateVal );
 			});
 		}
 
+		/**
+		 * 	3.  处理以上情形之外的情况
+		 * 		遍历当前 jQuery 对象中的所有 DOM 元素
+		 */
 		return this.each(function() {
+			/**
+			 * 	3.1 处理第一个参数为字符串的情况
+			 */
 			if ( type === "string" ) {
 				// toggle individual class names
 				var className,
 					i = 0,
+					//  3.1.1 将当前 DOM 元素转换为 jQuery 对象
 					self = jQuery( this ),
+					//  3.1.2 将字符串参数按照空格匹配，并将结果存在 classNames 数组中
 					classNames = value.match( core_rnotwhite ) || [];
 
+				/**
+				 * 	3.1.3 循环 classNames 数组
+				 * 		判断 classNsmes 数组中当前元素是否存在于当前 DOM 元素的 class 中
+				 * 			如果存在，就将其删除
+				 * 			如果不存在，就将其添加
+				 */
 				while ( (className = classNames[ i++ ]) ) {
 					// check each className given, space separated list
 					if ( self.hasClass( className ) ) {
@@ -4574,11 +4781,15 @@ jQuery.fn.extend({
 					}
 				}
 
-			// Toggle whole class name
-			} else if ( type === core_strundefined || type === "boolean" ) {
+			} 
+			/**
+			 * 	3.2 处理没有传递任何参数或者第一个参数为布尔值的情况
+			 */
+			else if ( type === core_strundefined || type === "boolean" ) {
 				if ( this.className ) {
 					// store className if set
 					data_priv.set( this, "__className__", this.className );
+					console.log( data_priv.cache )
 				}
 
 				// If the element has a class name or if we're passed "false",
@@ -4591,15 +4802,24 @@ jQuery.fn.extend({
 	},
 
 	hasClass: function( selector ) {
+		//  1.  将参数首尾加上空格并保存在 className 变量中
 		var className = " " + selector + " ",
 			i = 0,
 			l = this.length;
+		/**
+		 * 	2.  遍历当前 jQuery 实例中的 DOM 元素
+		 * 		如果当前遍历的是元素节点，那么获取其 class 属性并在首尾加上空格，然后将其中的制表符、回车符、换行符等都替换为空格
+		 * 		然后再从替换的结果查找是否存在 className 值
+		 * 			如果存在，直接返回 true
+		 * 			如果不存在，则进行下一次的遍历
+		 */
 		for ( ; i < l; i++ ) {
 			if ( this[i].nodeType === 1 && (" " + this[i].className + " ").replace(rclass, " ").indexOf( className ) >= 0 ) {
 				return true;
 			}
 		}
 
+		//  3.  如果都没有，那么就返回 false
 		return false;
 	},
 

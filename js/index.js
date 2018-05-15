@@ -201,10 +201,11 @@
      */
     function initHeaderSidebarContent () {
         var _data = [];
-        var $listItem = $( 'h2[id], h3[id], h4[id]' );
+        var $listItem = $( 'h2[id], h3[id], h4[id], h5[id]' );
         var h2Index = 1;
         var h3Index = 1;
         var h4Index = 1;
+        var h5Index = 1;
         $listItem.each(function ( index, el ) {
             var id  = '';
             var pid = '';
@@ -227,7 +228,14 @@
                 id = temH2 + '_' + tem + '_' + h4Index;
                 pid = temH2 + '_' + tem;
                 h4Index++;
-            } 
+            } else if ( $.nodeName( el , 'h5' ) ) {
+                var tem = h3Index - 1;
+                var temH2 = h2Index - 1;
+                var temH4 = h4Index - 1;
+                id = temH2 + '_' + tem + '_' + temH4 + '_' + h5Index;
+                pid = temH2 + '_' + tem + '_' + temH4;
+                h5Index++;
+            }
             
             _data.push({
                 id: id,

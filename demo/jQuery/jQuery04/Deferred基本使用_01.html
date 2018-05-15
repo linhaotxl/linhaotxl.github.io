@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>LinHao</title>
+    <link href="https://cdn.bootcss.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.bootcss.com/animate.css/3.5.0/animate.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="/css/index.css">
+    <link rel="stylesheet" href="/css/zTreeStyle.css">
+</head>
+<body>
+    
+
+    <div id="blog" class="PingFang_SC_Normal">
+        <div id="header">
+    <div class="header-container container">
+        <div class="collapse navbar-collapse row" id="bs-example-navbar-collapse-1">
+            <ul class="header-list nav navbar-nav col-md-6 col-sm-6 col-xs-6">
+                
+                    <li class="header-list-item"><a href="/">HOME</a></li>
+                
+                    <li class="header-list-item"><a href="/article">ARTICLE</a></li>
+                
+                    <li class="header-list-item"><a href="/about">ABOUT</a></li>
+                
+            </ul>
+            
+        </div>
+        
+        
+    </div>
+</div>
+        <div id="header_scroll" >
+    <div class="header_scroll_block"></div>
+</div>
+        
+        <div id="main" class="clear">
+            <div class="main-container container">
+                
+
+                
+
+    
+
+    <div id="title" class="title-post">
+        <h3 class="title-container">
+            <span class="title-text AGaramondPro_Italic_Bold">Straight Matter</span>
+        </h3>
+    </div>
+
+
+
+<li class="article-item">
+    <div class="article-container">
+        <img class="article-img img-responsive" src="" alt="">
+        <h3 class="article-title"></h3>
+        <div class="article-header">
+            <div class="article-info">
+                <i class="iconfont icon-xinxi"></i>
+                <span class="article-info-categories article-info-item">
+                    <span class="AGaramondPro_Bold article-info-title">Categories</span>
+                    
+                </span>
+                <span class="article-info-tags article-info-item">
+                    <span class="AGaramondPro_Bold tags-info-title">Tags</span>
+                    
+                </span>
+                <span class="article-info-item article-info-date AGaramondPro_Regular"><span>2018-04-27</span></span>
+                <span class="article-info-item article-info-portrait clear">
+                    <img src="https://awcdn1.ahmad.works/writing/wp-content/uploads/2015/05/Author.jpg" alt="">
+                    <span class="article-info-item article-info-username AGaramondPro_Bold">LinHao</span>
+                </span>
+                
+            </div>
+        </div>
+        
+            <div class="article-content article-text">
+                <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Deferred基本使用</title>
+</head>
+<body>
+    <script src="../jquery-2.0.3.js"></script>
+
+    <script>
+        console.log( '---------- Deferred 基本使用开始 ----------' );
+    
+        // 获取延迟对象
+        const dfd = $.Deferred();
+
+        // 模拟异步操作
+        setTimeout(() => {
+            /**
+             *  在 2s 后将延迟对象的状态指定为成功
+             *  前面说过，resolve 方法相当于回调对象对外提供的 fire 方法，其内部调用的就是 resolveWith（ 也就是成功状态回调对象的 fireWith 方法 ），所以会遍历成功状态回调对象中的所有回调
+             *  这里要注意的是，在 Deferred 方法遍历状态数组 tuples 中，会分别向成功和失败的回调对象中添加三个方法
+             *      在这个例子中，因为调用的 resolve 方法，所以看成功状态的回调
+             *      在 Deferred 方法执行完成后，成功状态的回调对象已经有三个回调了，分别是
+             *          1. 将 state 变量修改为字符串 resolved
+             *          2. 失败状态回调对象的禁用方法
+             *          3. 进行状态回调对象的锁定方法
+             *  所以此时执行 resolve 方法时，会先执行上面说的三个回调，然后才会执行 done 方法添加的回调
+             *      第一个回调，将 state 设置为字符串 resolved，可以通过 state 方法验证
+             *      第二个回调，禁用失败状态的回调对象，所以之后再调用 reject 或者 rejectWith 都没用了
+             *      第三个回调，此时只是调用 lock 方法将进行状态的回调对象锁定，但是，虽然进行状态的回调对象提供了 memory 参数，但是 memory 变量只会在回调对象内部的 fire 方法才会改变
+             *          而此时并没有调用 notify 或者 notifyWith 方法，所以 memory 变量是 false，还是会将进行状态的回调对象禁用
+             *          之后再调用 notify 或者 notifyWith 也没有用
+             */
+            dfd.resolve( 1 );
+            dfd.reject( 2 );    // 已经无效
+            dfd.notify( 3 );    // 已经无效
+        }, 2000);
+
+        /**
+         *  前面说过，done 方法也就是回调对象的 add 方法，所以这里调用 done 方法，实际上调用的是成功状态中回调对象的 add 方法，调用完成后，成功状态的回调对象中就含有一个回调了
+         *  同理，fail 和 progress 方法也是一样，分别向失败状态的回调对象和进行状态的回调对象里添加一个回调
+         */
+        dfd.done(value => {
+            console.log( '成功 —— 2s 后执行, 参数是' + value );
+        });
+
+        dfd.fail(value => {
+            console.log( '失败 —— 2s 后执行, 参数是' + value );
+        });
+
+        dfd.progress(value => {
+            console.log( '进行中 —— 2s 后执行, 参数是' + value );
+        });
+
+        console.log( '---------- Deferred 基本使用结束 ----------' );
+    
+    </script>
+</body>
+</html>
+            </div>
+        
+        
+        
+    </div>
+
+    
+        
+    
+
+</li>
+                
+                
+            </div>
+        </div>
+        
+        
+
+        <script src="/js/jquery-2.0.3.min.js"></script>
+        <script src="/js/jquery.ztree.core.min.js"></script>
+        <script src="/js/index.js"></script>
+        <script src="/js/prism.js"></script>
+
+    </div>
+</body>
+</html>

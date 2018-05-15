@@ -13,24 +13,6 @@
 </head>
 <body>
     
-        <div id="sidebar_nav_mask" class="animated"></div>
-
-<div id="sidebar_nav" class="animated">
-    <div class="sidebar_nav_container">
-        <div class="nav_header">
-            <span class="nav_header_text AGaramondPro_Italic_Bold">Navigation</span>
-        </div>
-        <div class="nav_body">
-            <!-- <ul class="nav_lists">
-                <li class="list_item_copy list_item"></li>
-            </ul> -->
-            <div class="tree_nav clear">
-                <ul id="tree_nav" class="ztree"></ul>
-            </div>
-        </div>
-    </div>
-</div>
-    
 
     <div id="blog" class="PingFang_SC_Normal">
         <div id="header">
@@ -48,10 +30,6 @@
             
         </div>
         
-        
-            <div class="sidebar_nav_btn">
-                <i class="iconfont icon-menu2"></i>
-            </div>
         
     </div>
 </div>
@@ -77,20 +55,20 @@
 
 <li class="article-item">
     <div class="article-container">
-        <img class="article-img img-responsive" src="http://www.zhlzw.com/UploadFiles/Article_UploadFiles/201204/20120412123925870.jpg" alt="">
-        <h3 class="article-title">demo</h3>
+        <img class="article-img img-responsive" src="" alt="">
+        <h3 class="article-title"></h3>
         <div class="article-header">
             <div class="article-info">
                 <i class="iconfont icon-xinxi"></i>
                 <span class="article-info-categories article-info-item">
                     <span class="AGaramondPro_Bold article-info-title">Categories</span>
-                    <a class="category-link" href="/categories/jQuery/">jQuery源码分析</a>, <a class="category-link" href="/categories/jQuery/demo/">demo</a>
+                    
                 </span>
                 <span class="article-info-tags article-info-item">
                     <span class="AGaramondPro_Bold tags-info-title">Tags</span>
-                    <a class="tag-link" href="/tags/demo1/">demo1</a>, <a class="tag-link" href="/tags/demo2/">demo2</a>
+                    
                 </span>
-                <span class="article-info-item article-info-date AGaramondPro_Regular"><span>2018-03-09</span></span>
+                <span class="article-info-item article-info-date AGaramondPro_Regular"><span>2018-04-28</span></span>
                 <span class="article-info-item article-info-portrait clear">
                     <img src="https://awcdn1.ahmad.works/writing/wp-content/uploads/2015/05/Author.jpg" alt="">
                     <span class="article-info-item article-info-username AGaramondPro_Bold">LinHao</span>
@@ -100,7 +78,43 @@
         </div>
         
             <div class="article-content article-text">
-                
+                <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>when基本使用_02</title>
+</head>
+<body>
+    
+    <script src="../jquery-2.0.3.js"></script>
+
+    <script>
+    
+        const dfd = $.Deferred();
+
+        setTimeout(() => {
+            dfd.resolve( 1 );    // 2s 后打印: 2s 后所有的延迟对象成功 —— 1
+            // dfd.reject( 2 );     // 2s 后打印: 2s 后所有的延迟对象失败 —— 2   
+        }, 2000);
+
+        /**
+         *  此时，when 方法传递了一个延迟对象作为参数，remaining 和 length 都是 1，而 deferred 保存的就是该参数的引用，即 deferred 和外部的 dfd 指向同一块内存
+         *      然后直接返回 deferred，也就是说，此时 when 方法的返回值就是 dfd
+         */
+        $.when( dfd )   // 等同于 dfd
+        .done(data => {
+            console.log( '2s 后所有的延迟对象成功 —— ' + data );
+        })
+        .fail(data => {
+            console.log( '2s 后所有的延迟对象失败 —— ' + data );
+        });
+    
+    </script>
+
+</body>
+</html>
             </div>
         
         
@@ -109,28 +123,6 @@
 
     
         
-    <div id="post-nav" class="row">
-        
-        <div class="nav-prev col-md-4 col-sm-4 col-xs-6">
-            
-                <a href="/jQuery/jQuery01.html" class="nav-prev-link nav-link ellipsis">
-                    <i class="iconfont icon-houtui"></i>
-                    jQuery源码分析（一）
-                </a>
-            
-        </div>
-
-        <div class="nav-next col-md-4 col-md-offset-4 col-sm-4 col-sm-offset-4 col-xs-6">
-            
-                <a href="/jQuery/article-title.html" class="nav-next-link nav-link ellipsis">
-                    jQuery01
-                </a>
-                <i class="iconfont icon-qianjin"></i>
-            
-        </div>
-        
-    </div>
-
     
 
 </li>

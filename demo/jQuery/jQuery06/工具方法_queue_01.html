@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>LinHao</title>
+    <link href="https://cdn.bootcss.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.bootcss.com/animate.css/3.5.0/animate.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="/css/index.css">
+    <link rel="stylesheet" href="/css/zTreeStyle.css">
+</head>
+<body>
+    
+
+    <div id="blog" class="PingFang_SC_Normal">
+        <div id="header">
+    <div class="header-container container">
+        <div class="collapse navbar-collapse row" id="bs-example-navbar-collapse-1">
+            <ul class="header-list nav navbar-nav col-md-6 col-sm-6 col-xs-6">
+                
+                    <li class="header-list-item"><a href="/">HOME</a></li>
+                
+                    <li class="header-list-item"><a href="/article">ARTICLE</a></li>
+                
+                    <li class="header-list-item"><a href="/about">ABOUT</a></li>
+                
+            </ul>
+            
+        </div>
+        
+        
+    </div>
+</div>
+        <div id="header_scroll" >
+    <div class="header_scroll_block"></div>
+</div>
+        
+        <div id="main" class="clear">
+            <div class="main-container container">
+                
+
+                
+
+    
+
+    <div id="title" class="title-post">
+        <h3 class="title-container">
+            <span class="title-text AGaramondPro_Italic_Bold">Straight Matter</span>
+        </h3>
+    </div>
+
+
+
+<li class="article-item">
+    <div class="article-container">
+        <img class="article-img img-responsive" src="" alt="">
+        <h3 class="article-title"></h3>
+        <div class="article-header">
+            <div class="article-info">
+                <i class="iconfont icon-xinxi"></i>
+                <span class="article-info-categories article-info-item">
+                    <span class="AGaramondPro_Bold article-info-title">Categories</span>
+                    
+                </span>
+                <span class="article-info-tags article-info-item">
+                    <span class="AGaramondPro_Bold tags-info-title">Tags</span>
+                    
+                </span>
+                <span class="article-info-item article-info-date AGaramondPro_Regular"><span>2018-05-09</span></span>
+                <span class="article-info-item article-info-portrait clear">
+                    <img src="https://awcdn1.ahmad.works/writing/wp-content/uploads/2015/05/Author.jpg" alt="">
+                    <span class="article-info-item article-info-username AGaramondPro_Bold">LinHao</span>
+                </span>
+                
+            </div>
+        </div>
+        
+            <div class="article-content article-text">
+                <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>工具方法_queue_01</title>
+</head>
+<body>
+    
+    <script src="../jquery-2.0.3.js"></script>
+
+    <div id="box1"></div>
+    <script>
+        console.log( '---------- 示例一开始 ----------' );
+        
+        const $div1 = $( '#box1' );
+
+        function cb1 () {
+            console.log( 'cb1 执行' );
+        }
+
+        function cb2 () {
+            console.log( 'cb2 执行' );
+        }
+
+        /**
+         *  此时，队列的名称就是 my1queue，然后会从私有缓存中找出 #box1 的对象，从中获取以 my1queue 为属性的值（ 此时是 undefined ），并将其值保存在 queue 变量中
+         *  然后会进入 34 行的 if 中，因为此时 queue 是 undefiend，所以进入 35 行的 if 中
+         *  将参数 cb 放入一个数组中，然后调用私有缓存对象的 access 方法，为 #box1 设置一个以 my1queue 为属性，值为前面生成的数组
+         */
+        $.queue( $div1[0], 'my1', cb1 );
+
+        /**
+         *  此时，私有缓存对象的 cache 就是
+         *  {
+         *      0: {},
+         *      1: {
+         *          my1queue: [ cb1 ]
+         *      }
+         *  } 
+         */  
+
+        /**
+         *  此时， 队列的名称还是 my1queue，但是 queue 变量已经存在了（ 此时是 [ cb ] ），所以会判断第三个参数是否是数组，此例中不是，进入 else
+         *  直接将 cb2 push 到 queue 的数组中
+         */
+        $.queue( $div1[0], 'my1', cb2 );
+
+        /**
+         *  此时，私有缓存对象的 cache 就是
+         *  {
+         *      0: {},
+         *      1: {
+         *          my1queue: [ cb1, cb2 ]
+         *      }
+         *  } 
+         */ 
+
+        function cb3 () {
+            console.log( 'cb3 执行' );
+            console.log( arguments )
+        }
+
+        function cb4 () {
+            console.log( 'cb4 执行' );
+        }
+
+        /**
+         *   此时， 队列的名称还是 my1queue，queue 变量是 [ cb1, cb2 ]，此时，queue 变量已经有值了，所以会判断第三个参数是否是数组，此例中是，所以进入 if
+         *      在 if 中，为 $box1 在私有缓存中的对象重新设置值，将 my1queue 属性对应的值重新设置为 [ cb3, cb4 ]
+         */
+        $.queue( $div1[0], 'my1', [ cb3, cb4 ] );
+
+        /**
+         *  此时，私有缓存对象的 cache 就是
+         *  {
+         *      0: {},
+         *      1: {
+         *          my1queue: [ cb3, cb4 ]
+         *      }
+         *  } 
+         */ 
+
+        // 出队
+        $.dequeue( $div1[0], 'my1' );
+
+        console.log( '---------- 示例一结束 ----------' );
+    </script>
+
+</body>
+</html>
+            </div>
+        
+        
+        
+    </div>
+
+    
+        
+    
+
+</li>
+                
+                
+            </div>
+        </div>
+        
+        
+
+        <script src="/js/jquery-2.0.3.min.js"></script>
+        <script src="/js/jquery.ztree.core.min.js"></script>
+        <script src="/js/index.js"></script>
+        <script src="/js/prism.js"></script>
+
+    </div>
+</body>
+</html>

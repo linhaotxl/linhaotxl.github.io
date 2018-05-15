@@ -1023,7 +1023,7 @@ locked: function() {
 </code>
 </pre>  
 
-<h3 id="jQuery-Callbacks-locked-1"><a href="#jQuery-Callbacks-locked-1" class="headerlink" title="jQuery.Callbacks.locked"></a>jQuery.Callbacks.locked</h3><p>该方法用于判断是否使用 <code>$.Callbacks.fire</code> 或者 <code>$.Callbacks.fireWith</code> 方法执行过所有回调</p>
+<h3 id="jQuery-Callbacks-fired"><a href="#jQuery-Callbacks-fired" class="headerlink" title="jQuery.Callbacks.fired"></a>jQuery.Callbacks.fired</h3><p>该方法用于判断是否使用 <code>$.Callbacks.fire</code> 或者 <code>$.Callbacks.fireWith</code> 方法执行过所有回调</p>
 <pre class="line-numbers">
 <code class="language-javascript">
 /**
@@ -1038,9 +1038,13 @@ fired: function() {
     return !!fired;
 }
 </code>
-</pre>
+</pre>  
 
-
+<h3 id="lock-和-disable-的区别"><a href="#lock-和-disable-的区别" class="headerlink" title="lock 和 disable 的区别"></a>lock 和 disable 的区别</h3><p>从源码中可以看出，两者的很相似，但是还是有区别的，这个区别要取决于是否提供 <code>memory</code> 参数  </p>
+<ol>
+<li>如果提供了 <code>memory</code> 参数，那仅仅是将 <code>stack</code> 置为了 <code>undefined</code>，这意味着，只有第一次的 <code>jQuery.Callbacks.fire</code> 或者 <code>jQuery.Callbacks.fireWith</code> 方法是有效的，之后的都无效，因为 <code>stack</code> 已经为 <code>undefined</code>，所以第一次之后无法再进入 <code>jQuery.Callbacks.fireWith</code> 的 <code>if</code> 中，并且每次的 <code>jQuery.Callbacks.add</code> 方法都是有效的  </li>
+<li>如果没提供 <code>memory</code> 参数，那就是将回调对象禁用了，此时什么也都不能做（ 包括 <code>jQuery.Callbacks.fire</code>、<code>jQuery.Callbacks.fireWith</code>、<code>jQuery.Callbacks.add</code> 和 <code>jQuery.Callbacks.remove</code> ）</li>
+</ol>
 
             </div>
         
@@ -1053,6 +1057,11 @@ fired: function() {
     <div id="post-nav" class="row">
         
         <div class="nav-prev col-md-4 col-sm-4 col-xs-6">
+            
+                <a href="/jQuery/jQuery04.html" class="nav-prev-link nav-link ellipsis">
+                    <i class="iconfont icon-houtui"></i>
+                    jQuery源码分析（四）—— 延迟对象
+                </a>
             
         </div>
 
