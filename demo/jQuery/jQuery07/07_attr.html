@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>LinHao</title>
+    <link href="https://cdn.bootcss.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.bootcss.com/animate.css/3.5.0/animate.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="/css/index.css">
+    <link rel="stylesheet" href="/css/zTreeStyle.css">
+</head>
+<body>
+    
+
+    <div id="blog" class="PingFang_SC_Normal">
+        <div id="header">
+    <div class="header-container container">
+        <div class="collapse navbar-collapse row" id="bs-example-navbar-collapse-1">
+            <ul class="header-list nav navbar-nav col-md-6 col-sm-6 col-xs-6">
+                
+                    <li class="header-list-item"><a href="/">HOME</a></li>
+                
+                    <li class="header-list-item"><a href="/article">ARTICLE</a></li>
+                
+                    <li class="header-list-item"><a href="/about">ABOUT</a></li>
+                
+            </ul>
+            
+        </div>
+        
+        
+    </div>
+</div>
+        <div id="header_scroll" >
+    <div class="header_scroll_block"></div>
+</div>
+        
+        <div id="main" class="clear">
+            <div class="main-container container">
+                
+
+                
+
+    
+
+    <div id="title" class="title-post">
+        <h3 class="title-container">
+            <span class="title-text AGaramondPro_Italic_Bold">Straight Matter</span>
+        </h3>
+    </div>
+
+
+
+<li class="article-item">
+    <div class="article-container">
+        <img class="article-img img-responsive" src="" alt="">
+        <h3 class="article-title"></h3>
+        <div class="article-header">
+            <div class="article-info">
+                <i class="iconfont icon-xinxi"></i>
+                <span class="article-info-categories article-info-item">
+                    <span class="AGaramondPro_Bold article-info-title">Categories</span>
+                    
+                </span>
+                <span class="article-info-tags article-info-item">
+                    <span class="AGaramondPro_Bold tags-info-title">Tags</span>
+                    
+                </span>
+                <span class="article-info-item article-info-date AGaramondPro_Regular"><span>2018-05-27</span></span>
+                <span class="article-info-item article-info-portrait clear">
+                    <img src="https://awcdn1.ahmad.works/writing/wp-content/uploads/2015/05/Author.jpg" alt="">
+                    <span class="article-info-item article-info-username AGaramondPro_Bold">LinHao</span>
+                </span>
+                
+            </div>
+        </div>
+        
+            <div class="article-content article-text">
+                <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>07_attr</title>
+</head>
+<body>
+    
+    <script src="../jquery-2.0.3.js"></script>
+
+    <box id="box_01"></box>
+    <script>
+        console.log( '---------- 示例一：设置常规的属性 ----------' );
+   
+        (function ( window, $ ) {
+
+            const $box_01 = $( '#box_01' );
+            /**
+             *  此时，调用 attr 方法时，内部调用的是 $.access 方法，并传递五个参数：当前 jQuery 对象, jQuery.attr, 'class', 'box', true
+             *  在 access 方法中，key 值是一个字符串，所以 bulk 是 false，会进入 else if 中，并且传入的 value 不是函数，所以将 raw 设置为 true，因为 bulk 是 false，所以不会进入 if 中，直接进入 if 中
+             *      遍历第一个参数 jQuery 对象中的所有 DOM 元素，并调用第二个参数的方法（ 就是 jQuery.attr ），并传递三个参数：当前的 DOM 元素（ 此例中是 #box_01 元素 ），key（ 此例中是 'class' ） 和 value（ 此例中是 'box' ）
+             *  在 jQuery.attr 方法中，因为 DOM 元素不是一个 XML 的元素，所以会进入第三个 if 中来获取 hooks 对象，但此时添加的属性时 class，所以 hooks 对象就是 nodeHooks（ 也就是 undefined ）
+             *      然后进入第四个 if 中，此时 value 存在并且 hooks 是 undefined，所以会进入最后一个 if 中，直接调用原生的 setAttribute 方法，为 DOM 元素设置 class 属性，值为 box
+             */
+            $box_01.attr( 'class', 'box' )
+
+        })( window, jQuery );
+    
+    </script>
+
+    <input type="text" name="sex" id="radio_01">
+    <script>
+        console.log( '---------- 示例二：设置单选框的 type 属性 ----------' );
+
+        (function ( window, $ ) {
+
+            const $radio_01 = $( '#radio_01' ); 
+            //  这句代码的执行方式和示例一是一模一样的
+            $radio_01.attr( 'value', '123' );
+            /**
+             *  此时，调用 attr 方法时，设置的是 input 元素的 type 属性，并设置为单选框 radio，调用 access 方法和上一个示例一样，所以直接看 jQuery.attr 方法
+             *  jQuery.attr 方法接受三个参数，分别是 #radio_01 元素，'type' 和 'radio'；然后会进入第三个 if 中来获取 hooks 对象，因为此时设置的是 type 属性，所以可以从 attrHooks 对象中获取 type 的值（ 包含 set 方法的对象 ）
+             *      然后进入到第四个 if 中，此时 hooks 对象存在并且其中有 set 方法，所以会调用其中的 set 方法。并传递三个参数：分别是 #radio_01 元素，'radio' 和 'type'
+             *      调用 set 方法，解决存在的兼容问题（ 非单选框的 input 在设置 value 之后，再将其 type 改为单选框 radio，此时的 value 是否是原来设置的值，在 ie 下此时 value 是 on，非 ie 下和原来一样 ）
+             *      所以，调用完这句话后，在 IE 下，#radio_01 的 value 也是 123，而非 on
+             */
+            $radio_01.attr( 'type', 'radio' );
+            console.log( $radio_01[0].getAttribute( 'value' ) );
+
+        })( window, jQuery );
+
+    </script>
+
+    <input type="radio" name="sex" id="radio_man" class="radio_sex">男
+    <input type="radio" name="sex" id="radio_women" class="radio_sex" checked>女
+    <script>
+        console.log( '---------- 示例三：设置 radio 的 checked 属性 ----------' );
+
+        (function ( window, $ ) {
+
+            /**
+             *  默认的，应该是女单选框被选中，而男单选框则不被选中 
+             */
+
+            const $radioMan = $( '#radio_man' ); 
+            /**
+             *  此时调用 attr 方法时，内部先调用 $.access 方法，调用 access 方法的过程和示例以是一模一样的，所以直接看 $.attr 方法内部，此时 $.attr 方法接受三个参数：#radio_man 元素，'checked' 和 true
+             *  在 $.attr 方法中，会进入第三个 if 来获取 hooks 对象，因为此时的 name 是 'checked'，所以获取的 hooks 对象是 boolHook
+             *  然后会进入第四个 if 中，因为此时存在 hooks 对象（ 此时的 hooks 对象是 boolHook ）并且其中含有 set 方法，所以会调用 set 方法，并传递三个参数，#radio_man, true, 'checked'
+             *      在 set 方法中，判断 value 是否是
+             */
+            $radioMan.attr( 'checked', true );
+
+            const $radioWomen = $( '#radio_women' );
+            $radioWomen.attr( 'checked', false );
+
+        })( window, jQuery );
+
+    </script>
+
+</body>
+</html>
+            </div>
+        
+        
+        
+    </div>
+
+    
+        
+    
+
+</li>
+                
+                
+            </div>
+        </div>
+        
+        
+
+        <script src="/js/jquery-2.0.3.min.js"></script>
+        <script src="/js/jquery.ztree.core.min.js"></script>
+        <script src="/js/index.js"></script>
+        <script src="/js/prism.js"></script>
+
+    </div>
+</body>
+</html>

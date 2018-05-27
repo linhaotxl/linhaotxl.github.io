@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>LinHao</title>
+    <link href="https://cdn.bootcss.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.bootcss.com/animate.css/3.5.0/animate.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="/css/index.css">
+    <link rel="stylesheet" href="/css/zTreeStyle.css">
+</head>
+<body>
+    
+
+    <div id="blog" class="PingFang_SC_Normal">
+        <div id="header">
+    <div class="header-container container">
+        <div class="collapse navbar-collapse row" id="bs-example-navbar-collapse-1">
+            <ul class="header-list nav navbar-nav col-md-6 col-sm-6 col-xs-6">
+                
+                    <li class="header-list-item"><a href="/">HOME</a></li>
+                
+                    <li class="header-list-item"><a href="/article">ARTICLE</a></li>
+                
+                    <li class="header-list-item"><a href="/about">ABOUT</a></li>
+                
+            </ul>
+            
+        </div>
+        
+        
+    </div>
+</div>
+        <div id="header_scroll" >
+    <div class="header_scroll_block"></div>
+</div>
+        
+        <div id="main" class="clear">
+            <div class="main-container container">
+                
+
+                
+
+    
+
+    <div id="title" class="title-post">
+        <h3 class="title-container">
+            <span class="title-text AGaramondPro_Italic_Bold">Straight Matter</span>
+        </h3>
+    </div>
+
+
+
+<li class="article-item">
+    <div class="article-container">
+        <img class="article-img img-responsive" src="" alt="">
+        <h3 class="article-title"></h3>
+        <div class="article-header">
+            <div class="article-info">
+                <i class="iconfont icon-xinxi"></i>
+                <span class="article-info-categories article-info-item">
+                    <span class="AGaramondPro_Bold article-info-title">Categories</span>
+                    
+                </span>
+                <span class="article-info-tags article-info-item">
+                    <span class="AGaramondPro_Bold tags-info-title">Tags</span>
+                    
+                </span>
+                <span class="article-info-item article-info-date AGaramondPro_Regular"><span>2018-05-20</span></span>
+                <span class="article-info-item article-info-portrait clear">
+                    <img src="https://awcdn1.ahmad.works/writing/wp-content/uploads/2015/05/Author.jpg" alt="">
+                    <span class="article-info-item article-info-username AGaramondPro_Bold">LinHao</span>
+                </span>
+                
+            </div>
+        </div>
+        
+            <div class="article-content article-text">
+                <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>04_val</title>
+</head>
+<body>
+
+    <script src="../jquery-2.0.3.js"></script>
+    
+    <input type="text" id="input_01" value="123">
+    <script>
+        console.log( '示例一：input text 不提供任何参数' );
+    
+        (function ( window, $ ) {
+
+            const $input = $( '#input_01' );
+
+            /**
+             *  此时调用 val 方法时，因为没有传递参数，所以进入 12 行的 if 中
+             *  此时，elem 就是 #input_01 元素，然后进行兼容性的处理，此时 type 为 text，标签名为 input，所以不存在任何兼容性的问题，所以不会进入 20 行的 if 中
+             *  然后获取 elem 的 value 属性（ 是 123 ）并保存在 ret 变量中，最后将其返回
+             *  所以获取到 #input_01 的值为 123
+             */
+            const value = $input.val(); // 123
+            console.log( value );
+
+        })( window, jQuery );
+
+    </script>
+
+    <input type="text" id="input_02" value="123">
+    <script>
+        console.log( '示例二：input text 提供一个字符串参数' );
+
+        (function ( window, $ ) {
+
+            const $input = $( '#input_02' );
+
+            /**
+             *  此时，调用 val 方法传递了一个字符串参数，所以进入 20 行的 return 中，遍历当前 jQuery 对象中的所有 DOM 元素
+             *  将参数 value 保存在变量 val 中，然后对 val 进行一个判断（ 此例中是字符串 456 ），然后进行兼容性的处理，此时还是不存在任何兼容性的问题，即 hooks 为 undefined，所以进入 29 行的 if 中
+             *      为当前 DOM 元素设置 value 属性为 val 的值
+             *  所以 #input_02 显示为 456
+             */
+            const value = $input.val( '456' ); // 123
+            console.log( value );
+
+        })( window, jQuery );
+
+    </script>
+
+    <input type="text" id="input_03" value="000">
+    <script>
+        console.log( '示例三：input text 提供一个数组参数' );
+
+        (function ( window, $ ) {
+
+            const $input = $( '#input_03' );
+
+            /**
+             *  此时调用 val 方法传递的是一个数组，因为提供了参数，所以进入 49 行的 return 中，遍历所有的 DOM 元素
+             *  因为提供的参数不是函数，所以进入 69 行的 else 中，将参数的引用保存在 val 变量中，然后会进入 98 行的 else if 中，将数组中的每个不为 null 或 undefined 的元素转换为字符串的形式，再将转换后的数组引用保存在 val 中
+             *      注意，此时将每个元素转换为字符串的话，如果元素是引用类型，那么会调用其构造函数下的的 toString 方法转换为字符串的形式
+             *  然后进行兼容性的处理，此时是不存在任何兼容性问题的，所以 hooks 为 undefined，进入 113 行的 if 中，将 val 的值赋给当前 DOM 元素的 value 属性 
+             *      注意，此时 val 还是一个数组，将其赋给 value 属性时会将数组隐式的转换为字符串（ 即调用 Array.prototype.toString 方法 ）
+             */
+            const value = $input.val( [ 1, 2, 3 ] ); // 123
+
+        })( window, jQuery );
+
+    </script>
+
+    <input type="text" id="input_04" value="001">
+    <input type="text" id="input_05" value="002">
+    <script>
+        console.log( '示例三：input text 提供一个函数' );
+
+        (function ( window, $ ) {
+
+            const $input = $( '#input_04, #input_05' );
+
+            /**
+             *  @param  { Number }  index   DOM 元素的索引
+             *  @param  { String }  value   DOM 元素本身的 value 值 
+             */
+            function test ( index, value ) {
+                return value + index;
+            }
+
+            /**
+             *  此时调用 val 时传递的是一个函数，因为提供了参数，所以会进入 49 行的 return 中，遍历每一个 DOM 元素
+             *  因为参数是函数，所以 isFunction 为 true，进入 63 行的 if 中，执行这个函数，并将这个函数的作用域设置为当前的 DOM 元素（ 即 test 方法中，作用域分别指向 #input_04 和 #input_05 ），并传递两个参数
+             *      参数一：当前 DOM 元素在 jQuery 对象中的索引
+             *      参数二：当前 DOM 元素本身的 value 值
+             *  调用完成后，将结果保存在 val 变量中，然后对其进行进一步的处理，此例中既不是 undefined 和 null，也不数值或数组，所以不做任何处理
+             *  然后在处理兼容性，此例中不存在兼容性问题，所以直接将 val 的值赋给当前 DOM 元素的 value 属性
+             */
+            const value = $input.val( test );
+
+        })( window, jQuery );
+
+    </script>
+
+</body>
+</html>
+            </div>
+        
+        
+        
+    </div>
+
+    
+        
+    
+
+</li>
+                
+                
+            </div>
+        </div>
+        
+        
+
+        <script src="/js/jquery-2.0.3.min.js"></script>
+        <script src="/js/jquery.ztree.core.min.js"></script>
+        <script src="/js/index.js"></script>
+        <script src="/js/prism.js"></script>
+
+    </div>
+</body>
+</html>

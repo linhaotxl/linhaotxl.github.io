@@ -1414,22 +1414,9 @@ jQuery.extend({
 			length = elems.length,	// 集合的长度
 			bulk = key == null;
 
-		// console.log( elems );
-		// console.log( fn );
-		// console.log( key );
-		// console.log( value );
-		// console.log( chainable );
-		// console.log( emptyGet );
-		// console.log( raw );
-
 		/**
-		 * 	1. 	设置多个属性，类似于下面
-		 * 		$().css({
-		 * 			background: 'red',
-		 * 			width: '100px'
-		 * 		})
-		 * 
-		 * 		此时判断 key 是否是对象（ 此时 key 就是 css 中传进来的 json 对象 ），如果是，进入 if
+		 * 	1.  处理设置多个值的情况，此时 key 就是一个对象
+		 * 		例如 $( document ).css( { fontSize: '12px', color: '#f99' } )
 		 */
 		if ( jQuery.type( key ) === "object" ) {
 			// 1.1 手动将 chainable 置为 true，因为在设置多个属性时，也只有一个参数，所以在这之前 chainable 的值也是 false
@@ -1450,18 +1437,20 @@ jQuery.extend({
 		 * 		既然 key 不是 Object 而且 value 又不是 undefined 的话，那么肯定是设置一个属性值了，就像上面代码一样
 		 */
 		else if ( value !== undefined ) {
-			// 	1.1 手动将 chainable 置为 true，确保该值为设置时的值（ true ），因为后面会用到
+			// 	2.1 手动将 chainable 置为 true，确保该值为设置时的值（ true ），因为后面会用到
 			chainable = true;
 
 			/**
-			 * 	1.2 如果 value 不是函数，将 raw 置为 true
+			 * 	2.2 判断要设置的值是否是函数
+			 * 		如果不是，则将 raw 设置为 true
 			 */
 			if ( !jQuery.isFunction( value ) ) {
 				raw = true;
 			}
 
 			/**
-			 * 	1.3	如果 key 的值是 udnefiend 或者 null，则进入 if
+			 * 	2.3 判断提供的 key 是否是 undefined 或者 null
+			 * 		如果是，则进入 if 中
 			 */
 			if ( bulk ) {
 				// Bulk operations run against the entire set
@@ -1482,6 +1471,14 @@ jQuery.extend({
 				}
 			}
 
+			/**
+			 * 	2.4 判断是否提供了操作的回调
+			 * 		如果提供，则进入 if 中，遍历 jQuery 对象中的所有 DOM 元素，每遍历一次，执行一次 fn 方法
+			 * 		并为 fn 方法传递三个参数
+			 * 			参数一：当前遍历的 DOM 元素
+			 * 			参数二：当前的 key 值
+			 * 			参数三：value 的值；如果 value 不是函数，则直接将 value 作为参数；如果 value 是函数，则先调用这个函数，再将返回值作为参数
+			 */
 			if ( fn ) {
 				for ( ; i < length; i++ ) {
 					fn( elems[i], key, raw ? value : value.call( elems[i], i, fn( elems[i], key ) ) );
@@ -1489,13 +1486,21 @@ jQuery.extend({
 			}
 		}
 
-		return chainable ?
-			elems :
-
-			// Gets
-			bulk ?
-				fn.call( elems ) :
-				length ? fn( elems[0], key ) : emptyGet;
+		/**
+		 * 	3.  判断当前是设置值还是取值
+		 * 		chainable 为 true，代表设置值；为 false，代表取值
+		 * 			如果是设置值，那么返回的就是传入的 elems jQuery 对象本身的引用
+		 * 			如果是取值，首先会判断提供的 key 是否有效
+		 * 				如果有效，则调用 fn 并返回其调用结果
+		 * 				如果无效，则判断 elems jQuery 对象是否含有元素
+		 * 					如果含有 DOM 元素，则调用 fn 并将其结果返回
+		 * 					如果不含 DOM 元素，则直接返回 emptyGet 参数
+		 */
+		return chainable 
+			? elems
+			: bulk
+				? fn.call( elems )
+				: length ? fn( elems[0], key ) : emptyGet;
 	},
 
 	/**
@@ -3498,6 +3503,9 @@ jQuery.support = (function( support ) {
 		opt = select.appendChild( document.createElement("option") );
 
 	// Finish early in limited environments
+	/**
+	 * 	input 的 type 值默认值是 text
+	 */
 	if ( !input.type ) {
 		return support;
 	}
@@ -3508,7 +3516,7 @@ jQuery.support = (function( support ) {
 	// Support: Safari 5.1, iOS 5.1, Android 4.x, Android 2.3
 	/**
 	 * 		判断 input 复选框的默认值是否是 空字符串，并将结果赋给 checkOn 属性
-	 * 		在老版本的 webkit 中，其默认值是 空字符串；其他的都是 "on"
+	 * 		在老版本的 webkit 浏览器中，其默认值是 空字符串；其他的都是 "on"
 	 * 		checkOn 为 true：复选框/单选框的默认值是 "on"
 	 * 		checkOn 为 false：复选框/单选框的默认值是 ""
 	 */
@@ -3521,9 +3529,8 @@ jQuery.support = (function( support ) {
 	 */
 	support.optSelected = opt.selected;
 
-	// Will be defined later
 	/**
-	 * 	3.
+	 * 	3.  定义一些默认值，在 DOM 加载完成之后再设置
 	 */
 	support.reliableMarginRight = true;
 	support.boxSizingReliable = true;
@@ -3538,16 +3545,16 @@ jQuery.support = (function( support ) {
 	support.noCloneChecked = input.cloneNode( true ).checked;
 
 	/**
-	 * 	5.	检测把一个 select 禁止后，其下面的 option 是否也被禁止了
+	 * 	5.	检测把一个 select 下拉菜单禁用后，其下面的子项 option 是否也被禁止了
 	 * 		将 select 禁止，将其下面的 option 的 disabled 值赋给 optDisabled
-	 * 		只有在老版本的 webkit 中，option 的 disabled 是该值才是 true，即被禁止；基本目前的浏览器中，option 的 disabled 都是 false，即未被禁止
+	 * 		只有在老版本的 webkit 中，option 的 disabled 值才是 true，即被禁止；基本目前的浏览器中，option 的 disabled 都是 false，即未被禁止
 	 */
 	select.disabled = true;
 	support.optDisabled = !opt.disabled;
 
 	/**
-	 * 	6.	检测在给一个 input 赋值之后，将其类型变为 单选框，此时这个 input 的值是否还是原来的值
-	 * 		在 IE9、IE10、IE11 下，该值就被重置为 'on' 了，而在其他浏览器下，还是原来设置的值
+	 * 	6.	检测在给一个默认的 input （ 即 type 为 text ）赋 value 值之后，将其类型变为单选框，此时这个 input 的值是否还是原来的值
+	 * 		在 IE9、IE10、IE11 下，该值就被重置为 'on' 了（ 因为此时是单选框，ie 下默认被选中 ），而在其他浏览器下，还是原来设置的值
 	 */
 	input = document.createElement("input");
 	input.value = "t";
@@ -3574,10 +3581,10 @@ jQuery.support = (function( support ) {
 	support.focusinBubbles = "onfocusin" in window;
 
 	/**
-	 * 	9.	检测新创建的一个节点，设置其某一背景属性，再克隆一个节点，将克隆节点背景属性置空，是否会影响到原来节点的背景属性
+	 * 	9.	检测使用 js 创建的一个节点，设置其某一背景属性，再对其进行克隆，将克隆节点背景属性修改，是否会影响到原来节点的背景属性
 	 * 		如果原节点的背景属性还是原来的不变，那么就返回 true 并赋给 clearCloneStyle
 	 * 		如果不是原来的，那么就返回 false
-	 * 		在 IE9、IE10、IE11 下，原来节点的背景属性就会变为空字符串
+	 * 		在 IE9、IE10、IE11 下，原来节点的背景属性就会被修改，即返回 false；其余浏览器不会
 	 */
 	div.style.backgroundClip = "content-box";
 	div.cloneNode( true ).style.backgroundClip = "";
@@ -3589,7 +3596,7 @@ jQuery.support = (function( support ) {
 	jQuery(function() {
 		var container, marginDiv,
 			// Support: Firefox, Android 2.3 (Prefixed box-sizing versions).
-			// 设置一些默认的属性，包括盒模型为标准模式
+			// 设置一些默认的属性（ 内外边距 + 边框都清零，并且设置块元素 ），包括盒模型为标准模式
 			divReset = "padding:0;margin:0;border:0;display:block;-webkit-box-sizing:content-box;-moz-box-sizing:content-box;box-sizing:content-box",
 			body = document.getElementsByTagName("body")[ 0 ];
 
@@ -3602,9 +3609,9 @@ jQuery.support = (function( support ) {
 		}
 
 		/**
-		 * 	新窗间一个 div 元素，并设置其样式
-		 * 	设置绝对定位以及 left 为 -9999px 是因为让其加载到页面中，不影响整个的布局
-		 * 	而 margin-top 为 1px 是为了检测一些例如 offsetTop 的功能，只不过该检测只在一些 1.x 的版本中存在，当前版本并没有检测
+		 * 	新创建一个 div 元素，并设置其样式
+		 * 	设置绝对定位以及 left 为 -9999px 是因为让其加载到页面中，不影响整个页面的样式
+		 * 	而 margin-top 为 1px 是为了检测一些其他的功能，只不过该检测只在一些 1.x 的版本中存在，当前版本并没有检测
 		 */
 		container = document.createElement("div");
 		container.style.cssText = "border:0;width:0;height:0;position:absolute;top:0;left:-9999px;margin-top:1px";
@@ -4827,16 +4834,31 @@ jQuery.fn.extend({
 		var hooks, ret, isFunction,
 			elem = this[0];
 
+		/**
+		 *  1.  判断参数的个数，如果是 0，则代表此时是获取，进入 if
+		 */
 		if ( !arguments.length ) {
 			if ( elem ) {
+				/**
+				 * 	1.1 获取 elem 的 type 值
+				 * 		当 type 为 option 或者 select 时，进行兼容的处理，并将处理结果保存在 hooks 变量中
+				 */
 				hooks = jQuery.valHooks[ elem.type ] || jQuery.valHooks[ elem.nodeName.toLowerCase() ];
-
+				console.log( hooks )
+				/**
+				 * 	1.2 判断是否有兼容处理的结果
+				 */
 				if ( hooks && "get" in hooks && (ret = hooks.get( elem, "value" )) !== undefined ) {
 					return ret;
 				}
 
+				//  1.3 获取 elem 的 value 值并保存在 ret 中
 				ret = elem.value;
 
+				/**
+				 * 	1.4 判断 ret 是否是字符串
+				 * 		如果是的话，则将其中的回车符替换为空字符串，并返回
+				 */
 				return typeof ret === "string" ?
 					// handle most common string cases
 					ret.replace(rreturn, "") :
@@ -4847,39 +4869,83 @@ jQuery.fn.extend({
 			return;
 		}
 
+		/**
+		 * 	2.  判断提供的参数是否是函数
+		 */
 		isFunction = jQuery.isFunction( value );
 
+		/**
+		 * 	3.  处理是设置值的情况，遍历当前 jQuery 对象中的每个 DOM 元素
+		 */
 		return this.each(function( i ) {
 			var val;
 
+			//  3.1 如果当前遍历的不是一个元素，那么直接退出方法
 			if ( this.nodeType !== 1 ) {
 				return;
 			}
 
+			/**
+			 * 	3.2 处理参数为函数的情况
+			 * 		如果是函数，则执行这个函数，将结果保存在 val 变量中，并将其作用域设置为当前的 DOM 元素，并传递两个参数
+			 * 			参数一：当前 DOM 元素在 jQuery 对象中的索引
+			 * 			参数二：当前 DOM 元素的 value 属性值
+			 */
 			if ( isFunction ) {
 				val = value.call( this, i, jQuery( this ).val() );
-			} else {
+			} 
+			/**
+			 * 	3.3 处理参数不是函数，即字符串的情况，直接将其赋值给 val 变量 
+			 */
+			else {
 				val = value;
 			}
 
 			// Treat null/undefined as ""; convert numbers to string
+			/**
+			 * 	3.4 如果 val 的值为 null 或 undefined，则将其重新设置为空字符串
+			 * 		只有两种情况才会进入这个 if
+			 * 		情况一：调用该方法时显示传递 undefined
+			 * 		情况二：调用该方法时传递了一个函数，且这个函数没有返回值或者返回 undefined 或 null
+			 */
 			if ( val == null ) {
 				val = "";
-			} else if ( typeof val === "number" ) {
+			} 
+			/**
+			 * 	3.5 如果 val 的值为数值，那么将其转换为字符串的形式
+			 * 		只有两种情况才会进入这个 else if
+			 * 		情况一：调用该方法时传递数值
+			 * 		情况二：调用该方法时传递了一个函数，且这个函数返回值是数值
+			 */
+			else if ( typeof val === "number" ) {
 				val += "";
-			} else if ( jQuery.isArray( val ) ) {
+			} 
+			/**
+			 * 	3.6 如果 val 的值为数组，那么将数组中的每个元素转换为字符串的形式，并将结果数组爆粗在 val 中
+			 * 		只有两种情况才会进入这个 else if
+			 * 		情况一：调用该方法时传递数组
+			 * 		情况二：调用该方法时传递了一个函数，且这个函数返回值是数组
+			 */
+			else if ( jQuery.isArray( val ) ) {
 				val = jQuery.map(val, function ( value ) {
 					return value == null ? "" : value + "";
 				});
 			}
 
+			/**
+			 * 	3.7 获取当前元素的 type 值，并进行兼容性的处理；如果 type 不存在兼容性，再获取当前元素的标签名（ 转小写字母 ），再次进行兼容性的处理
+			 * 		只有当元素的 type 值或者标签名为 option 和 select 时才会进行兼容性的处理
+			 */
 			hooks = jQuery.valHooks[ this.type ] || jQuery.valHooks[ this.nodeName.toLowerCase() ];
 
-			// If set returns undefined, fall back to normal setting
+			/**
+			 * 	3.8 如果上一步没有进行兼容性的处理，那么 hooks 就是 undefined，直接进入 if，将 val 赋给当前元素的 value 属性
+			 */
 			if ( !hooks || !("set" in hooks) || hooks.set( this, val, "value" ) === undefined ) {
+				console.log( 999 )
 				this.value = val;
 			}
-		});
+		});		
 	}
 });
 
@@ -4896,20 +4962,47 @@ jQuery.extend({
 		select: {
 			get: function( elem ) {
 				var value, option,
+					//  1.  获取 select 元素的 option 子元素的集合
 					options = elem.options,
+					/**
+					 * 	2.  获取当前默认选中的 option 子元素的索引
+					 * 		如果 select 元素中没有 option 元素，那么该属性的值就是 -1
+					 * 		如果 select 元素中有 option 元素并且没有给任何一个 option 元素添加 selected 属性，那么该属性的值就是 0
+					 * 		如果 select 元素中有 option 元素并且给其中一个 option 元素添加 selected 属性，那么该属性的值就是这个 option 元素的索引
+					 */
 					index = elem.selectedIndex,
+					/**
+					 * 	3.  判断 select 元素的 type 是否是 select-one
+					 * 			如果是，则将 one 变量设置为 true
+					 */
 					one = elem.type === "select-one" || index < 0,
 					values = one ? null : [],
+					/**
+					 * 	5.  设置循环长度 max
+					 * 		如果 select 元素的 type 是 select-one 的话，那么就将当前选中的 option 的索引再加 1 并存储到 max 变量中
+					 */
 					max = one ? index + 1 : options.length,
+					/**
+					 * 	6.  设置循环变量 i
+					 * 		如果 select 元素中没有一个 option 元素，那么就将 options 元素的集合的长度（ 即 0 ）赋给 i
+					 * 		如果 select 元素的 type 值是 select-one 的话，那么就将 select 元素的 selectedIndex 值赋给 i
+					 */
 					i = index < 0 ?
 						max :
 						one ? index : 0;
 
 				// Loop through all the selected options
 				for ( ; i < max; i++ ) {
+					// 	获取选中的 option 元素
 					option = options[ i ];
 
 					// IE6-9 doesn't update selected after form reset (#2551)
+					/**
+					 * 	判断 option 元素是否被选中；如果被选中，那么 selected 就是 true，否则就是 false
+					 * 	判断 jQuery.support.optDisabled 是否是 true
+					 * 		在老版本的 webkit 浏览器中，该值是 false
+					 * 		在目前的浏览器中，该值都是 true
+					 */
 					if ( ( option.selected || i === index ) &&
 							// Don't return options that are disabled or in a disabled optgroup
 							( jQuery.support.optDisabled ? !option.disabled : option.getAttribute("disabled") === null ) &&
@@ -5150,7 +5243,9 @@ jQuery.each([
 jQuery.each([ "radio", "checkbox" ], function() {
 	jQuery.valHooks[ this ] = {
 		set: function( elem, value ) {
+			console.log( arguments )
 			if ( jQuery.isArray( value ) ) {
+				console.log( jQuery(elem).val() )
 				return ( elem.checked = jQuery.inArray( jQuery(elem).val(), value ) >= 0 );
 			}
 		}
