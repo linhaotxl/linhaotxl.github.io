@@ -397,6 +397,14 @@ ol li {
     background-color: #ccc;
     -webkit-border-radius: 6px;
 }
+
+table {
+    width: 100%;
+}
+
+td {
+    text-align: center !important;
+}
 /* 
  * 	Iconfont 
  */

@@ -68,7 +68,7 @@
                     <span class="AGaramondPro_Bold tags-info-title">Tags</span>
                     
                 </span>
-                <span class="article-info-item article-info-date AGaramondPro_Regular"><span>2018-05-23</span></span>
+                <span class="article-info-item article-info-date AGaramondPro_Regular"><span>2018-06-13</span></span>
                 <span class="article-info-item article-info-portrait clear">
                     <img src="https://awcdn1.ahmad.works/writing/wp-content/uploads/2015/05/Author.jpg" alt="">
                     <span class="article-info-item article-info-username AGaramondPro_Bold">LinHao</span>
@@ -90,23 +90,131 @@
 
     <script src="../jquery-2.0.3.js"></script>
 
+    <!-- 
+        示例一：获取 —— option 元素有 selected 属性
+     -->
     <select name="test1" class="select_01" id="select_01">
-        <option value="A" class="option_01">A</option>
-        <option value="B" class="option_01" selected>B</option>
-        <option value="C" class="option_01">C</option>
-        <option value="D" class="option_01">D</option>
+        <option value="A" class="option_01">Option A</option>
+        <option value="B" class="option_01" selected>Option B</option>
+        <option value="C" class="option_01">Option C</option>
+        <option value="D" class="option_01">Option D</option>
     </select>
-    <select name="" id="select_02"></select>
     <script>
+        console.log( '示例一：option 元素有 selected 属性' );
         (function ( window, $ ) {
 
             const $select_01 = $( '.select_01' );
-            console.log( $select_01 )
-            console.log( $select_01.val() );
+
+            /**
+             *  此时调用 val 方法时，因为没有传递参数，所以会进入 12 行的 if 中，在 if 中首先会获取 hooks 对象，此时 DOM 元素的标签名是 select，所以可以获取 valHooks 中属性名为 select 的对象
+             *  并且这个 hooks 对象中存在 get 方法，所以会调用这个 get 方法，并传递参数：DOM 元素 #select_01 和字符串 'value'
+             *  在调用 get 方法中，index 变量的值是 1（ 此时第二个 option 元素有 selected 属性，索引是 1 ），one 变量是 true，values 是 null，max 是 2，i 是 1，所以只进行一次循环
+             *  在循环中，option 变量保存的就是有 selected 属性的 DOM 元素，然后会进入 if 中，进入 if 的流程是：option.selected 为 true，jQuery.support.optDisabled 为 true，!option.disabled 为 true，!option.parentNode.disabled 为 true
+             *      在 if 中，return 出 option 的 value 属性值（ 即 B，如果没有 value，那么就返回 Option B ）
+             *  调用完 get 方法后，会判断 get 的返回值是否是 undefined，此例中不是，所以 val 方法中直接 return 出 get 的返回值，所以 value 变量就是 B
+             */
+            const value = $select_01.val(); // B
 
         })( window, jQuery );
 
     </script>
+
+    <!-- 
+        示例二：获取 —— 有 selected 的 option 元素还有 disabled
+     -->
+     <select name="test1" class="select_02" id="select_02">
+        <option value="A" class="option_01">Option A</option>
+        <option value="B" class="option_01">Option B</option>
+        <option value="C" class="option_01" selected disabled>Option C</option>
+        <option value="D" class="option_01">Option D</option>
+    </select>
+    <script>
+        console.log( '示例二：有 selected 的 option 元素还有 disabled' );
+        (function ( window, $ ) {
+
+            const $select_02 = $( '#select_02' );
+
+            /**
+             *  此时调用 val 方法时，和示例一一样，主要看调用 hooks 对象中的 get 方法，递参数：DOM 元素 #select_02 和字符串 'value'
+             *  在调用 get 方法中，index 变量的值是 2（ 此时第三个 option 元素有 selected 属性，索引是 2 ），one 变量是 true，values 是 null，max 是 3，i 是 2，所以只进行一次循环
+             *  在循环中，option 变量保存的就是有 selected 属性的 DOM 元素，然后不会进入 if 中，不进入 if 的流程是：option.selected 为 true，jQuery.support.optDisabled 为 true，!option.disabled 为 false
+             *  所以不会进入 if 中，直接返回 values，也就是 null
+             *  调用完 get 方法后，会判断 get 的返回值是否是 undefined，此例中不是，所以 val 方法中直接 return 出 get 的返回值，所以 value 变量就是 null
+             */
+            const value = $select_02.val(); // null
+
+        })( window, jQuery );
+
+    </script>
+
+    <!-- 
+        示例三：获取 —— 父元素 select 元素有 disabled
+     -->
+     <select name="test1" class="select_03" id="select_03" disabled>
+        <option value="A" class="option_01">Option A</option>
+        <option value="B" class="option_01" selected>Option B</option>
+        <option value="C" class="option_01">Option C</option>
+        <option value="D" class="option_01">Option D</option>
+    </select>
+    <script>
+        console.log( '示例三：父元素 select 元素有 disabled' );
+        (function ( window, $ ) {
+
+            const $select_03 = $( '#select_03' );
+
+            /**
+             *  此时调用 val 方法时，和示例一一样，主要看调用 hooks 对象中的 get 方法，递参数：DOM 元素 #select_03 和字符串 'value'
+             *  在调用 get 方法中，index 变量的值是 1（ 此时第二个 option 元素有 selected 属性，索引是 1 ），one 变量是 true，values 是 null，max 是 2，i 是 1，所以只进行一次循环
+             *  在循环中，option 变量保存的就是有 selected 属性的 DOM 元素，然后会进入 if 中，进入 if 的流程是：option.selected 为 true，jQuery.support.optDisabled 为 true，!option.disabled 为 true，!option.parentNode.disabled 为 false，!jQuery.nodeName( option.parentNode, "optgroup" ) 为 true
+             *  所以会进入 if 中，return 出 option 的 value 属性值（ 即 B，如果没有 value，那么就返回 Option B ）
+             *  调用完 get 方法后，会判断 get 的返回值是否是 undefined，此例中不是，所以 val 方法中直接 return 出 get 的返回值，所以 value 变量就是 B
+             */
+            const value = $select_03.val(); // B
+
+        })( window, jQuery );
+
+    </script>
+
+    <!-- 
+        示例四：获取 —— option 元素的父元素是 optgroup
+     -->
+    <select name="test1" class="select_04" id="select_04">
+        <optgroup label="食物" disabled>
+            <option value="1">巧克力</option>
+            <option value="2" selected>蛋糕</option>
+        </optgroup>
+        <optgroup label="蔬菜">
+            <option value="3">番茄</option>
+            <option value="4">土豆</option>
+        </optgroup>
+    </select>
+    <script>
+        console.log( '示例四：option 元素的父元素是 optgroup' );
+        (function ( window, $ ) {
+
+            const $select_04 = $( '#select_04' );
+
+            /**
+             *  此时调用 val 方法时，和示例一一样，就算 option 元素的父元素是 optgroup，select 元素照样可以通过 options 属性获取所有的 option 元素的集合。主要看调用 hooks 对象中的 get 方法，递参数：DOM 元素 #select_04 和字符串 'value'
+             *  在调用 get 方法中，index 变量的值是 1（ 此时第二个 option 元素有 selected 属性，索引是 1 ），one 变量是 true，values 是 null，max 是 2，i 是 1，所以只进行一次循环
+             *  在循环中，option 变量保存的就是有 selected 属性的 DOM 元素，然后不会进入 if 中，不进入 if 的流程是：option.selected 为 true，jQuery.support.optDisabled 为 true，!option.disabled 为 true，!option.parentNode.disabled 为 false，!jQuery.nodeName( option.parentNode, "optgroup" ) 为 false
+             *  所以不会进入 if 中，直接 return values，也就是 null
+             *  调用完 get 方法后，会判断 get 的返回值是否是 undefined，此例中不是，所以 val 方法中直接 return 出 get 的返回值，所以 value 变量就是 null
+             */
+            const value = $select_04.val(); // null
+            console.log( value );
+
+        })( window, jQuery );
+
+    </script>
+
+    <!-- 
+        总结：
+            1. 对 select 元素调用 val 方法时，获取到的是当前选中的 option 元素的 value 属性值，如果当前没有手动选中 option 元素，则获取带有 selected 属性的 option 元素的 value 属性值
+            2. 如果带有 selected 属性的 option 同时具有 disabled 属性的话，那么在没有手动选择 option 元素的情况下，调用 select 的 val 方法时，获取到的就是 null
+            3. 如果 select 元素带有 disabled 属性的话，那么 select 元素调用 val 方法，获取到的就是带有 selected 属性的 option 元素的属性值
+            4. 
+     -->
     
 </body>
 </html>

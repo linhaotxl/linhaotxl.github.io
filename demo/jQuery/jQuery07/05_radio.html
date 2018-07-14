@@ -68,7 +68,7 @@
                     <span class="AGaramondPro_Bold tags-info-title">Tags</span>
                     
                 </span>
-                <span class="article-info-item article-info-date AGaramondPro_Regular"><span>2018-05-22</span></span>
+                <span class="article-info-item article-info-date AGaramondPro_Regular"><span>2018-06-16</span></span>
                 <span class="article-info-item article-info-portrait clear">
                     <img src="https://awcdn1.ahmad.works/writing/wp-content/uploads/2015/05/Author.jpg" alt="">
                     <span class="article-info-item article-info-username AGaramondPro_Bold">LinHao</span>
@@ -165,6 +165,25 @@
              *  所以，#name_radio_ZS 和 #name_radio_LS 的 value 值最终都是 all_name
              */
             $radioName.val( 'all_name' );
+
+        })( window, jQuery );
+
+    </script>
+
+    <input type="checkbox" name="foods" class="checkbox_foods" id="food_banana" value="food_banana">香蕉
+    <input type="checkbox" name="foods" class="checkbox_foods" id="food_watermelon" value="food_watermelon">西瓜
+    <input type="checkbox" name="foods" class="checkbox_foods" id="food_apple" value="food_apple">苹果
+    <script>
+        console.log( '---------- 示例四：input checkbox 提供数组参数 ----------' );
+
+        (function ( window, $ ) {
+
+            const $checkboxFoods  = $( '.checkbox_foods' );
+
+            /**
+             *  此时调用 val 方法和示例三的过程一模一样，此时 input 是复选框，所以不需要再设置不同的 name 属性
+             */
+            $checkboxFoods.val( [ 'food_banana', 'food_apple' ] );
 
         })( window, jQuery );
 

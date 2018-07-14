@@ -68,7 +68,7 @@
                     <span class="AGaramondPro_Bold tags-info-title">Tags</span>
                     
                 </span>
-                <span class="article-info-item article-info-date AGaramondPro_Regular"><span>2018-05-27</span></span>
+                <span class="article-info-item article-info-date AGaramondPro_Regular"><span>2018-06-04</span></span>
                 <span class="article-info-item article-info-portrait clear">
                     <img src="https://awcdn1.ahmad.works/writing/wp-content/uploads/2015/05/Author.jpg" alt="">
                     <span class="article-info-item article-info-username AGaramondPro_Bold">LinHao</span>
@@ -99,10 +99,11 @@
             const $box_01 = $( '#box_01' );
             /**
              *  此时，调用 attr 方法时，内部调用的是 $.access 方法，并传递五个参数：当前 jQuery 对象, jQuery.attr, 'class', 'box', true
-             *  在 access 方法中，key 值是一个字符串，所以 bulk 是 false，会进入 else if 中，并且传入的 value 不是函数，所以将 raw 设置为 true，因为 bulk 是 false，所以不会进入 if 中，直接进入 if 中
+             *  在 access 方法中，key 值是一个字符串，所以 bulk 是 false，并且 value 不是 undefined，所以会进入 42 行的 else if 中，并且传入的 value 不是函数，所以将 raw 设置为 true，因为 bulk 是 false，所以不会进入 58 行的 if 中，直接进入 86 行的 if 中
              *      遍历第一个参数 jQuery 对象中的所有 DOM 元素，并调用第二个参数的方法（ 就是 jQuery.attr ），并传递三个参数：当前的 DOM 元素（ 此例中是 #box_01 元素 ），key（ 此例中是 'class' ） 和 value（ 此例中是 'box' ）
-             *  在 jQuery.attr 方法中，因为 DOM 元素不是一个 XML 的元素，所以会进入第三个 if 中来获取 hooks 对象，但此时添加的属性时 class，所以 hooks 对象就是 nodeHooks（ 也就是 undefined ）
-             *      然后进入第四个 if 中，此时 value 存在并且 hooks 是 undefined，所以会进入最后一个 if 中，直接调用原生的 setAttribute 方法，为 DOM 元素设置 class 属性，值为 box
+             *      在遍历完成之后，进入 return，因为此时 chainable 的值为 true，所以直接返回第一个参数的引用，即调用 access 方法的 jQuery 对象
+             *  在 jQuery.attr 方法中，因为 DOM 元素不是一个 XML 的元素，所以会进入 32 行的 if 中来获取 hooks 对象，但此时添加的属性时 class，所以 hooks 对象就是 nodeHooks（ 也就是 undefined ）
+             *      因为 value 值是存在的而不是 undefined，所以进入 47 行的 if 中，而 value 又不是 null，并且 hooks 对象不存在，所以会进入 67 行的 else 中，直接调用 setAttribute 方法为 DOM 元素添加 class="box" 的属性，并返回 value，即 box
              */
             $box_01.attr( 'class', 'box' )
 
@@ -110,24 +111,33 @@
     
     </script>
 
-    <input type="text" name="sex" id="radio_01">
     <script>
-        console.log( '---------- 示例二：设置单选框的 type 属性 ----------' );
+        console.log( '---------- 示例二：原生设置单选框的 type 属性 ----------' );
+    
+        (function ( window, $ ) {
+
+            const $input = document.createElement( 'input' );
+            document.body.appendChild( $input );
+            $input.value = '123';
+            $input.type = 'radio';
+            console.log( $input.value );    // 123  ie 下为 on
+
+        })( window, jQuery );
+    
+    </script>
+
+    <script>
+        console.log( '---------- 示例二：jQuery设置单选框的 type 属性 ----------' );
 
         (function ( window, $ ) {
 
-            const $radio_01 = $( '#radio_01' ); 
-            //  这句代码的执行方式和示例一是一模一样的
-            $radio_01.attr( 'value', '123' );
-            /**
-             *  此时，调用 attr 方法时，设置的是 input 元素的 type 属性，并设置为单选框 radio，调用 access 方法和上一个示例一样，所以直接看 jQuery.attr 方法
-             *  jQuery.attr 方法接受三个参数，分别是 #radio_01 元素，'type' 和 'radio'；然后会进入第三个 if 中来获取 hooks 对象，因为此时设置的是 type 属性，所以可以从 attrHooks 对象中获取 type 的值（ 包含 set 方法的对象 ）
-             *      然后进入到第四个 if 中，此时 hooks 对象存在并且其中有 set 方法，所以会调用其中的 set 方法。并传递三个参数：分别是 #radio_01 元素，'radio' 和 'type'
-             *      调用 set 方法，解决存在的兼容问题（ 非单选框的 input 在设置 value 之后，再将其 type 改为单选框 radio，此时的 value 是否是原来设置的值，在 ie 下此时 value 是 on，非 ie 下和原来一样 ）
-             *      所以，调用完这句话后，在 IE 下，#radio_01 的 value 也是 123，而非 on
-             */
-            $radio_01.attr( 'type', 'radio' );
-            console.log( $radio_01[0].getAttribute( 'value' ) );
+            const $input = document.createElement( 'input' );
+            document.body.appendChild( $input );
+
+            $input.value = '123';
+            
+            $($input).attr( 'type', 'radio' );
+            console.log( $input.value );
 
         })( window, jQuery );
 
@@ -146,18 +156,66 @@
 
             const $radioMan = $( '#radio_man' ); 
             /**
-             *  此时调用 attr 方法时，内部先调用 $.access 方法，调用 access 方法的过程和示例以是一模一样的，所以直接看 $.attr 方法内部，此时 $.attr 方法接受三个参数：#radio_man 元素，'checked' 和 true
-             *  在 $.attr 方法中，会进入第三个 if 来获取 hooks 对象，因为此时的 name 是 'checked'，所以获取的 hooks 对象是 boolHook
-             *  然后会进入第四个 if 中，因为此时存在 hooks 对象（ 此时的 hooks 对象是 boolHook ）并且其中含有 set 方法，所以会调用 set 方法，并传递三个参数，#radio_man, true, 'checked'
-             *      在 set 方法中，判断 value 是否是
+             *  此时调用 attr 方法时，内部先调用 $.access 方法，调用 access 方法的过程和示例一是一模一样的，所以直接看 $.attr 方法内部，此时 $.attr 方法接受三个参数：#radio_man 元素，'checked' 和 true
+             *  在 $.attr 方法中，因为第一个参数 #radio_man 不是一个 XML 元素，所以会进入 32 行的 if 来获取 hooks 对象，因为此时的 name 是 'checked'，所以获取的 hooks 对象是 boolHook
+             *  然后 value 不是 undefined，所以会进入 47 行的 if 中，在 if 中，value 不是 null，且存在 hooks 对象，并且其中含有 set 方法，所以会调用 set 方法，并传递三个参数，#radio_man, true, 'checked'
+             *      在 boolHook 的 set 方法中，判断 value 是否是 false，此例中不是，所以会进入 else 中，通过原生方法 setAttribute 为 #radio_man 元素设置属性 checked="checked"，之后返回 name 变量，也就是 checked
+             *  在调用完 set 方法之后判断其返回值是否是 undefined，此例中不是，所以j进入 60 行的 if 中，直接返回 set 的返回值，即 checked
              */
             $radioMan.attr( 'checked', true );
 
             const $radioWomen = $( '#radio_women' );
+            /**
+             *  此时调用 attr 方法和上面是一样的，唯一不同的是 boolHook 的 set 方法中执行的内容不同
+             *  在 boolHook 的 set 方法中，接受三个参数：#radio_women、false、'checked'。此时 value 是 false，所以会进入 if 中，调用 jQuery.removeAttr 方法将 checked 属性移除
+             *  先不用考虑 jQuery.removeAttr 方法具体做了什么，只需要知道它可以将一个指定的属性从 DOM 元素上移除就可以了
+             *  所以，#radio_women 上的 checked 属性就没有了
+             */
             $radioWomen.attr( 'checked', false );
 
         })( window, jQuery );
 
+    </script>
+
+    <div class="box" id="header"></div>
+    <script>
+    
+        (function ( window, $ ) {
+
+            const $header = $( '#header' );
+
+            /**
+             *  此时调用 attr 方法时，内部先调用 $.access 方法，调用的过程还是和之前一样，直接看调用 jQuery.attr 方法
+             *  在 jQuery.attr 方法中，首先进入 32 行的 if 中获取 hooks 对象，此例中获取到的是 nodeHook 对象（ 不过此例中用不到 hooks 对象，获取哪一个 hooks 对象都用不到 ）
+             *  然后因为 value 值不是 undefined，所以进入 47 行的 if 中，因为 value 是 null，所以会进入 51 行的 if 中，直接调用 jQeury.removeAttr 方法，将当前 DOM 元素的 class 属性移除；目前只需要知道这个方法的作用就可以，具体实现的细节之后再看 
+             */
+            $header.attr( 'class', null );
+
+        })( window, jQuery );
+    
+    </script>
+
+    <div id="footer"></div>
+    <script>
+    
+        (function ( window, $ ) {
+
+            const $footer = $( '#footer' );
+
+            /**
+             *  此时调用 attr 方法时，内部调用 jQuery.access 时，和前面有所不同
+             *  在 jQuery.access 方法中，参数 key 是一个对象，所以会进入第 24 行的 if 中，首先将 chainable 设置为 true，代表此时是设置值，然后遍历 key 保存的对象，每遍历一次调用一次 jQuery.access 方法，并传递五个参数：当前的 jQuery 对象（ 此例中是 $footer ），jQuery.attr 方法，key 对象中的每个属性（ 此例中分别是 class、name、title ），该属性对应的属性值（ 此例中分别是 box、footer、foot ），以及布尔值 true
+             *      在第一次循环调用 jQuery.access 中，key 是 class，value 是 box，bulk 是 false，会进入 42 行的 else if 中，因为 value 不是函数，所以将 raw 设置为 true，然后偶进入 86 行的 if 中，然后会遍历当前的 jQuery 对象，每遍历一次，调用一次 jQuery.attr 方法，并传递对应的参数，之后调用 jQuery.attr 方法的过程就和前面一样了
+             *      之后两次调用 jQuery.access 和第一次一样，只不过传递的第二个、第三个参数不同（ 分别是 name、title 和 footer、foot ）
+             */
+            $footer.attr({
+                class: 'box',
+                name: 'footer',
+                title: 'foot'
+            });
+
+        })( window, jQuery );
+    
     </script>
 
 </body>

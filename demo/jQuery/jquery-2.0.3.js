@@ -4578,11 +4578,31 @@ var nodeHook, boolHook,
 	rfocusable = /^(?:input|select|textarea|button)$/i;
 
 jQuery.fn.extend({
+	/**
+	 * 	@param  { String | Object }	name	当为 String 时是要设置的一个属性名；当为 Object 时是要设置的多个属性的键值对
+	 * 	@param  { String }			value	要设置一个属性的属性值
+	 * 	@return { jQuery }					当前的 jQuery 对象
+	 */
 	attr: function( name, value ) {
+		/**
+		 * 	调用 jQuery.access 方法，并传递五个参数
+		 * 		参数一：当前 jQuery 对象
+		 * 		参数二：jQuery.attr 方法，这个方法在 access 中会被执行
+		 * 		参数三：设置一个属性的属性名或者多个属性的键值对集合
+		 * 		参数四：设置一个属性的属性值
+		 * 		参数五：参数个数是否大于 1 的布尔值
+		 */
 		return jQuery.access( this, jQuery.attr, name, value, arguments.length > 1 );
 	},
 
+	/**
+	 * 	@param  { String } 	name 	要删除的属性名
+	 */
 	removeAttr: function( name ) {
+		/**
+		 * 	遍历当前 jQuery 对象中的所有 DOM 元素，为每一个 DOM 元素执行一次 jQuery.removeAttr 方法
+		 * 	将当前的 DOM 元素和参数 name 作为参数传递 
+		 */
 		return this.each(function() {
 			jQuery.removeAttr( this, name );
 		});
@@ -4830,6 +4850,9 @@ jQuery.fn.extend({
 		return false;
 	},
 
+	/**
+	 * 	@param  { String | Function | Array }  value  要设置的数据
+	 */
 	val: function( value ) {
 		var hooks, ret, isFunction,
 			elem = this[0];
@@ -4840,13 +4863,16 @@ jQuery.fn.extend({
 		if ( !arguments.length ) {
 			if ( elem ) {
 				/**
-				 * 	1.1 获取 elem 的 type 值
-				 * 		当 type 为 option 或者 select 时，进行兼容的处理，并将处理结果保存在 hooks 变量中
+				 * 	1.1 获取 hooks 对象
+				 * 		当 type 为 checkbox 或者 radio，或者是 select 元素、option 元素时会进行兼容的处理，获取 hooks 对象，此时获取的 hooks 对象就是 valHooks
 				 */
 				hooks = jQuery.valHooks[ elem.type ] || jQuery.valHooks[ elem.nodeName.toLowerCase() ];
-				console.log( hooks )
+
 				/**
 				 * 	1.2 判断是否有兼容处理的结果
+				 * 		因为此时是在获取值，所以只需要判断 hooks 对象中是否存在 get 方法
+				 * 			如果存在说明有兼容性要处理，兼容性的处理就在 get 方法中
+				 * 			如果不存在就没有兼容性问题，直接执行后面的代码
 				 */
 				if ( hooks && "get" in hooks && (ret = hooks.get( elem, "value" )) !== undefined ) {
 					return ret;
@@ -4901,11 +4927,10 @@ jQuery.fn.extend({
 				val = value;
 			}
 
-			// Treat null/undefined as ""; convert numbers to string
 			/**
 			 * 	3.4 如果 val 的值为 null 或 undefined，则将其重新设置为空字符串
 			 * 		只有两种情况才会进入这个 if
-			 * 		情况一：调用该方法时显示传递 undefined
+			 * 		情况一：调用该方法时显示传递 undefined 或者 null
 			 * 		情况二：调用该方法时传递了一个函数，且这个函数没有返回值或者返回 undefined 或 null
 			 */
 			if ( val == null ) {
@@ -4921,7 +4946,7 @@ jQuery.fn.extend({
 				val += "";
 			} 
 			/**
-			 * 	3.6 如果 val 的值为数组，那么将数组中的每个元素转换为字符串的形式，并将结果数组爆粗在 val 中
+			 * 	3.6 如果 val 为数组，那么将数组中的每个元素转换为字符串的形式，并将结果数组爆粗在 val 中
 			 * 		只有两种情况才会进入这个 else if
 			 * 		情况一：调用该方法时传递数组
 			 * 		情况二：调用该方法时传递了一个函数，且这个函数返回值是数组
@@ -4933,13 +4958,16 @@ jQuery.fn.extend({
 			}
 
 			/**
-			 * 	3.7 获取当前元素的 type 值，并进行兼容性的处理；如果 type 不存在兼容性，再获取当前元素的标签名（ 转小写字母 ），再次进行兼容性的处理
-			 * 		只有当元素的 type 值或者标签名为 option 和 select 时才会进行兼容性的处理
+			 * 	3.7 获取 hooks 对象
+			 * 		当 type 为 checkbox 或者 radio，或者是 select 元素、option 元素时会进行兼容的处理，获取 hooks 对象，此时获取的 hooks 对象就是 valHooks
 			 */
 			hooks = jQuery.valHooks[ this.type ] || jQuery.valHooks[ this.nodeName.toLowerCase() ];
 
 			/**
-			 * 	3.8 如果上一步没有进行兼容性的处理，那么 hooks 就是 undefined，直接进入 if，将 val 赋给当前元素的 value 属性
+			 * 	3.8 判断是否有兼容处理的结果
+			 * 		因为此时是在设置值，所以只需要判断 hooks 对象中是否存在 set 方法
+			 * 			如果存在说明有兼容性要处理，兼容性的处理就在 set 方法中
+			 * 			如果不存在就没有兼容性问题，直接执行后面的代码
 			 */
 			if ( !hooks || !("set" in hooks) || hooks.set( this, val, "value" ) === undefined ) {
 				console.log( 999 )
@@ -4955,6 +4983,9 @@ jQuery.extend({
 			get: function( elem ) {
 				// attributes.value is undefined in Blackberry 4.7 but
 				// uses .value. See #6932
+				/**
+				 * 	如果当前 option 元素没有 value 属性值，那么就获取其 text 值，即 option 标签内的文本
+				 */
 				var val = elem.attributes.value;
 				return !val || val.specified ? elem.value : elem.text;
 			}
@@ -4962,61 +4993,92 @@ jQuery.extend({
 		select: {
 			get: function( elem ) {
 				var value, option,
-					//  1.  获取 select 元素的 option 子元素的集合
+					//  1.  获取 select 元素的 option 子元素的集合，该集合还是一个类数组
 					options = elem.options,
 					/**
 					 * 	2.  获取当前默认选中的 option 子元素的索引
 					 * 		如果 select 元素中没有 option 元素，那么该属性的值就是 -1
-					 * 		如果 select 元素中有 option 元素并且没有给任何一个 option 元素添加 selected 属性，那么该属性的值就是 0
+					 * 		如果 select 元素中有 option 元素并且没有给任何一个 option 元素添加 selected 属性，那么该属性的值就是 0，即默认选中第一个
 					 * 		如果 select 元素中有 option 元素并且给其中一个 option 元素添加 selected 属性，那么该属性的值就是这个 option 元素的索引
 					 */
 					index = elem.selectedIndex,
 					/**
-					 * 	3.  判断 select 元素的 type 是否是 select-one
+					 * 	3.  判断 select 元素是否是单选的
 					 * 			如果是，则将 one 变量设置为 true
 					 */
 					one = elem.type === "select-one" || index < 0,
-					values = one ? null : [],
+
 					/**
-					 * 	5.  设置循环长度 max
-					 * 		如果 select 元素的 type 是 select-one 的话，那么就将当前选中的 option 的索引再加 1 并存储到 max 变量中
+					 * 	设置 values 变量的值
+					 * 		如果当前 select 元素是单选的，那么就将 values 设置为 null，因为单选情况返回的是一个值
+					 * 		而多选的话返回的是一组值，values 数组用于存储这组值
 					 */
-					max = one ? index + 1 : options.length,
+					values = one 
+						? null 
+						: [],
+
+					/**
+					 * 	5.  设置循环长度 max 变量
+					 * 		如果 select 元素是单选的话，那么就将当前选中的 option 的索引再加 1 并存储到 max 变量中，这样之后的 for 循环就可以只循环一次，也就是被选中的 option 元素
+					 */
+					max = one 
+						? index + 1 
+						: options.length,
+
 					/**
 					 * 	6.  设置循环变量 i
-					 * 		如果 select 元素中没有一个 option 元素，那么就将 options 元素的集合的长度（ 即 0 ）赋给 i
-					 * 		如果 select 元素的 type 值是 select-one 的话，那么就将 select 元素的 selectedIndex 值赋给 i
+					 * 		如果 select 元素中没有一个 option 元素，那么就将 max 的变量赋给 i
+					 * 		如果 select 元素中有 option 元素，并且 select 元素单选的话，那么就将 select 元素的 selectedIndex 值赋给 i
+					 * 		如果 select 元素中有 option 元素，并且 select 元素复选的话，那么就将 i 的值设置为 0
 					 */
-					i = index < 0 ?
-						max :
-						one ? index : 0;
+					i = index < 0 
+						? max
+						: one 
+							? index 
+							: 0;
+					console.log( options );
 
-				// Loop through all the selected options
+				/**
+				 * 	循环当前选中的 option 元素
+				 */
 				for ( ; i < max; i++ ) {
-					// 	获取选中的 option 元素
+					// 	获取当前选中的 option 元素
 					option = options[ i ];
 
 					// IE6-9 doesn't update selected after form reset (#2551)
 					/**
 					 * 	判断 option 元素是否被选中；如果被选中，那么 selected 就是 true，否则就是 false
-					 * 	判断 jQuery.support.optDisabled 是否是 true
-					 * 		在老版本的 webkit 浏览器中，该值是 false
-					 * 		在目前的浏览器中，该值都是 true
+					 * 	如果 option 被选中，再判断 jQuery.support.optDisabled 是否是 true，在老版本的 webkit 浏览器中，该值是 false，在目前的浏览器中，该值都是 true
+					 * 		如果该值是 true，那么会再判断 option 元素是否被禁用
+					 * 			如果被禁用，不会进入 if，直接返回 values，此时 values 是 null。因为 option 元素被禁用的话是获取不到其值的
+					 * 			如果没有被禁用，再判断 option 的父元素，也就是 select 元素是否被禁用
+					 * 				如果 select 元素没有被禁用，那么就进入 if 中
+					 * 				如果 select 元素被禁用了，那么再判断 option 父元素是否是 optgroup 元素
+					 * 					如果是，则不会进入 if，直接返回 values
+					 * 					如果不是，则进入 if
+					 * 		如果该值是 false，
+					 * 
+					 * 	在 if 中，首先通过 val 方法获取 option 元素的 value 属性值（ 如果没有 value 就是 text 值 ），将结果保存在 value 变量中
+					 * 	然后 one 是否是 true
+					 * 		如果是的话，说明当前 select 元素是单选，直接返回 value 变量
+					 * 		如果不是，说明当前 select 元素是复选，将 value 变量的值 push 到 values 数组中，等到循环结束，直接返回 values 数组
 					 */
+					// console.log( option.parentNode.disabled )
 					if ( ( option.selected || i === index ) &&
-							// Don't return options that are disabled or in a disabled optgroup
-							( jQuery.support.optDisabled ? !option.disabled : option.getAttribute("disabled") === null ) &&
+							( jQuery.support.optDisabled 
+								? !option.disabled 
+								: option.getAttribute("disabled") === null ) && 
 							( !option.parentNode.disabled || !jQuery.nodeName( option.parentNode, "optgroup" ) ) ) {
 
-						// Get the specific value for the option
+						// 获取当前 option 元素的 value 属性值（ 如果没有 value 就获取其文本 ）
 						value = jQuery( option ).val();
 
-						// We don't need an array for one selects
+						// 如果 select 是单选的，那么就直接返回获取到 option 元素的属性值
 						if ( one ) {
 							return value;
 						}
 
-						// Multi-Selects return an array
+						// 如果 select 是复选的，将当前 option 元素的属性值 push 到 values 数组中
 						values.push( value );
 					}
 				}
@@ -5046,44 +5108,78 @@ jQuery.extend({
 		}
 	},
 
+	/**
+	 * 	@param  { Element }	elem	要设置属性的 DOM 元素
+	 * 	@param  { String }	name	要设置的属性名
+	 * 	@param  { String }	value	要设置的属性值
+	 */
 	attr: function( elem, name, value ) {
 		var hooks, ret,
-			nType = elem.nodeType;
+			nType = elem.nodeType;	// 保存节点的类型
 
-		// don't get/set attributes on text, comment and attribute nodes
+		/**
+		 *  1.  首先判断 elem 是否存在
+		 * 		如果存在，则再判断其是否是属性节点、文本节点、注释节点，如果是其中的一种，直接退出
+		 * 		因为在这三种节点上是无法设置/获取属性的
+		 */
 		if ( !elem || nType === 3 || nType === 8 || nType === 2 ) {
 			return;
 		}
 
-		// Fallback to prop when attributes are not supported
+		/**
+		 * 	2.  判断 elem 节点是否存在 getAttribute 方法，如果不存在，则调用 jQuery.prop 方法来实现
+		 * 		像 document 这样的节点就不存在这个方法，所以此时就要通过 jQuery.prop 来方法给 document 添加属性
+		 */
 		if ( typeof elem.getAttribute === core_strundefined ) {
 			return jQuery.prop( elem, name, value );
 		}
 
-		// All attributes are lowercase
-		// Grab necessary hook if one is defined
+		/**
+		 * 	3.  判断 elem 是否是 HTML 元素，而不是 XML 元素；如果满足，进入 if
+		 * 		这一步主要是根据设置的属性来获取不同的 hooks 对象
+		 */
 		if ( nType !== 1 || !jQuery.isXMLDoc( elem ) ) {
+			/**
+			 * 	将需要添加的属性名称转小写，并根据 name 来获取不同的钩子对象
+			 * 		如果添加的是 type 属性，那么获取的 hooks 就是 attrHook 对象
+			 * 		如果添加的是上面 16 种中的一种属性，那么获取的 hooks 就是 boolHook 对象（ 通过 jQuery.expr.match.bool 正则来检验是否是上述的 16 种情况之一 ）
+			 * 		除此之外，获得的 hooks 都是 nodeHook 对象（ nodeHook 就是 undefined ）
+			 */
 			name = name.toLowerCase();
 			hooks = jQuery.attrHooks[ name ] ||
 				( jQuery.expr.match.bool.test( name ) ? boolHook : nodeHook );
 		}
 
+		/**
+		 *  4.  判断是否有要添加属性的值，如果提供属性值不是 undefined，则意味着要对属性处理，进入 if	
+		 */
 		if ( value !== undefined ) {
-
+			/**
+			 *  4.1 如果属性的值为 null，则调用 jQuery.removeAttr 方法将该属性删除 
+			 */
 			if ( value === null ) {
 				jQuery.removeAttr( elem, name );
-
-			} else if ( hooks && "set" in hooks && (ret = hooks.set( elem, value, name )) !== undefined ) {
+			} 
+			/**
+			 *  4.2 判断 hooks 对象是否存在
+			 * 		只有当设置的属性是 type 或者上面 16 种之一时，hooks 对象才存在，剩余的属性 hooks 对象都是 undefined
+			 * 		如果 hooks 对象存在，则再判断其中是否有 set 属性，boolHook 和 attrHook 中都存在 set 方法，所以进一步会调用 set 方法，并将要设置的 DOM 元素、属性名和属性值作为参数传递，并判断 set 的返回值是否是 undefined
+			 * 			如果不是 undefined，则直接返回这个值
+			 */
+			else if ( hooks && "set" in hooks && (ret = hooks.set( elem, value, name )) !== undefined ) {
 				return ret;
-
-			} else {
+			} 
+			/**
+			 * 	4.3 处理前两种情况之外的情况，例如设置 class，id 等属性的时候会走这个 else
+			 * 		直接通过原生方法 setAttribute 为 DOM 元素添加属性
+			 */
+			else {
 				elem.setAttribute( name, value + "" );
 				return value;
 			}
 
 		} else if ( hooks && "get" in hooks && (ret = hooks.get( elem, name )) !== null ) {
 			return ret;
-
 		} else {
 			ret = jQuery.find.attr( elem, name );
 
@@ -5094,12 +5190,24 @@ jQuery.extend({
 		}
 	},
 
+	/**
+	 * 	@param  { Element }	elem	删除属性的 DOM 元素
+	 * 	@param  { String }	value	删除属性的属性名，如果有多个以空格分开
+	 */
 	removeAttr: function( elem, value ) {
 		var name, propName,
 			i = 0,
+			//  1.  将参数 value 按照空格匹配，将匹配到的结果数组保存在 attrNames 中 
 			attrNames = value && value.match( core_rnotwhite );
 
+		/**
+		 * 	判断是否有匹配结果，并且 elem 是元素节点
+		 */
 		if ( attrNames && elem.nodeType === 1 ) {
+			/**
+			 * 	遍历 attrNames 数组
+			 * 		调用原生方法 removeAttribute 将数组中的每个属性移除
+			 */
 			while ( (name = attrNames[i++]) ) {
 				propName = jQuery.propFix[ name ] || name;
 
@@ -5116,15 +5224,30 @@ jQuery.extend({
 
 	attrHooks: {
 		type: {
+			/**
+			 * 	@param  { Element }	elem	操作的 DOM 元素
+			 * 	@param  { String }	value	设置的属性值
+			 */
 			set: function( elem, value ) {
+				/**
+				 * 	1.  首先判断是否存在兼容性（ 根据 jQuery.support.radioValue 的值，这个值代表的是一个 type 为 text 的 input 输入框，在对其设置一个 value 属性后，再将其 type 设置为单选框，即 radio，此时，这个 input 的 value 值是否是原来设置过的值，在 IE 下，其值为 on（ 此值为 false ），在非 IE 下，其值还是原来的值（ 此值为 true ） ）
+				 * 		如果存在兼容性，即处于 IE 下，则再判断此时要设置的属性值是否是 radio 并且要设置的元素标签是否是 input 标签，如果都满足，则进入 if
+				 */
 				if ( !jQuery.support.radioValue && value === "radio" && jQuery.nodeName(elem, "input") ) {
-					// Setting the type on a radio button after the value resets the value in IE6-9
-					// Reset value to default in case type is set after value during creation
+					/**
+					 * 	首先将此时 input 的 value 值保存下来，如果在设置 input 的 type 为 radio 之前，input 已经存在了 value 值，那么就将其值保存在 val 变量中
+					 * 	然后通过 setAttribute 方法将 input 的 type 改为 radio
+					 * 	然后再判断修改 input 的 type 之前是否存在 value 值
+					 * 		如果之前存在，则将此时 input 的 value 设置为之前的 value 值，改变了 IE 下 value 为 on 的情况
+					 * 		如果之前不存在，则不进行操作
+					 */
 					var val = elem.value;
 					elem.setAttribute( "type", value );
 					if ( val ) {
 						elem.value = val;
 					}
+
+					// 	返回 value 值，也就是字符串 radio
 					return value;
 				}
 			}
@@ -5178,16 +5301,28 @@ jQuery.extend({
 
 // Hooks for boolean attributes
 boolHook = {
+	/**
+	 * 	@param  { Element }	elem	操作的 DOM 元素
+	 * 	@param  { Boolean }	value	属性值，是一个布尔值
+	 * 	@param  { String }	name	属性名
+	 */
 	set: function( elem, value, name ) {
+		/**
+		 * 	判断属性值是 false 还是 true
+		 * 		如果是 false，则调用 $.removeAttr 方法，将该属性移除
+		 * 		如果是 true，则为 DOM 元素设置该属性，且属性名和属性值相同
+		 */
 		if ( value === false ) {
-			// Remove boolean attributes when set to false
 			jQuery.removeAttr( elem, name );
 		} else {
 			elem.setAttribute( name, name );
 		}
+
+		// 	返回属性名
 		return name;
 	}
 };
+
 jQuery.each( jQuery.expr.match.bool.source.match( /\w+/g ), function( i, name ) {
 	var getter = jQuery.expr.attrHandle[ name ] || jQuery.find.attr;
 
@@ -5239,25 +5374,51 @@ jQuery.each([
 	jQuery.propFix[ this.toLowerCase() ] = this;
 });
 
-// Radios and checkboxes getter/setter
+// 向 valHooks 中添加 radio 和 checkbox 的兼容性处理
 jQuery.each([ "radio", "checkbox" ], function() {
 	jQuery.valHooks[ this ] = {
+		/**
+		 * 	radio 和 checkbox 在 valHooks 中的 set 方法
+		 * 	@param  { Element }	elem	操作的 DOM 元素	
+		 * 	@param  { Any }		elem	设置的值，该值只有是数组的情况下才有效
+		 * 	@return { Boolean }			操作的 DOM 元素是否被选中的布尔值
+		 */
 		set: function( elem, value ) {
-			console.log( arguments )
+			/**
+			 * 	判断提供的值是否是数组
+			 * 		如果不是的话，则直接退出函数	
+			 * 		如果是的话，判断当前操作的 DOM 元素的 value 值是否存在于这个数组中
+			 * 			如果存在，则将当前 DOM 元素的 checked 属性设置为 true，即被选中
+			 * 			如果不存在，则将当前 DOM 元素的 checked 属性设置为 false，即未被选中
+			 */
 			if ( jQuery.isArray( value ) ) {
-				console.log( jQuery(elem).val() )
 				return ( elem.checked = jQuery.inArray( jQuery(elem).val(), value ) >= 0 );
 			}
 		}
 	};
+	/**
+	 * 	判断 radio 和 checkbox 的默认值（ value 属性值 ）是否是空字符串，只有在老版本的 webkit 浏览器中，其默认值是 空字符串，其他浏览器都是 "on"
+	 * 	如果当前是老版本的 webkit 浏览器，进入 if
+	 */
 	if ( !jQuery.support.checkOn ) {
+		/**
+		 * 	radio 和 checkbox 在 valHooks 中的 get 方法（ 只在老版本的 webkit 中存在 ）
+		 * 	@param  { Element }	elem	操作的 DOM 元素	
+		 * 	@return { String }			DOM 元素本身的 value 属性值，如果没有则是字符串 on
+		 */
 		jQuery.valHooks[ this ].get = function( elem ) {
-			// Support: Webkit
-			// "" is returned instead of "on" if a value isn't specified
-			return elem.getAttribute("value") === null ? "on" : elem.value;
+			/**
+			 * 	判断此时 DOM 元素是否提供了 value 属性
+			 * 		如果没有提供，则返回字符串 on，兼容其他浏览器都返回字符串 on
+			 * 		如果提供了，则返回提供的属性值
+			 */
+			return elem.getAttribute("value") === null 
+				? "on" 
+				: elem.value;
 		};
 	}
 });
+
 var rkeyEvent = /^key/,
 	rmouseEvent = /^(?:mouse|contextmenu)|click/,
 	rfocusMorph = /^(?:focusinfocus|focusoutblur)$/,

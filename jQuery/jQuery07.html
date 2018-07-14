@@ -20,12 +20,14 @@
         <div class="nav_header">
             <span class="nav_header_text AGaramondPro_Italic_Bold">Navigation</span>
         </div>
-        <div class="nav_body">
-            <!-- <ul class="nav_lists">
-                <li class="list_item_copy list_item"></li>
-            </ul> -->
-            <div class="tree_nav clear">
-                <ul id="tree_nav" class="ztree"></ul>
+        <div class="nav-body-container">
+            <div class="nav_body">
+                <!-- <ul class="nav_lists">
+                    <li class="list_item_copy list_item"></li>
+                </ul> -->
+                <div class="tree_nav clear">
+                    <ul id="tree_nav" class="ztree"></ul>
+                </div>
             </div>
         </div>
     </div>
@@ -673,8 +675,12 @@ $button.on( 'click', function () {
 </code>
 </pre>  
 
-<h2 id="与-input-标签相关的操作"><a href="#与-input-标签相关的操作" class="headerlink" title="与 input 标签相关的操作"></a>与 input 标签相关的操作</h2><h3 id="jQuery-fn-val"><a href="#jQuery-fn-val" class="headerlink" title="jQuery.fn.val"></a>jQuery.fn.val</h3><pre class="line-numbers">
-<code class="language-javascript">
+<h2 id="与-input-标签相关的操作"><a href="#与-input-标签相关的操作" class="headerlink" title="与 input 标签相关的操作"></a>与 input 标签相关的操作</h2><h3 id="jQuery-fn-val"><a href="#jQuery-fn-val" class="headerlink" title="jQuery.fn.val"></a>jQuery.fn.val</h3><p>这个方法用于向 <code>input</code> 元素、<code>select</code> 元素、<code>option</code> 元素设置值或者取值。<br>如果是设置值，那么会向 <code>jQuery</code> 对象中的每个 DOM 元素设置，如果是取值，那么只会取 <code>jQuery</code> 对象中第一个 DOM 元素的值</p>
+<pre class="line-numbers">
+<code class="language-javascript">   
+/**
+ *  @param  { String }  value  要设置的值，如果要获取则不用传递参数
+ */
 val: function( value ) {
     var hooks, ret, isFunction,
         elem = this[0];
@@ -685,13 +691,16 @@ val: function( value ) {
     if ( !arguments.length ) {
         if ( elem ) {
             /**
-             *  1.1 获取 elem 的 type 值
-             *      当 type 为 option 或者 select 时，进行兼容的处理，并将处理结果保存在 hooks 变量中
+             *  1.1 获取 hooks 对象
+             *      当 type 为 checkbox 或者 radio，或者是 select 元素、option 元素时会进行兼容的处理，获取 hooks 对象，此时获取的 hooks 对象就是 valHooks
              */
             hooks = jQuery.valHooks[ elem.type ] || jQuery.valHooks[ elem.nodeName.toLowerCase() ];
 
             /**
              *  1.2 判断是否有兼容处理的结果
+             *      因为此时是在获取值，所以只需要判断 hooks 对象中是否存在 get 方法
+             *          如果存在说明有兼容性要处理，兼容性的处理就在 get 方法中
+             *          如果不存在就没有兼容性问题，直接执行后面的代码
              */
             if ( hooks && "get" in hooks && (ret = hooks.get( elem, "value" )) !== undefined ) {
                 return ret;
@@ -732,7 +741,7 @@ val: function( value ) {
 
         /**
          *  3.2 处理参数为函数的情况
-         *      如果是函数，则执行这个函数，将结果保存在 val 变量中，并将其作用域设置为当前的 DOM 元素，并传递两个参数
+         *      如果是函数，则执行这个函数，将结果保存在 val 变量中，将这个函数的作用域设置为当前的 DOM 元素，并传递两个参数
          *          参数一：当前 DOM 元素在 jQuery 对象中的索引
          *          参数二：当前 DOM 元素的 value 属性值
          */
@@ -740,17 +749,16 @@ val: function( value ) {
             val = value.call( this, i, jQuery( this ).val() );
         } 
         /**
-         *  3.3 处理参数不是函数，即字符串的情况，直接将其赋值给 val 变量 
+         *  3.3 处理参数不是函数，即字符串或者数组的情况，直接将其赋值给 val 变量 
          */
         else {
             val = value;
         }
 
-        // Treat null/undefined as ""; convert numbers to string
         /**
          *  3.4 如果 val 的值为 null 或 undefined，则将其重新设置为空字符串
          *      只有两种情况才会进入这个 if
-         *      情况一：调用该方法时显示传递 undefined
+         *      情况一：调用该方法时显示传递 undefined 或者 null
          *      情况二：调用该方法时传递了一个函数，且这个函数没有返回值或者返回 undefined 或 null
          */
         if ( val == null ) {
@@ -766,7 +774,7 @@ val: function( value ) {
             val += "";
         } 
         /**
-         *  3.6 如果 val 的值为数组，那么将数组中的每个元素转换为字符串的形式，并将结果数组爆粗在 val 中
+         *  3.6 如果 val 为数组，那么将数组中的每个元素转换为字符串的形式，并将结果数组重新保存在 val 中
          *      只有两种情况才会进入这个 else if
          *      情况一：调用该方法时传递数组
          *      情况二：调用该方法时传递了一个函数，且这个函数返回值是数组
@@ -778,13 +786,16 @@ val: function( value ) {
         }
 
         /**
-         *  3.7 获取当前元素的 type 值，并进行兼容性的处理；如果 type 不存在兼容性，再获取当前元素的标签名（ 转小写字母 ），再次进行兼容性的处理
-         *      只有当元素的 type 值或者标签名为 option 和 select 时才会进行兼容性的处理
+         *  3.7 获取 hooks 对象
+         *      当 type 为 checkbox 或者 radio，或者是 select 元素、option 元素时会进行兼容的处理，获取 hooks 对象，此时获取的 hooks 对象就是 valHooks
          */
         hooks = jQuery.valHooks[ this.type ] || jQuery.valHooks[ this.nodeName.toLowerCase() ];
 
         /**
-         *  3.8 如果上一步没有进行兼容性的处理，那么 hooks 就是 undefined，直接进入 if，将 val 赋给当前元素的 value 属性
+         *  3.8 判断是否有兼容处理的结果
+         *      因为此时是在设置值，所以只需要判断 hooks 对象中是否存在 set 方法
+         *          如果存在说明有兼容性要处理，兼容性的处理就在 set 方法中
+         *          如果不存在就没有兼容性问题，直接执行后面的代码
          */
         if ( !hooks || !("set" in hooks) || hooks.set( this, val, "value" ) === undefined ) {
             this.value = val;
@@ -792,9 +803,10 @@ val: function( value ) {
     });
 }
 </code>
-</pre>  
+</pre>     
 
-<h4 id="示例一：input-text-不提供任何参数"><a href="#示例一：input-text-不提供任何参数" class="headerlink" title="示例一：input text 不提供任何参数"></a>示例一：input text 不提供任何参数</h4><pre>
+<h4 id="普通-input-类型，即-type-不为-radio、checkbox"><a href="#普通-input-类型，即-type-不为-radio、checkbox" class="headerlink" title="普通 input 类型，即 type 不为 radio、checkbox"></a>普通 input 类型，即 type 不为 radio、checkbox</h4><p>这种类型的 <code>input</code> 是不存在任何兼容性问题的，所以 <code>hooks</code> 对象都是 <code>undedined</code>   </p>
+<h5 id="示例一：input-text-不提供任何参数"><a href="#示例一：input-text-不提供任何参数" class="headerlink" title="示例一：input text 不提供任何参数"></a>示例一：input text 不提供任何参数</h5><pre>
 <code class="language-markup">
 &lt;input type="text" id="input_01" value="123" /&gt;
 </code>
@@ -805,16 +817,16 @@ val: function( value ) {
 const $input = $( '#input_01' );
 
 /**
-*  此时调用 val 方法时，因为没有传递参数，所以进入 9 行的 if 中
-*  此时，elem 就是 #input_01 元素，然后进行兼容性的处理，此时 type 为 text，标签名为 input，所以不存在任何兼容性的问题，所以不会进入 20 行的 if 中
-*  然后获取 elem 的 value 属性（ 是 123 ）并保存在 ret 变量中，最后将其返回
+*  此时调用 val 方法时，因为没有传递参数，所以进入 12 行的 if 中
+*  此时，elem 就是 #input_01 元素，然后获取 hooks 对象，此时 type 为 text，标签名为 input，所以 hooks 对象就是 undefined，即不存在任何兼容性的问题，所以不会进入 26 行的 if 中
+*  然后获取 elem 的 value 属性（ 是字符串 123 ）并保存在 ret 变量中，最后将其返回
 *  所以获取到 #input_01 的值为 123
 */
 const value = $input.val(); // 123
 </code>
 </pre>  
 
-<h4 id="示例二：input-text-提供一个字符串参数"><a href="#示例二：input-text-提供一个字符串参数" class="headerlink" title="示例二：input text 提供一个字符串参数"></a>示例二：input text 提供一个字符串参数</h4><pre>
+<h5 id="示例二：input-text-提供一个字符串参数"><a href="#示例二：input-text-提供一个字符串参数" class="headerlink" title="示例二：input text 提供一个字符串参数"></a>示例二：input text 提供一个字符串参数</h5><pre>
 <code class="language-markup">
 &lt;input type="text" id="input_02" value="123" /&gt;
 </code>
@@ -825,8 +837,8 @@ const value = $input.val(); // 123
 const $input = $( '#input_02' );
 
 /**
- *  此时，调用 val 方法传递了一个字符串参数，所以进入 49 行的 return 中，遍历当前 jQuery 对象中的所有 DOM 元素
- *  将参数 value 保存在变量 val 中，然后对 val 进行一个判断（ 此例中是字符串 456 ），然后进行兼容性的处理，此时还是不存在任何兼容性的问题，即 hooks 为 undefined，所以进入 113 行的 if 中
+ *  此时，调用 val 方法传递了一个字符串参数，所以进入 55 行的 return 中，遍历当前 jQuery 对象中的所有 DOM 元素
+ *  将参数 value 保存在变量 val 中，然后对 val 进行判断（ 此例中是字符串 456 ），所以不会进入 85 —— 107 的任何 if 中，然后获取 hooks 对象，获取到的还是 undefiend，即还是不存在任何兼容性的问题，所以进入 121 行的 if 中
  *      为当前 DOM 元素设置 value 属性为 val 的值
  *  所以 #input_02 显示为 456
  */
@@ -834,7 +846,7 @@ const value = $input.val( '456' );
 </code>
 </pre>  
 
-<h4 id="示例三：input-text-提供一个数组参数"><a href="#示例三：input-text-提供一个数组参数" class="headerlink" title="示例三：input text 提供一个数组参数"></a>示例三：input text 提供一个数组参数</h4><pre>
+<h5 id="示例三：input-text-提供一个数组参数"><a href="#示例三：input-text-提供一个数组参数" class="headerlink" title="示例三：input text 提供一个数组参数"></a>示例三：input text 提供一个数组参数</h5><pre>
 <code class="language-markup">
 &lt;input type="text" id="input_03" value="000" /&gt;
 </code>
@@ -845,10 +857,8 @@ const value = $input.val( '456' );
 const $input = $( '#input_03' );
 
 /**
- *  此时调用 val 方法传递的是一个数组，因为提供了参数，所以进入 49 行的 return 中，遍历所有的 DOM 元素
- *  因为提供的参数不是函数，所以进入 69 行的 else 中，将参数的引用保存在 val 变量中，然后会进入 98 行的 else if 中，将数组中的每个不为 null 或 undefined 的元素转换为字符串的形式，再将转换后的数组引用保存在 val 中
+ *  此时调用 val 方法传递的是一个数组，调用过程和示例二一样，唯一不同的就是此时会进入 103 行 else if 中，将数组中的所有元素转换为字符串，并将转换后的数组重新存入 val 变量中，最后赋给当前元素的 value 属性
  *      注意，此时将每个元素转换为字符串的话，如果元素是引用类型，那么会调用其构造函数下的的 toString 方法转换为字符串的形式
- *  然后进行兼容性的处理，此时是不存在任何兼容性问题的，所以 hooks 为 undefined，进入 113 行的 if 中，将 val 的值赋给当前 DOM 元素的 value 属性 
  *      注意，此时 val 还是一个数组，将其赋给 value 属性时会将数组隐式的转换为字符串（ 即调用 Array.prototype.toString 方法 ）
  */
 const value = $input.val( [ 1, 2, 3 ] ); // 123 
@@ -856,7 +866,7 @@ const value = $input.val( [ 1, 2, 3 ] ); // 123
 </pre>  
 
 <p>结果如下<br><img src="jQuery07/01_val_提供数组参数.png">  </p>
-<h4 id="示例四：input-text-提供一个函数参数"><a href="#示例四：input-text-提供一个函数参数" class="headerlink" title="示例四：input text 提供一个函数参数"></a>示例四：input text 提供一个函数参数</h4><pre>
+<h5 id="示例四：input-text-提供一个函数参数"><a href="#示例四：input-text-提供一个函数参数" class="headerlink" title="示例四：input text 提供一个函数参数"></a>示例四：input text 提供一个函数参数</h5><pre>
 <code class="language-markup">
 &lt;input type="text" id="input_04" value="001" /&gt;
 &lt;input type="text" id="input_05" value="002" /&gt;
@@ -877,18 +887,69 @@ function test ( index, value ) {
 
 /**
  *  此时调用 val 时传递的是一个函数，因为提供了参数，所以会进入 49 行的 return 中，遍历每一个 DOM 元素
- *  因为参数是函数，所以 isFunction 为 true，进入 63 行的 if 中，执行这个函数，并将这个函数的作用域设置为当前的 DOM 元素（ 即 test 方法中，作用域分别指向 #input_04 和 #input_05 ），并传递两个参数
+ *  因为参数是函数，所以 isFunction 为 true，进入 69 行的 if 中，执行这个函数，并将这个函数的作用域设置为当前的 DOM 元素（ 即 test 方法中，作用域分别指向 #input_04 和 #input_05 ），并传递两个参数
  *      参数一：当前 DOM 元素在 jQuery 对象中的索引
  *      参数二：当前 DOM 元素本身的 value 值
  *  调用完成后，将结果保存在 val 变量中，然后对其进行进一步的处理，此例中既不是 undefined 和 null，也不数值或数组，所以不做任何处理
- *  然后在处理兼容性，此例中不存在兼容性问题，所以直接将 val 的值赋给当前 DOM 元素的 value 属性
+ *  然后获取 hooks 对象，此时是 undefined，所以不存在兼容性问题，最后直接将 val 的值赋给当前 DOM 元素的 value 属性
  */
 const value = $input.val( test );
 </code> 
 </pre>  
 
 <p>结果如下<br><img src="jQuery07/02_val_提供函数参数.png">  </p>
-<h4 id="示例五：input-radio-不提供任何参数"><a href="#示例五：input-radio-不提供任何参数" class="headerlink" title="示例五：input radio 不提供任何参数"></a>示例五：input radio 不提供任何参数</h4><pre>
+<h4 id="input-type-为-radio"><a href="#input-type-为-radio" class="headerlink" title="input type 为 radio"></a>input type 为 radio</h4><p>先来看 <code>input</code> 的 <code>type</code> 为 <code>radio</code> 或者 <code>checkbox</code> 是如何解决兼容性问题的   </p>
+<pre class="line-numbers">
+<code class="language-javascript">
+// 向 valHooks 中添加 radio 和 checkbox 的兼容性处理
+jQuery.each([ "radio", "checkbox" ], function() {
+    jQuery.valHooks[ this ] = {
+        /**
+         *  radio 和 checkbox 在 valHooks 中的 set 方法
+         *  @param  { Element }    elem    操作的 DOM 元素    
+         *  @param  { Any }        elem    设置的值，该值只有是数组的情况下才有效
+         *  @return { Boolean }         操作的 DOM 元素是否被选中的布尔值
+         */
+        set: function( elem, value ) {
+            /**
+             *  判断提供的值是否是数组
+             *      如果不是的话，则直接退出函数    
+             *      如果是的话，判断当前操作的 DOM 元素的 value 值是否存在于这个数组中
+             *          如果存在，则将当前 DOM 元素的 checked 属性设置为 true，即被选中
+             *          如果不存在，则将当前 DOM 元素的 checked 属性设置为 false，即未被选中
+             */
+            if ( jQuery.isArray( value ) ) {
+                return ( elem.checked = jQuery.inArray( jQuery(elem).val(), value ) >= 0 );
+            }
+        }
+    };
+    /**
+     *  判断 radio 和 checkbox 的默认值（ value 属性值 ）是否是空字符串，只有在老版本的 webkit 浏览器中，其默认值是 空字符串，其他浏览器都是 "on"
+     *  如果当前是老版本的 webkit 浏览器，进入 if
+     */
+    if ( !jQuery.support.checkOn ) {
+        /**
+         *  radio 和 checkbox 在 valHooks 中的 get 方法（ 只在老版本的 webkit 中存在 ）
+         *  @param  { Element }    elem    操作的 DOM 元素    
+         *  @return { String }          DOM 元素本身的 value 属性值，如果没有则是字符串 on
+         */
+        jQuery.valHooks[ this ].get = function( elem ) {
+            /**
+             *  判断此时 DOM 元素是否提供了 value 属性
+             *      如果没有提供，则返回字符串 on，兼容其他浏览器都返回字符串 on
+             *      如果提供了，则返回提供的属性值
+             */
+            return elem.getAttribute("value") === null 
+                ? "on" 
+                : elem.value;
+        };
+    }
+});
+</code>
+</pre>  
+
+
+<h5 id="示例一：input-radio-不提供任何参数"><a href="#示例一：input-radio-不提供任何参数" class="headerlink" title="示例一：input radio 不提供任何参数"></a>示例一：input radio 不提供任何参数</h5><pre>
 <code class="language-markup">
 &lt;input type="radio" name="sex" class="sex_radio" id="sex_radio_man"   value="男" checked /&gt;男生
 &lt;input type="radio" name="sex" class="sex_radio" id="sex_radio_woman" value="女" /&gt;女生
@@ -903,15 +964,14 @@ const $radioWoman  = $( '#sex_radio_woman' );
 const $radioNoknow = $( '#sex_radio_noknow' );
 
 /**
- *  下面调用 val 方法中，都没有传递参数，所以会 9 行的 if 中
- *  首先进行兼容性的处理，在 valHooks 中是存在 radio 属性的，所以 hooks 变量是存在的
+ *  下面调用 val 方法中，都没有传递参数，所以会 12 行的 if 中
+ *  然后获取 hooks 对象，此时 input 的 type 为 radio，所以 hooks 对象就是 valHooks 中的 radio 对象，然后进行兼容性的处理
  *      这里要按照浏览器分两种情况
- *          情况一：老的 webkit 浏览器：在这个浏览器中，没有 value 值的单选框默认是空字符串。此时 hooks 中是存在 get 属性的
- *              此时就会调用其中的 get 方法，获取到当前 DOM 元素的 value 属性值（ 如果没有提供就是 null ），如果 value 是 null 的话，那么 get 方法就会返回字符串 on，再将 get 返回的结果赋给 ret 变量，并判断 ret 变量是否是 undefined
- *              如果不是，则直接将 ret 返回，即返回的是字符串 on
- *          情况一：非老的 webkit 浏览器：在这个浏览器中，没有 value 值的单选框默认是字符串 on。此时 hooks 中是不存在 get 属性的
- *              所以不会进入 20 行的 if 中
- *              再获取到第一个元素的 value 值（ 此例中分别是 "男"、"女"、"on" ）并赋给 ret 变量，然后将 ret 中的回车符替换为空字符串，并返回
+ *          情况一：老的 webkit 浏览器：此时 hooks 中是存在 get 属性的
+ *              此时就会调用其中的 get 方法，获取到当前 DOM 元素的 value 属性值（ 如果没有提供就是字符串 on ）
+ *          情况二：非老的 webkit 浏览器：此时 hooks 中是不存在 get 属性的
+ *              所以不会进入 26 行的 if 中
+ *              然后获取到第一个元素的 value 值（ 此例中分别是 "男"、"女"、"on" ）并赋给 ret 变量，然后将 ret 中的回车符替换为空字符串，并返回
  * 
  *  所以，调用 val 方法，任何版本的浏览器下，没有 value 值的单选框，其默认值为 on
  */
@@ -919,9 +979,31 @@ $radioMan.val();     // 男
 $radioWoman.val();   // 女
 $radioNoknow.val();  // on
 </code> 
-</pre>   
+</pre>     
 
-<h4 id="示例六：input-radio-提供数组参数"><a href="#示例六：input-radio-提供数组参数" class="headerlink" title="示例六：input radio 提供数组参数"></a>示例六：input radio 提供数组参数</h4><pre>
+<h5 id="示例二：input-radio-提供字符串参数"><a href="#示例二：input-radio-提供字符串参数" class="headerlink" title="示例二：input radio 提供字符串参数"></a>示例二：input radio 提供字符串参数</h5><pre>
+<code class="language-markup">
+&lt;input type="radio" name="name" class="name_radio" id="name_radio_ZS" value="zs" /&gt;张三
+&lt;input type="radio" name="name" class="name_radio" id="name_radio_LS" value="ls" /&gt;李四
+</code>
+</pre>  
+
+<pre>
+<code class="language-javascript">
+const $radioName  = $( '.name_radio' );
+
+/**
+ *  此时调用 val 时传递的是一个字符串参数，所以会进入 55 行的 return 中，遍历每一个 DOM 元素
+ *  将参数保存在 val 变量中，然后获取 hooks 对象，此时获取到的是 valHooks 中 radio 的对象
+ *  然后会执行 hooks 中的 set 方法，因为参数是字符串，所以在 set 方法中什么也不做，返回了 undefined，进入 121 行的 if 中，将参数赋给当前元素的 value 属性
+ *  所以，#name_radio_ZS 和 #name_radio_LS 的 value 值最终都是 all_name
+ */
+$radioName.val( 'all_name' );
+</code> 
+</pre>     
+
+<p>结果如下<br><img src="jQuery07/04_val_radio_提供字符串参数.png" alt="结果">  </p>
+<h5 id="示例三：input-radio-提供数组参数"><a href="#示例三：input-radio-提供数组参数" class="headerlink" title="示例三：input radio 提供数组参数"></a>示例三：input radio 提供数组参数</h5><pre>
 <code class="language-markup">
 &lt;input type="radio" name="single1" class="single_radio" id="single_radio_A" value="a" /&gt;A
 &lt;input type="radio" name="single2" class="single_radio" id="single_radio_B" value="b" /&gt;B
@@ -934,43 +1016,457 @@ $radioNoknow.val();  // on
 const $radioSingle  = $( '.single_radio' );
 
 /**
- *  此时，调用 val 方法传递了一个数组，所以进入 49 行的 return 中，遍历每一个 DOM 元素
- *  因为参数不是一个函数，所以直接将参数的引用保存在 val 变量中，然后将参数数组中的所有元素转换为字符串，并重新赋给 val 变量
- *  然后进行兼容性的处理，因为此时 DOM 元素的 type 是 radio，而在 valHooks 中是存在 radio 属性的，所以获取到 radio 的属性值（ 是一个对象，里面包含 set 方法，如果是老版本的 webkit 浏览器还会包含 get 方法 ）
- *      然后在 113 行的 if 判断中，会调用其中的 set 方法，并将当前 DOM 元素和 val 方法的参数作为实参
- *          在调用 set 方法中，首先判断第二个参数是否是数组（ 此例中是 ）
- *          如果是的话，那么判断此时 DOM 元素的 value 属性值是否存在于这个数组中（ 此时 DOM 元素的 value 属性值分别是 'a' 和 'b' ）
- *              如果存在的话，那么就将该元素的 checked 设置为 true，即被选中
+ *  此时，调用 val 方法传递了一个数组，所以进入 55 行的 return 中，遍历每一个 DOM 元素
+ *  直接将数组的引用保存在 val 变量中，然后进入 103 行的 if 中，将数组中的每个元素转为字符串的形式，重新保存在 val 变量中
+ *  然后获取 hooks 对象，此时获取到的是 valHooks 中的 radio 对象，然后会调用其中的 set 方法
+ *      在调用 set 方法中，因为参数是一个数组，所以会进入 if 中，判断此时 DOM 元素的 value 属性值是否存在于这个数组中（ 此时 DOM 元素的 value 属性值分别是 'a'、'b' 和 'c' ）
+ *          如果存在的话，那么就将该元素的 checked 设置为 true，即被选中，所以只有前两个 radio 被选中
  *  所以本例中，#single_radio_A 和 #single_radio_B 会被选中，而 #single_radio_C 则不会
  */
 $radioSingle.val( ['a', 'b'] );
 </code> 
 </pre>     
 
-<p>结果如下<br><img src="jQuery07/03_val_radio_提供数组参数.png" alt="结果">  </p>
-<h4 id="示例七：input-radio-提供字符串参数"><a href="#示例七：input-radio-提供字符串参数" class="headerlink" title="示例七：input radio 提供字符串参数"></a>示例七：input radio 提供字符串参数</h4><pre>
+<p>结果如下<br><img src="jQuery07/03_val_radio_提供数组参数.png" alt="结果">     </p>
+<p>注意，这个例子中之所以前两个单选框能同时被选中是因为每个单选框的 <code>name</code> 值都是不同的，如果相同，那么只会选中最后的那个单选框了。  </p>
+<h5 id="示例四：input-checkbox-提供数组参数"><a href="#示例四：input-checkbox-提供数组参数" class="headerlink" title="示例四：input checkbox 提供数组参数"></a>示例四：input checkbox 提供数组参数</h5><pre>
 <code class="language-markup">
-&lt;input type="radio" name="name" class="name_radio" id="name_radio_ZS" value="zs" /&gt;张三
-&lt;input type="radio" name="name" class="name_radio" id="name_radio_LS" value="ls" /&gt;李四
+&lt;input type="checkbox" name="foods" class="checkbox_foods" id="food_banana"     value="food_banana" &gt;香蕉
+&lt;input type="checkbox" name="foods" class="checkbox_foods" id="food_watermelon" value="food_watermelon" &gt;西瓜
+&lt;input type="checkbox" name="foods" class="checkbox_foods" id="food_apple"      value="food_apple" &gt;苹果
 </code>
 </pre>  
 
 <pre>
 <code class="language-javascript">
-const $radioName  = $( '.name_radio' );
+const $checkboxFoods  = $( '.checkbox_foods' );
 
 /**
- *  此时调用 val 时传递的是一个字符串参数，所以会进入 49 行的 return 中，遍历每一个 DOM 元素
- *  和上面一个示例的过程几乎一模一样，不同的是，在 113 行的 if 中，会调用 valHooks 中的 set 方法，由于此时的参数并不是一个数组，所以在 set 方法中，反回的是 undefined
- *     所以会进入 113 行的 if 中，将此时的 val（ 即 'all_name' ） 赋给当前 DOM 元素的 value 属性
- *  所以，#name_radio_ZS 和 #name_radio_LS 的 value 值最终都是 all_name
+ *  此时调用 val 方法和示例三的过程一模一样，此时 input 是复选框，所以不需要再设置不同的 name 属性
  */
-$radioName.val( 'all_name' );
+$checkboxFoods.val( [ 'food_banana', 'food_apple' ] );
 </code> 
 </pre>     
 
-<p>结果如下<br><img src="jQuery07/04_val_radio_提供字符串参数.png" alt="结果">  </p>
-<p>传递函数其实和传递字符串、数组是一样的，因为源码中实际是调用函数，并将返回值保存在 <code>val</code> 变量中，后面的逻辑是一模一样的。</p>
+<p>结果如下<br><img src="jQuery07/04_val_checkbox提供数组参数.png" alt="结果">    </p>
+<h2 id="与-option-元素相关的操作"><a href="#与-option-元素相关的操作" class="headerlink" title="与 option 元素相关的操作"></a>与 option 元素相关的操作</h2><p>首先来看与 option 元素有关的钩子   </p>
+<pre class="line-numbers">
+<code class="language-javascript">
+
+</code>
+</pre>
+
+<h2 id="与-select-元素相关的操作"><a href="#与-select-元素相关的操作" class="headerlink" title="与 select 元素相关的操作"></a>与 select 元素相关的操作</h2><p>首先来看与 select 元素有关的钩子   </p>
+<pre class="line-numbers">
+<code class="language-javascript">
+
+</code>
+</pre>
+
+
+<h2 id="与属性相关的操作"><a href="#与属性相关的操作" class="headerlink" title="与属性相关的操作"></a>与属性相关的操作</h2><h3 id="使用-attr-方法"><a href="#使用-attr-方法" class="headerlink" title="使用 attr 方法"></a>使用 attr 方法</h3><p>这个方法用于向当前 <code>jQuery</code> 对象中的 DOM 元素添加属性，其实就是调用了原生的 <code>setAttribute</code> 方法来添加的<br>与 attr 有关的钩子有如下几个   </p>
+<h4 id="attrHooks"><a href="#attrHooks" class="headerlink" title="attrHooks"></a>attrHooks</h4><p>这个钩子只检测一种情况，就是为 DOM 元素设置 <code>type</code> 属性时，会触发这个钩子。但其实真正发挥作用的只有为 <code>input</code> 标签设置 <code>type</code> 为 <code>radio</code> 时才会触发，因为在这种情况下，会存在一定的兼容性，所以要进一步的处理。</p>
+<pre>
+<code class="language-javascript">
+attrHooks: {
+    type: {
+        /**
+         *  @param  { Element } elem    操作的 DOM 元素
+         *  @param  { String }  value   设置的属性值
+         *  @return { String }          返回设置的属性值 value
+         */
+        set: function( elem, value ) {
+            /**
+             *  1.  首先判断是否存在兼容性（ 根据 jQuery.support.radioValue 的值，这个值代表的是一个 type 为 text 的 input 输入框，在对其设置一个 value 属性后，再将其 type 设置为单选框，即 radio，此时，这个 input 的 value 值是否是原来设置过的值，在 IE 下，其值为 on（ 此值为 false ），在非 IE 下，其值还是原来的值（ 此值为 true ） ）
+             *      如果存在兼容性，即处于 IE 下，则再判断此时要设置的属性值是否是 radio 并且要设置的元素标签是否是 input 标签，如果都满足，则进入 if
+             */
+            if ( !jQuery.support.radioValue && value === "radio" && jQuery.nodeName(elem, "input") ) {
+                /**
+                 *  首先将此时 input 的 value 值保存下来，如果在设置 input 的 type 为 radio 之前，input 已经存在了 value 值，那么就将其值保存在 val 变量中
+                 *  然后通过 setAttribute 方法将 input 的 type 改为 radio
+                 *  然后再判断修改 input 的 type 之前是否存在 value 值
+                 *      如果之前存在，则将此时 input 的 value 设置为之前的 value 值，改变了 IE 下 value 为 on 的情况
+                 *      如果之前不存在，则不进行操作
+                 */
+                var val = elem.value;
+                elem.setAttribute( "type", value );
+                if ( val ) {
+                    elem.value = val;
+                }
+
+                //  返回 value 值，也就是字符串 radio
+                return value;
+            }
+        }
+    }
+}
+</code>
+</pre>  
+
+<h4 id="boolHook"><a href="#boolHook" class="headerlink" title="boolHook"></a>boolHook</h4><p>这个钩子主要检测的是一些添加即用的属性，也就是没有属性值的属性。例如 <code>checked、required、readonly</code> 等，这些属性添加就起作用，是否设置值也不会影响属性本身的作用。因为本身不具有值，所以在 <code>jQuery</code> 中将这些属性的值设置为了和属性名相同的字符串。<br>通过 attr 方法设置以下 <strong>16</strong> 个属性会触发这个钩子，形式就是类似于：<code>属性名=&quot;属性名&quot;</code>     </p>
+<table>
+<thead>
+<tr>
+<th></th>
+<th style="text-align:center"></th>
+<th style="text-align:right"></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>checked</td>
+<td style="text-align:center">selected</td>
+<td style="text-align:right">async</td>
+<td>autofocus</td>
+</tr>
+<tr>
+<td>autoplay</td>
+<td style="text-align:center">controls</td>
+<td style="text-align:right">defer</td>
+<td>disabled</td>
+</tr>
+<tr>
+<td>hidden</td>
+<td style="text-align:center">ismap</td>
+<td style="text-align:right">loop</td>
+<td>multiple</td>
+</tr>
+<tr>
+<td>open</td>
+<td style="text-align:center">readonly</td>
+<td style="text-align:right">required</td>
+<td>scoped</td>
+</tr>
+</tbody>
+</table>
+<pre>
+<code class="language-javascript">
+boolHook = {
+    /**
+     *  @param  { Element } elem    操作的 DOM 元素
+     *  @param  { Boolean } value   属性值，是一个布尔值
+     *  @param  { String }  name    属性名
+     *  @return { String }          返回属性名 name
+     */
+    set: function( elem, value, name ) {
+        /**
+         *  判断属性值是 false 还是 true
+         *      如果是 false，则调用 $.removeAttr 方法，将该属性移除
+         *      如果是 true，则通过原生方法 setAttribute 为 DOM 元素设置该属性，且属性值和属性名相同
+         */
+        if ( value === false ) {
+            jQuery.removeAttr( elem, name );
+        } else {
+            elem.setAttribute( name, name );
+        }
+
+        //  返回属性名
+        return name;
+    }
+}
+</code>
+</pre>  
+
+<h4 id="nodeHook"><a href="#nodeHook" class="headerlink" title="nodeHook"></a>nodeHook</h4><p>这个钩子其实只是一个值为 <code>undefined</code> 的变量，不具备任何的作用。  </p>
+<p>在调用 <code>attr</code> 方法中，以上三种钩子，分别对应三中情况   </p>
+<ol>
+<li><code>input</code> 的 <code>type</code> 为 <code>radio</code>（ 触发 <code>attrHook</code> ）   </li>
+<li>设置上述的 16 个属性（ 触发 <code>bookHooks</code> ）   </li>
+<li>除了以上两种以外的所有属性（ 触发 <code>nodeHook</code> ）  </li>
+</ol>
+<h4 id="jQuery-fn-attr"><a href="#jQuery-fn-attr" class="headerlink" title="jQuery.fn.attr"></a>jQuery.fn.attr</h4><p>这个方法很简单，内部只是调用了工具方法 <code>jQuery.access</code>   </p>
+<pre>
+<code class="language-javascript">
+/**
+ *  @param  { String | Object } name    当为 String 时是要设置一个属性的属性名；当为 Object 时是要设置的多个属性的键值对
+ *  @param  { String }          value   要设置一个属性时的属性值
+ *  @return { jQuery }                  当前的 jQuery 对象
+ */
+attr: function( name, value ) {
+    /**
+     *  调用 jQuery.access 方法，并传递五个参数
+     *      参数一：当前 jQuery 对象
+     *      参数二：jQuery.attr 方法，这个方法在 access 中会被执行
+     *      参数三：设置一个属性的属性名或者多个属性的键值对集合
+     *      参数四：设置一个属性的属性值
+     *      参数五：参数个数是否大于 1 的布尔值
+     */
+    return jQuery.access( this, jQuery.attr, name, value, arguments.length > 1 );
+}
+</code>
+</pre>  
+
+<p>在 <code>access</code> 内部，总是会调用 <code>jQuery.attr</code> 方法，这个方法是最关键的，所以接下来看这个方法具体做了什么   </p>
+<h4 id="jQuery-attr"><a href="#jQuery-attr" class="headerlink" title="jQuery.attr"></a>jQuery.attr</h4><pre class="line-numbers">
+<code class="language-javascript">
+/**
+ *  @param  { Element } elem    要设置属性的 DOM 元素
+ *  @param  { String }  name    要设置的属性名
+ *  @param  { String }  value   要设置的属性值
+ */
+attr: function( elem, name, value ) {
+    var hooks, ret,
+        nType = elem.nodeType;    // 保存节点的类型
+
+    /**
+     *  1.  首先判断 elem 是否存在
+     *      如果存在，则再判断其是否是属性节点、文本节点、注释节点，如果是其中的一种，直接退出
+     *      因为在这三种节点上是无法设置/获取属性的
+     */
+    if ( !elem || nType === 3 || nType === 8 || nType === 2 ) {
+        return;
+    }
+
+    /**
+     *  2.  判断 elem 节点是否存在 getAttribute 方法，如果不存在，则调用 jQuery.prop 方法来实现
+     *      像 document 这样的节点就不存在这个方法，所以此时就要通过 jQuery.prop 来方法给 document 添加属性
+     */
+    if ( typeof elem.getAttribute === core_strundefined ) {
+        return jQuery.prop( elem, name, value );
+    }
+
+    /**
+     *  3.  判断 elem 是否是 HTML 元素，而不是 XML 元素；如果满足，进入 if
+     *      这一步主要是根据设置的属性来获取不同的 hooks 对象
+     */
+    if ( nType !== 1 || !jQuery.isXMLDoc( elem ) ) {
+        /**
+         *  将需要添加的属性名称转小写，并根据 name 来获取不同的钩子对象
+         *      如果添加的是 type 属性，那么获取的 hooks 就是 attrHook 对象
+         *      如果添加的是上面 16 种中的一种属性，那么获取的 hooks 就是 boolHook 对象（ 通过 jQuery.expr.match.bool 正则来检验是否是上述的 16 种情况之一 ）
+         *      除此之外，获得的 hooks 都是 nodeHook 对象（ nodeHook 就是 undefined ）
+         */
+        name = name.toLowerCase();
+        hooks = jQuery.attrHooks[ name ] ||
+            ( jQuery.expr.match.bool.test( name ) ? boolHook : nodeHook );
+    }
+
+    /**
+     *  4.  判断是否有要添加属性的值，如果提供属性值不是 undefined，则意味着要对属性处理，进入 if    
+     */
+    if ( value !== undefined ) {
+        /**
+         *  4.1 如果属性的值为 null，则调用 jQuery.removeAttr 方法将该属性删除 
+         */
+        if ( value === null ) {
+            jQuery.removeAttr( elem, name );
+        } 
+        /**
+         *  4.2 判断 hooks 对象是否存在
+         *      只有当设置的属性是 type 或者上面 16 种之一时，hooks 对象才存在，剩余的属性 hooks 对象都是 undefined
+         *      如果 hooks 对象存在，则再判断其中是否有 set 属性，boolHook 和 attrHook 中都存在 set 方法，所以进一步会调用 set 方法，并将要设置的 DOM 元素、属性名和属性值作为参数传递，并判断 set 的返回值是否是 undefined
+         *          如果不是 undefined，则直接返回这个值
+         */
+        else if ( hooks && "set" in hooks && (ret = hooks.set( elem, value, name )) !== undefined ) {
+            return ret;
+        } 
+        /**
+         *  4.3 处理前两种情况之外的情况，例如设置 class，id 等属性的时候会走这个 else
+         *      直接通过原生方法 setAttribute 为 DOM 元素添加属性
+         */
+        else {
+            elem.setAttribute( name, value + "" );
+            return value;
+        }
+
+    } else if ( hooks && "get" in hooks && (ret = hooks.get( elem, name )) !== null ) {
+        return ret;
+
+    } else {
+        ret = jQuery.find.attr( elem, name );
+
+        // Non-existent attributes return null, we normalize to undefined
+        return ret == null ?
+            undefined :
+            ret;
+    }
+}
+</code>
+</pre>  
+
+<h5 id="示例一：设置一个常规属性"><a href="#示例一：设置一个常规属性" class="headerlink" title="示例一：设置一个常规属性"></a>示例一：设置一个常规属性</h5><p>常规属性就是除了 <code>type</code> 和上述 16 种属性之外的所有属性，包括 <code>class</code>、<code>id</code> 等</p>
+<pre>
+<code class="language-markup">
+&lt;box id="box_01"&gt;&lt;/box&gt;
+</code>
+</pre>
+<pre>
+<code class="language-javascript">
+const $box_01 = $( '#box_01' );
+/**
+ *  此时，调用 attr 方法时，内部调用的是 $.access 方法，并传递五个参数：当前 jQuery 对象, jQuery.attr, 'class', 'box', true
+ *  在 access 方法中，key 值是一个字符串，所以 bulk 是 false，并且 value 不是 undefined，所以会进入 42 行的 else if 中，并且传入的 value 不是函数，所以将 raw 设置为 true，因为 bulk 是 false，所以不会进入 58 行的 if 中，直接进入 86 行的 if 中
+ *      遍历第一个参数 jQuery 对象中的所有 DOM 元素，每遍历一次就调用第二个参数方法（ 就是 jQuery.attr ），并传递三个参数：当前的 DOM 元素（ 此例中是 #box_01 元素 ），key（ 此例中是 'class' ） 和 value（ 此例中是 'box' ）
+ *      在遍历完成之后，进入 return，因为此时 chainable 的值为 true，所以直接返回第一个参数的引用，即调用 access 方法的 jQuery 对象（ 此例中就是 $box_01 ）
+ *  在 jQuery.attr 方法中，因为 DOM 元素不是一个 XML 的元素，所以会进入 32 行的 if 中来获取 hooks 对象，但此时添加的属性时 class，所以 hooks 对象就是 nodeHooks（ 也就是 undefined ）
+ *      因为 value 值是存在的而不是 undefined，所以进入 47 行的 if 中，而 value 又不是 null，并且 hooks 对象不存在，所以会进入 67 行的 else 中，直接调用 setAttribute 方法为 DOM 元素添加 class="box" 的属性，并返回 value，即 box
+ */
+$box_01.attr( 'class', 'box' );
+</code>
+</pre>  
+
+<p>结果如下<br><img src="jQuery07/07_attr_01.png" alt="结果图片">  </p>
+<h5 id="示例二：为-input-设置-type-属性"><a href="#示例二：为-input-设置-type-属性" class="headerlink" title="示例二：为 input 设置 type 属性"></a>示例二：为 input 设置 type 属性</h5><p>先来看看不使用 jQuery 会出现什么样的问题   </p>
+<pre>
+<code class="language-javascript">
+const $input = document.createElement( 'input' );
+document.body.appendChild( $input );
+$input.value = '123';
+$input.type = 'radio';
+console.log( $input.value );    // 非 ie: 123  ie: on
+</code>
+</pre>     
+
+<p>上面的代码，在 IE 下会打印出字符串 <code>on</code>，而在非 IE 下会打印字符串 <code>123</code>。这也就是 <code>jQuery.support.radioValue</code> 检测的兼容性问题，所以在 IE 下，该值就是 <code>false</code>，非 IE 下该值就是 <code>true</code>   </p>
+<p>现在来使用 jQuery 来解决这一问题   </p>
+<pre>
+<code class="language-javascript">
+const $input = document.createElement( 'input' );
+document.body.appendChild( $input );
+$input.value = '123';
+/**
+ *  此时，调用 attr 实例方法时，内部还是调用 jQuery.access 方法，access 方法的执行过程与返回值和示例一是一样的，只看调用 jQuery.attr 方法时都做了什么
+ *  执行 jQuery.attr 方法时，接受三个参数，分别是 $input、'type'、'radio'。因为第一个参数 $input 不是一个 XML 节点，所以进入 32 行的 if 中获取 hooks 对象，此时设置的属性是 type，所以 hooks 对象就是 attrHooks 中的 type 对象。
+ *  又因为 value 存在且不是 undefined，所以会进入 47 行的 if 中，在 if 中，value 不是 null，而 hooks 是存在的且其中含有 set 方法，所以会调用其中 set 方法，并传递三个参数：$input、'radio'、'type'
+ *      在 attrHooks 的 set 方法中，首先判断 jQuery.support.radioValue 的值，只有在 IE 下才会进入 if
+ *          在 if 中，首先获取 input 的 value 值（ 此例中是 '123' ），然后通过原生方法 setAttribute 为 input 设置 type="radio"，再将此时的 input 的 value 值设置为 '123'，从而解决兼容，最后返回 value，也就是 'radio'
+ *      调用完 set 的之后，判断其返回值是否是 undefined（ 此时是 'radio' ），如果不是，则进入 60 行的 if 中，直接返回 set 的返回值
+ */
+$($input).attr( 'type', 'radio' );
+console.log( $input.value );  // 123
+</code>
+</pre>     
+
+<p>使用 <code>jQuery</code> 的 <code>attr</code> 实例方法，可以解决之前的问题，示例二不管在什么浏览器下，都会得到字符串 <code>123</code>   </p>
+<h5 id="示例三：设置-16-种属性之一"><a href="#示例三：设置-16-种属性之一" class="headerlink" title="示例三：设置 16 种属性之一"></a>示例三：设置 16 种属性之一</h5><pre>
+<code class="language-markup">
+&lt;input type="radio" name="sex" id="radio_man"   class="radio_sex" /&gt;男
+&lt;input type="radio" name="sex" id="radio_women" class="radio_sex" checked /&gt;女
+</code>
+</pre>     
+
+<p>注意的是，此时男单选框没有被默认选中，而女单选框是被默认选中的，现在通过 <code>jQuery</code> 的 <code>attr</code> 实例方法让它们互换</p>
+<pre>
+<code class="language-javascript">
+const $radioMan = $( '#radio_man' ); 
+/**
+ *  此时调用 attr 方法时，内部先调用 $.access 方法，调用 access 方法的过程与返回值和示例一是一模一样的，所以直接看 jQuery.attr 方法内部，此时 jQuery.attr 方法接受三个参数：#radio_man DOM 元素，'checked' 和 true
+ *  在 jQuery.attr 方法中，因为第一个参数 #radio_man 不是一个 XML 元素，所以会进入 32 行的 if 来获取 hooks 对象，因为此时的 name 是 'checked'，所以获取的 hooks 对象是 boolHook
+ *  然后 value 不是 undefined，所以会进入 47 行的 if 中，在 if 中，value 不是 null，且存在 hooks 对象，并且其中含有 set 方法，所以会调用 set 方法，并传递三个参数，#radio_man, true, 'checked'
+ *      在 boolHook 的 set 方法中，判断 value 是否是 false，此例中不是，所以会进入 else 中，通过原生方法 setAttribute 为 #radio_man 元素设置属性 checked="checked"，之后返回 name 变量，也就是 checked
+ *  在调用完 set 方法之后判断其返回值是否是 undefined，此例中不是，所以j进入 60 行的 if 中，直接返回 set 的返回值，即 checked
+ */
+$radioMan.attr( 'checked', true );
+
+const $radioWomen = $( '#radio_women' );
+/**
+ *  此时调用 attr 方法和上面是一样的，唯一不同的是 boolHook 的 set 方法中执行的内容不同
+ *  在 boolHook 的 set 方法中，接受三个参数：#radio_women、false、'checked'。此时 value 是 false，所以会进入 if 中，调用 jQuery.removeAttr 方法将 checked 属性移除
+ *  先不用考虑 jQuery.removeAttr 方法具体做了什么，只需要知道它可以将一个指定的属性从 DOM 元素上移除就可以了
+ *  所以，#radio_women 上的 checked 属性就没有了
+ */
+$radioWomen.attr( 'checked', false );
+</code>
+</pre>  
+
+<p>结果如下<br><img src="jQuery07/07_attr_02.png" alt="结果">   </p>
+<h5 id="示例四：设置属性值为-null"><a href="#示例四：设置属性值为-null" class="headerlink" title="示例四：设置属性值为 null"></a>示例四：设置属性值为 null</h5><pre>
+<code class="language-markup">  
+&lt;div class="box" id="header"&gt;&lt;/div&gt;
+</code>
+</pre>
+
+<pre>
+<code class="language-javascript">  
+const $header = $( '#header' );
+
+/**
+ *  此时调用 attr 方法时，内部先调用 $.access 方法，调用的过程和返回值和示例一一样，直接看调用 jQuery.attr 方法
+ *  在 jQuery.attr 方法中，首先进入 32 行的 if 中获取 hooks 对象，此例中获取到的是 nodeHook 对象（ 不过此例中用不到 hooks 对象，获取哪一个 hooks 对象都没有关系 ）
+ *  然后因为 value 值不是 undefined，所以进入 47 行的 if 中，因为 value 是 null，所以会进入 51 行的 if 中，直接调用 jQeury.removeAttr 方法，将当前 DOM 元素的 class 属性移除；目前只需要知道这个方法的作用就可以，具体实现的细节之后再看 
+ */
+$header.attr( 'class', null );
+</code>
+</pre>  
+
+<p>结果如下<br><img src="jQuery07/07_attr_03.png"></p>
+<h5 id="示例四：设置多个属性值"><a href="#示例四：设置多个属性值" class="headerlink" title="示例四：设置多个属性值"></a>示例四：设置多个属性值</h5><pre>
+<code class="language-markup">
+&lt;div id="footer"&gt;&lt;/div&gt;
+</code>
+</pre>
+
+<pre>
+<code class="language-javascript">
+const $footer = $( '#footer' );
+
+/**
+ *  此时调用 attr 方法时，内部调用 jQuery.access 时，和前面有所不同
+ *  在 jQuery.access 方法中，参数 key 是一个对象，所以会进入第 24 行的 if 中，首先将 chainable 设置为 true，代表此时是设置值，然后遍历 key 保存的对象，每遍历一次调用一次 jQuery.access 方法，并传递五个参数：当前的 jQuery 对象（ 此例中是 $footer ），jQuery.attr 方法，key 对象中的每个属性（ 此例中分别是 class、name、title ），该属性对应的属性值（ 此例中分别是 box、footer、foot ），以及布尔值 true
+ *      在每次循环调用 jQuery.access 中，key 分别是 class、name、title，value 分别是 box、footer、foot，之后的过程和示例一就一样了，最后都会遍历当前 jQuery 对象来调用 jQuery.attr 方法
+ *  遍历完 key 对象之后，就会进入到 access 中的 return 中，因为此时 chainable 是 true，所以直接返回当前的 jQuery 对象（ 即 $footer ）
+ */
+$footer.attr({
+    class: 'box',
+    name: 'footer',
+    title: 'foot'
+});
+</code>
+</pre>   
+
+<p>结果如下<br><img src="jQuery07/07_attr_04.png" alt="结果">  </p>
+<h4 id="jQuery-fn-removeAttr"><a href="#jQuery-fn-removeAttr" class="headerlink" title="jQuery.fn.removeAttr"></a>jQuery.fn.removeAttr</h4><pre>
+<code class="language-javascript">
+/**
+ *  @param  { String }  name    要删除的属性名
+ */
+removeAttr: function( name ) {
+    /**
+     *  遍历当前 jQuery 对象中的所有 DOM 元素，为每一个 DOM 元素执行一次 jQuery.removeAttr 方法
+     *  将当前的 DOM 元素和参数 name 作为参数传递 
+     */
+    return this.each(function() {
+        jQuery.removeAttr( this, name );
+    });
+}
+</code>
+</pre>   
+
+<h4 id="jQuery-removeAttr"><a href="#jQuery-removeAttr" class="headerlink" title="jQuery.removeAttr"></a>jQuery.removeAttr</h4><pre>
+<code class="language-javascript">
+/**
+ *  @param  { Element } elem    删除属性的 DOM 元素
+ *  @param  { String }  value   删除属性的属性名，如果有多个以空格分开
+ */
+removeAttr: function( elem, value ) {
+    var name, propName,
+        i = 0,
+        //  1.  将参数 value 按照空格匹配，将匹配到的结果数组保存在 attrNames 中 
+        attrNames = value && value.match( core_rnotwhite );
+
+    /**
+     *  判断是否有匹配结果，并且 elem 是元素节点
+     */
+    if ( attrNames && elem.nodeType === 1 ) {
+        /**
+         *  遍历 attrNames 数组
+         *      调用原生方法 removeAttribute 将数组中的每个属性移除
+         */
+        while ( (name = attrNames[i++]) ) {
+            propName = jQuery.propFix[ name ] || name;
+
+            // Boolean attributes get special treatment (#10870)
+            if ( jQuery.expr.match.bool.test( name ) ) {
+                // Set corresponding property to false
+                elem[ propName ] = false;
+            }
+
+            elem.removeAttribute( name );
+        }
+    }
+}
+</code>
+</pre>   
 
             </div>
         
@@ -983,6 +1479,11 @@ $radioName.val( 'all_name' );
     <div id="post-nav" class="row">
         
         <div class="nav-prev col-md-4 col-sm-4 col-xs-6">
+            
+                <a href="/Redux源码分析/redux_01.html" class="nav-prev-link nav-link ellipsis">
+                    <i class="iconfont icon-houtui"></i>
+                    Redux源码分析（一）
+                </a>
             
         </div>
 
